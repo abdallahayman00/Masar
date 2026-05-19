@@ -1,0 +1,477 @@
+<form [formGroup]="teacherForm" (ngSubmit)="onSubmit()" class="teacher-form">
+  <!-- Basic Info Row 1 -->
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">الاسم الكامل *</label>
+      <div class="input-wrapper">
+        <span class="input-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+          >
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </span>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="fullName"
+          placeholder="الاسم الكامل"
+          [class.is-invalid]="isFieldInvalid('fullName')"
+        />
+      </div>
+      <div class="field-validation-error" *ngIf="isFieldInvalid('fullName')">
+        <span *ngIf="teacherForm.get('fullName')?.errors?.['required']"
+          >الاسم الكامل مطلوب</span
+        >
+        <span *ngIf="teacherForm.get('fullName')?.errors?.['minlength']"
+          >الاسم يجب أن يكون 3 أحرف على الأقل</span
+        >
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">البريد الإلكتروني *</label>
+      <div class="input-wrapper">
+        <span class="input-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+          >
+            <rect x="2" y="5" width="20" height="15" rx="3" />
+            <path d="M2 7l10 7 10-7" />
+          </svg>
+        </span>
+        <input
+          type="email"
+          class="form-control"
+          formControlName="email"
+          placeholder="example@domain.com"
+          [class.is-invalid]="isFieldInvalid('email')"
+        />
+      </div>
+      <div class="field-validation-error" *ngIf="isFieldInvalid('email')">
+        <span *ngIf="teacherForm.get('email')?.errors?.['required']"
+          >البريد الإلكتروني مطلوب</span
+        >
+        <span *ngIf="teacherForm.get('email')?.errors?.['email']"
+          >صيغة البريد غير صحيحة</span
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2 -->
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">كلمة المرور *</label>
+      <div class="input-wrapper">
+        <span class="input-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+          >
+            <rect x="3" y="11" width="18" height="12" rx="3" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+        </span>
+        <input
+          type="password"
+          class="form-control"
+          formControlName="password"
+          placeholder="********"
+          [class.is-invalid]="isFieldInvalid('password')"
+        />
+      </div>
+      <div class="field-validation-error" *ngIf="isFieldInvalid('password')">
+        <span *ngIf="teacherForm.get('password')?.errors?.['required']"
+          >كلمة المرور مطلوبة</span
+        >
+        <span *ngIf="teacherForm.get('password')?.errors?.['minlength']"
+          >كلمة المرور يجب أن تكون 6 أحرف على الأقل</span
+        >
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">رقم الواتساب *</label>
+      <div class="input-wrapper">
+        <span class="input-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+          >
+            <path
+              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
+            />
+          </svg>
+        </span>
+        <input
+          type="tel"
+          class="form-control"
+          formControlName="whatsAppNumber"
+          placeholder="+964XXXXXXXXX"
+          [class.is-invalid]="isFieldInvalid('whatsAppNumber')"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 3 -->
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">العمر *</label>
+      <div class="input-wrapper">
+        <span class="input-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+        </span>
+        <input
+          type="number"
+          class="form-control"
+          formControlName="age"
+          placeholder="مثال: 30"
+          [class.is-invalid]="isFieldInvalid('age')"
+        />
+      </div>
+      <div class="field-validation-error" *ngIf="isFieldInvalid('age')">
+        <span *ngIf="teacherForm.get('age')?.errors?.['required']"
+          >العمر مطلوب</span
+        >
+        <span *ngIf="teacherForm.get('age')?.errors?.['min']"
+          >العمر يجب أن يكون 18 سنة على الأقل</span
+        >
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">الجنسية *</label>
+      <div class="input-wrapper">
+        <span class="input-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+          >
+            <path d="M3 12h18M12 3v18" />
+            <circle cx="12" cy="12" r="9" />
+          </svg>
+        </span>
+        <select
+          class="form-control"
+          formControlName="nationality"
+          [class.is-invalid]="isFieldInvalid('nationality')"
+        >
+          <option value="" disabled selected>اختر الجنسية</option>
+          <option
+            *ngFor="let option of nationalityOptions"
+            [value]="option.value"
+          >
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+      <div class="field-validation-error" *ngIf="isFieldInvalid('nationality')">
+        <span>الجنسية مطلوبة</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 4 -->
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">الجنس *</label>
+      <div class="radio-group">
+        <label *ngFor="let option of genderOptions" class="radio-label">
+          <input type="radio" [value]="option.value" formControlName="gender" />
+          <span>{{ option.label }}</span>
+        </label>
+      </div>
+      <div class="field-validation-error" *ngIf="isFieldInvalid('gender')">
+        <span>الجنس مطلوب</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">بلد الإقامة *</label>
+      <div class="input-wrapper">
+        <span class="input-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+          >
+            <path d="M12 2c-4 0-7 3-7 7 0 4 7 11 7 11s7-7 7-11c0-4-3-7-7-7z" />
+            <circle cx="12" cy="9" r="2.5" />
+          </svg>
+        </span>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="residenceCountry"
+          placeholder="مثال: العراق"
+          [class.is-invalid]="isFieldInvalid('residenceCountry')"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- National ID -->
+  <div class="form-group">
+    <label class="form-label">الرقم القومي *</label>
+    <div class="input-wrapper">
+      <span class="input-icon">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+        >
+          <path d="M3 4h18v16H3z" />
+          <line x1="8" y1="10" x2="16" y2="10" />
+        </svg>
+      </span>
+      <input
+        type="text"
+        class="form-control"
+        formControlName="nationalId"
+        placeholder="الرقم القومي"
+        [class.is-invalid]="isFieldInvalid('nationalId')"
+      />
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="form-group">
+    <label class="form-label">نبذة تعريفية *</label>
+    <textarea
+      class="form-control textarea"
+      formControlName="summary"
+      rows="4"
+      placeholder="اكتب نبذة عن خبراتك ومؤهلاتك..."
+      [class.is-invalid]="isFieldInvalid('summary')"
+    ></textarea>
+  </div>
+
+  <!-- Profile Image Upload -->
+  <div class="form-group">
+    <label class="form-label" for="profileImageInput">الصورة الشخصية</label>
+    <div
+      class="upload-zone"
+      [class.dragging]="isDraggingImage"
+      [class.has-file]="profileImagePreview"
+      (dragover)="onDragOver($event, 'profileImage')"
+      (dragleave)="onDragLeave($event, 'profileImage')"
+      (drop)="onDrop($event, 'profileImage')"
+      (click)="profileImageInput.click()"
+    >
+      <input
+        type="file"
+        #profileImageInput
+        id="profileImageInput"
+        accept="image/*"
+        (change)="onFileSelected($event, 'profileImage')"
+        style="display: none"
+      />
+
+      <div *ngIf="!profileImagePreview" class="upload-content">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+        >
+          <rect x="2" y="4" width="20" height="18" rx="3" />
+          <circle cx="9" cy="10" r="2.5" />
+          <path d="M21 17l-4-4-5 5-3-3-6 6" />
+        </svg>
+        <p>
+          اسحب وأفلت الصورة هنا أو <span class="browse-link">اختر ملف</span>
+        </p>
+        <small>PNG, JPG (max 5MB)</small>
+      </div>
+
+      <div *ngIf="profileImagePreview" class="upload-preview">
+        <img [src]="profileImagePreview" alt="Preview" />
+        <button
+          type="button"
+          class="remove-file"
+          (click)="removeFile('profileImage'); $event.stopPropagation()"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Introduction Audio Upload -->
+  <div class="form-group">
+    <label class="form-label" for="introductionAudioInput"
+      >مقدمة صوتية تعريفية</label
+    >
+    <div
+      class="upload-zone audio-zone"
+      [class.dragging]="isDraggingAudio"
+      [class.has-file]="introductionAudioName"
+      (dragover)="onDragOver($event, 'introductionAudio')"
+      (dragleave)="onDragLeave($event, 'introductionAudio')"
+      (drop)="onDrop($event, 'introductionAudio')"
+      (click)="introductionAudioInput.click()"
+    >
+      <input
+        type="file"
+        #introductionAudioInput
+        id="introductionAudioInput"
+        accept="audio/*"
+        (change)="onFileSelected($event, 'introductionAudio')"
+        style="display: none"
+      />
+
+      <div *ngIf="!introductionAudioName" class="upload-content">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+        >
+          <path d="M9 18V5l12-2v13" />
+          <circle cx="6" cy="18" r="3" />
+          <circle cx="18" cy="16" r="3" />
+        </svg>
+        <p>
+          اسحب وأفلت الملف الصوتي هنا أو
+          <span class="browse-link">اختر ملف</span>
+        </p>
+        <small>MP3, WAV (max 10MB)</small>
+      </div>
+
+      <div *ngIf="introductionAudioName" class="upload-preview audio-preview">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+        >
+          <path d="M9 18V5l12-2v13" />
+          <circle cx="6" cy="18" r="3" />
+          <circle cx="18" cy="16" r="3" />
+        </svg>
+        <span>{{ introductionAudioName }}</span>
+        <button
+          type="button"
+          class="remove-file"
+          (click)="removeFile('introductionAudio'); $event.stopPropagation()"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CV Upload -->
+  <div class="form-group">
+    <label class="form-label" for="cvFileInput">السيرة الذاتية (CV)</label>
+    <div
+      class="upload-zone cv-zone"
+      [class.dragging]="isDraggingCv"
+      [class.has-file]="cvFileName"
+      (dragover)="onDragOver($event, 'cvFile')"
+      (dragleave)="onDragLeave($event, 'cvFile')"
+      (drop)="onDrop($event, 'cvFile')"
+      (click)="cvFileInput.click()"
+    >
+      <input
+        type="file"
+        #cvFileInput
+        id="cvFileInput"
+        accept=".pdf,.doc,.docx"
+        (change)="onFileSelected($event, 'cvFile')"
+        style="display: none"
+      />
+
+      <div *ngIf="!cvFileName" class="upload-content">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+        >
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+          />
+          <polyline points="14 2 14 8 20 8" />
+        </svg>
+        <p>
+          اسحب وأفلت ملف PDF أو Word هنا أو
+          <span class="browse-link">اختر ملف</span>
+        </p>
+        <small>PDF, DOC, DOCX (max 5MB)</small>
+      </div>
+
+      <div *ngIf="cvFileName" class="upload-preview cv-preview">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+        >
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+          />
+          <polyline points="14 2 14 8 20 8" />
+        </svg>
+        <span>{{ cvFileName }}</span>
+        <button
+          type="button"
+          class="remove-file"
+          (click)="removeFile('cvFile'); $event.stopPropagation()"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <button
+    type="submit"
+    class="submit-btn"
+    [disabled]="loading || teacherForm.invalid"
+  >
+    <div class="submit-btn-content">
+      <svg
+        *ngIf="loading"
+        class="spinner"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <circle cx="12" cy="12" r="10" stroke-opacity="0.25" />
+        <path
+          d="M12 2a10 10 0 0 1 10 10"
+          stroke-opacity="1"
+          stroke-linecap="round"
+        />
+      </svg>
+      <span>{{ loading ? "جاري إنشاء الحساب..." : "إنشاء حساب معلم" }}</span>
+    </div>
+  </button>
+</form>

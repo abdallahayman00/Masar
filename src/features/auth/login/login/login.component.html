@@ -1,0 +1,246 @@
+<div class="login-container">
+  <div class="card">
+    <!-- Top accent bar is via ::before in SCSS -->
+
+    <div class="logo-section">
+      <div class="logo-icon">
+        <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M32 10 C20 10 12 18 12 30 C12 42 20 50 32 50 C38 50 43.5 47.2 47 42.4
+               C44 43.4 40.6 43.5 37.2 42.2 C29.2 39.2 25 30.6 27.8 22.6
+               C28.8 19.6 31 17.4 33.8 16.2 C33.2 15.8 32.6 10 32 10Z"
+            fill="rgba(255,255,255,0.95)"
+          />
+          <polygon
+            points="40,8 42,14 48,14 43.5,17.5 45.5,23.5 40,20 34.5,23.5 36.5,17.5 32,14 38,14"
+            fill="rgba(255,255,255,0.9)"
+          />
+        </svg>
+      </div>
+      <h1>مسار</h1>
+    </div>
+
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <svg class="ornament-star" viewBox="0 0 24 24">
+        <polygon
+          points="12,2 14.5,9.5 22,9.5 16,14 18.5,21.5 12,17 5.5,21.5 8,14 2,9.5 9.5,9.5"
+        />
+      </svg>
+      <div class="ornament-line"></div>
+    </div>
+
+    <div class="welcome-text">
+      <h2>تسجيل الدخول</h2>
+      <p>مرحباً بعودتك! يرجى إدخال بيانات حسابك</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <!-- Email -->
+      <div class="form-group">
+        <label class="form-label">البريد الإلكتروني</label>
+        <div class="input-wrapper">
+          <span class="input-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+            >
+              <rect x="2" y="5" width="20" height="15" rx="3" />
+              <path d="M2 7l10 7 10-7" />
+            </svg>
+          </span>
+          <input
+            type="email"
+            class="form-control"
+            formControlName="email"
+            placeholder="example@domain.com"
+            autocomplete="email"
+            autofocus
+            [class.is-invalid]="
+              loginForm.get('email')?.invalid && loginForm.get('email')?.touched
+            "
+          />
+        </div>
+        <div
+          class="field-validation-error"
+          *ngIf="
+            loginForm.get('email')?.invalid && loginForm.get('email')?.touched
+          "
+        >
+          <span *ngIf="loginForm.get('email')?.errors?.['required']"
+            >البريد الإلكتروني مطلوب</span
+          >
+          <span *ngIf="loginForm.get('email')?.errors?.['email']"
+            >صيغة البريد الإلكتروني غير صحيحة</span
+          >
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label class="form-label">كلمة المرور</label>
+        <div class="input-wrapper">
+          <span class="input-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+            >
+              <rect x="3" y="11" width="18" height="12" rx="3" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              <circle cx="12" cy="16.5" r="1.2" fill="currentColor" />
+            </svg>
+          </span>
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="form-control"
+            formControlName="password"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            [class.is-invalid]="
+              loginForm.get('password')?.invalid &&
+              loginForm.get('password')?.touched
+            "
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility()"
+            aria-label="إظهار/إخفاء كلمة المرور"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+            >
+              <ng-container *ngIf="!showPassword">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" />
+              </ng-container>
+              <ng-container *ngIf="showPassword">
+                <path
+                  d="M1 1l22 22M9.5 9.5A3 3 0 0 0 9 12a3 3 0 0 0 3 3c.9 0 1.7-.4 2.3-1M17.5 6.5A9.9 9.9 0 0 0 12 4c-7 0-11 8-11 8s1.6 2.7 4 5M21 21l-3.2-3.2"
+                />
+              </ng-container>
+            </svg>
+          </button>
+        </div>
+        <div
+          class="field-validation-error"
+          *ngIf="
+            loginForm.get('password')?.invalid &&
+            loginForm.get('password')?.touched
+          "
+        >
+          <span *ngIf="loginForm.get('password')?.errors?.['required']"
+            >كلمة المرور مطلوبة</span
+          >
+          <span *ngIf="loginForm.get('password')?.errors?.['minlength']"
+            >كلمة المرور يجب أن تكون 6 أحرف على الأقل</span
+          >
+        </div>
+      </div>
+
+      <!-- Remember Me -->
+      <div class="form-options">
+        <div
+          class="checkbox"
+          (click)="toggleRememberMe()"
+          role="checkbox"
+          [attr.aria-checked]="loginForm.get('rememberMe')?.value"
+        >
+          <div
+            class="checkbox-box"
+            [class.checked]="loginForm.get('rememberMe')?.value"
+          >
+            <svg
+              *ngIf="loginForm.get('rememberMe')?.value"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              stroke-width="3"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <span class="checkbox-text">تذكر جهازي</span>
+        </div>
+      </div>
+      <!-- Add this after form-options and before global-error -->
+      <div class="register-link">
+        <span>ليس لديك حساب؟</span>
+        <button
+          type="button"
+          class="register-link-btn"
+          (click)="goToRegister()"
+        >
+          إنشاء حساب جديد
+        </button>
+      </div>
+      <!-- Global Error -->
+      <div class="global-error" *ngIf="errorMessage" role="alert">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          width="16"
+          height="16"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        {{ errorMessage }}
+      </div>
+
+      <!-- Global Success -->
+
+      <!-- Submit -->
+      <button
+        type="submit"
+        class="login-btn"
+        [disabled]="loading || loginForm.invalid"
+      >
+        <div class="login-btn-shimmer"></div>
+        <div class="login-btn-content">
+          <svg
+            *ngIf="loading"
+            class="spinner"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="10" stroke-opacity="0.25" />
+            <path
+              d="M12 2a10 10 0 0 1 10 10"
+              stroke-opacity="1"
+              stroke-linecap="round"
+            />
+          </svg>
+          <svg
+            *ngIf="!loading"
+            viewBox="0 0 24 24"
+            width="18"
+            height="18"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"
+            />
+          </svg>
+          <span>{{
+            loading ? "جاري تسجيل الدخول..." : "دخول إلى النظام"
+          }}</span>
+        </div>
+      </button>
+    </form>
+  </div>
+</div>

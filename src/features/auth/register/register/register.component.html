@@ -1,0 +1,178 @@
+<!-- Toast Notification -->
+<div class="toast-container" *ngIf="toastMessage">
+  <div
+    class="toast"
+    [class.toast-success]="toastType === 'success'"
+    [class.toast-error]="toastType === 'error'"
+  >
+    <svg
+      *ngIf="toastType === 'success'"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="9 12 11 14 15 10" />
+    </svg>
+    <svg
+      *ngIf="toastType === 'error'"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="12" />
+      <line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
+    <span class="toast-content">{{ toastMessage }}</span>
+    <button class="toast-close" (click)="closeToast()">✕</button>
+  </div>
+</div>
+
+<div class="register-container">
+  <div class="register-card">
+    <!-- Top stripe via ::before -->
+
+    <!-- Header -->
+    <div class="register-header">
+      <div class="logo-icon">
+        <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M32 10 C20 10 12 18 12 30 C12 42 20 50 32 50 C38 50 43.5 47.2 47 42.4
+               C44 43.4 40.6 43.5 37.2 42.2 C29.2 39.2 25 30.6 27.8 22.6
+               C28.8 19.6 31 17.4 33.8 16.2 C33.2 15.8 32.6 10 32 10Z"
+            fill="rgba(255,255,255,0.95)"
+          />
+          <polygon
+            points="40,8 42,14 48,14 43.5,17.5 45.5,23.5 40,20 34.5,23.5 36.5,17.5 32,14 38,14"
+            fill="rgba(255,255,255,0.9)"
+          />
+        </svg>
+      </div>
+      <h1 class="logo-title">مسار</h1>
+
+      <div class="ornament">
+        <div class="ornament-line"></div>
+        <svg class="ornament-star" viewBox="0 0 24 24">
+          <polygon
+            points="12,2 14.5,9.5 22,9.5 16,14 18.5,21.5 12,17 5.5,21.5 8,14 2,9.5 9.5,9.5"
+          />
+        </svg>
+        <div class="ornament-line"></div>
+      </div>
+
+      <h2 class="register-title">إنشاء حساب جديد</h2>
+      <p class="register-subtitle">اختر نوع حسابك للبدء في رحلتك التعليمية</p>
+    </div>
+
+    <!-- Role Toggle -->
+    <div class="role-toggle" role="tablist" aria-label="نوع الحساب">
+      <button
+        role="tab"
+        [attr.aria-selected]="activeMode === 'student'"
+        class="role-btn"
+        [class.active]="activeMode === 'student'"
+        (click)="setMode('student')"
+        type="button"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+          <path d="M6 12v5c3 3 9 3 12 0v-5" />
+        </svg>
+        <span>طالب</span>
+      </button>
+
+      <button
+        role="tab"
+        [attr.aria-selected]="activeMode === 'teacher'"
+        class="role-btn"
+        [class.active]="activeMode === 'teacher'"
+        (click)="setMode('teacher')"
+        type="button"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <rect x="2" y="3" width="20" height="14" rx="2" />
+          <path d="M8 21h16M12 17v4" />
+          <path d="M7 8h.01M10 8h4" />
+        </svg>
+        <span>معلم</span>
+      </button>
+
+      <div
+        class="toggle-slider"
+        [class.teacher]="activeMode === 'teacher'"
+      ></div>
+    </div>
+
+    <!-- Global Messages -->
+    <div class="global-error" *ngIf="errorMessage" role="alert">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        width="16"
+        height="16"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+      {{ errorMessage }}
+    </div>
+
+    <div class="global-success" *ngIf="successMessage" role="status">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        width="16"
+        height="16"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="9 12 11 14 15 10" />
+      </svg>
+      {{ successMessage }}
+    </div>
+
+    <!-- Form Outlet -->
+    <div class="form-outlet" [class.visible]="!successMessage">
+      <div class="form-panel" [class.active]="activeMode === 'student'">
+        <app-student-register
+          *ngIf="activeMode === 'student'"
+          [loading]="loading"
+          (formSubmit)="onStudentSubmit($event)"
+        ></app-student-register>
+      </div>
+
+      <div class="form-panel" [class.active]="activeMode === 'teacher'">
+        <app-teacher-register
+          *ngIf="activeMode === 'teacher'"
+          [loading]="loading"
+          (formSubmit)="onTeacherSubmit($event)"
+        ></app-teacher-register>
+      </div>
+    </div>
+
+    <!-- Footer link -->
+    <div class="auth-footer">
+      <span>لديك حساب بالفعل؟</span>
+      <button type="button" class="link-btn" (click)="goToLogin()">
+        تسجيل الدخول
+      </button>
+    </div>
+  </div>
+</div>

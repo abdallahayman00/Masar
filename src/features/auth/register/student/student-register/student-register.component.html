@@ -1,0 +1,353 @@
+<form [formGroup]="studentForm" (ngSubmit)="onSubmit()" class="student-form">
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">الاسم الكامل *</label>
+      <div class="input-wrapper">
+        <span class="input-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            width="18"
+            height="18"
+          >
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </span>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="fullName"
+          placeholder="أدخل الاسم الكامل"
+          [class.is-invalid]="isFieldInvalid('fullName')"
+        />
+      </div>
+      <div class="field-validation-error" *ngIf="isFieldInvalid('fullName')">
+        <span *ngIf="studentForm.get('fullName')?.errors?.['required']"
+          >الاسم الكامل مطلوب</span
+        >
+        <span *ngIf="studentForm.get('fullName')?.errors?.['minlength']"
+          >الاسم يجب أن يكون 3 أحرف على الأقل</span
+        >
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">البريد الإلكتروني *</label>
+      <div class="input-wrapper">
+        <span class="input-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            width="18"
+            height="18"
+          >
+            <rect x="2" y="5" width="20" height="15" rx="3" />
+            <path d="M2 7l10 7 10-7" />
+          </svg>
+        </span>
+        <input
+          type="email"
+          class="form-control"
+          formControlName="email"
+          placeholder="example@domain.com"
+          [class.is-invalid]="isFieldInvalid('email')"
+        />
+      </div>
+      <div class="field-validation-error" *ngIf="isFieldInvalid('email')">
+        <span *ngIf="studentForm.get('email')?.errors?.['required']"
+          >البريد الإلكتروني مطلوب</span
+        >
+        <span *ngIf="studentForm.get('email')?.errors?.['email']"
+          >صيغة البريد غير صحيحة</span
+        >
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">كلمة المرور *</label>
+      <div class="input-wrapper">
+        <span class="input-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            width="18"
+            height="18"
+          >
+            <rect x="3" y="11" width="18" height="12" rx="3" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+        </span>
+        <input
+          type="password"
+          class="form-control"
+          formControlName="password"
+          placeholder="********"
+          [class.is-invalid]="isFieldInvalid('password')"
+        />
+      </div>
+      <div class="field-validation-error" *ngIf="isFieldInvalid('password')">
+        <span *ngIf="studentForm.get('password')?.errors?.['required']"
+          >كلمة المرور مطلوبة</span
+        >
+        <span *ngIf="studentForm.get('password')?.errors?.['minlength']"
+          >كلمة المرور يجب أن تكون 6 أحرف على الأقل</span
+        >
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">العمر *</label>
+      <div class="input-wrapper">
+        <span class="input-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            width="18"
+            height="18"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+        </span>
+        <input
+          type="number"
+          class="form-control"
+          formControlName="age"
+          placeholder="مثال: 25"
+          [class.is-invalid]="isFieldInvalid('age')"
+        />
+      </div>
+      <div class="field-validation-error" *ngIf="isFieldInvalid('age')">
+        <span *ngIf="studentForm.get('age')?.errors?.['required']"
+          >العمر مطلوب</span
+        >
+        <span *ngIf="studentForm.get('age')?.errors?.['min']"
+          >العمر يجب أن يكون 5 سنوات على الأقل</span
+        >
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">الجنسية *</label>
+      <div class="input-wrapper">
+        <span class="input-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            width="18"
+            height="18"
+          >
+            <path d="M3 12h18M12 3v18" />
+            <circle cx="12" cy="12" r="9" />
+          </svg>
+        </span>
+        <select
+          class="form-control"
+          formControlName="studentNationality"
+          [class.is-invalid]="isFieldInvalid('studentNationality')"
+        >
+          <option value="" disabled selected>اختر الجنسية</option>
+          <option
+            *ngFor="let option of nationalityOptions"
+            [value]="option.value"
+          >
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+      <div
+        class="field-validation-error"
+        *ngIf="isFieldInvalid('studentNationality')"
+      >
+        <span>الجنسية مطلوبة</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">رقم الواتساب *</label>
+      <div class="input-wrapper">
+        <span class="input-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            width="18"
+            height="18"
+          >
+            <path
+              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
+            />
+          </svg>
+        </span>
+        <input
+          type="tel"
+          class="form-control"
+          formControlName="whatsAppNumber"
+          placeholder="+964XXXXXXXXX"
+          [class.is-invalid]="isFieldInvalid('whatsAppNumber')"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">رقم واتساب ولي الأمر</label>
+      <div class="input-wrapper">
+        <span class="input-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            width="18"
+            height="18"
+          >
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </span>
+        <input
+          type="tel"
+          class="form-control"
+          formControlName="parentWhatsAppNumber"
+          placeholder="+964XXXXXXXXX"
+        />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">الرقم القومي *</label>
+      <div class="input-wrapper">
+        <span class="input-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            width="18"
+            height="18"
+          >
+            <path d="M3 4h18v16H3z" />
+            <line x1="8" y1="10" x2="16" y2="10" />
+          </svg>
+        </span>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="nationalId"
+          placeholder="الرقم القومي"
+          [class.is-invalid]="isFieldInvalid('nationalId')"
+        />
+      </div>
+    </div>
+    <div class="field-validation-error" *ngIf="isFieldInvalid('nationalId')">
+      <span *ngIf="studentForm.get('nationalId')?.errors?.['required']">
+        الرقم القومي مطلوب
+      </span>
+
+      <span *ngIf="studentForm.get('nationalId')?.errors?.['pattern']">
+        الرقم القومي يجب أن يكون 14 رقم
+      </span>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">الجنس *</label>
+      <div class="radio-group">
+        <label *ngFor="let option of genderOptions" class="radio-label">
+          <input type="radio" [value]="option.value" formControlName="gender" />
+          <span>{{ option.label }}</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">بلد الإقامة *</label>
+      <div class="input-wrapper">
+        <span class="input-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            width="18"
+            height="18"
+          >
+            <path d="M12 2c-4 0-7 3-7 7 0 4 7 11 7 11s7-7 7-11c0-4-3-7-7-7z" />
+            <circle cx="12" cy="9" r="2.5" />
+          </svg>
+        </span>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="residenceCountry"
+          placeholder="مثال: العراق"
+          [class.is-invalid]="isFieldInvalid('residenceCountry')"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">ملاحظات الطالب</label>
+    <textarea
+      class="form-control textarea"
+      formControlName="studentNotes"
+      rows="3"
+      placeholder="أي ملاحظات إضافية..."
+    ></textarea>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">التوقعات من المنصة</label>
+    <textarea
+      class="form-control textarea"
+      formControlName="platformExpectations"
+      rows="3"
+      placeholder="ما الذي تتوقع تعلمه؟"
+    ></textarea>
+  </div>
+
+  <button
+    type="submit"
+    class="submit-btn"
+    [disabled]="loading || studentForm.invalid"
+  >
+    <div class="submit-btn-content">
+      <svg
+        *ngIf="loading"
+        class="spinner"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <circle cx="12" cy="12" r="10" stroke-opacity="0.25" />
+        <path
+          d="M12 2a10 10 0 0 1 10 10"
+          stroke-opacity="1"
+          stroke-linecap="round"
+        />
+      </svg>
+      <span>{{ loading ? "جاري إنشاء الحساب..." : "إنشاء حساب طالب" }}</span>
+    </div>
+  </button>
+</form>
