@@ -119,7 +119,7 @@
           type="tel"
           class="form-control"
           formControlName="whatsAppNumber"
-          placeholder="+964XXXXXXXXX"
+          placeholder="+20XXXXXXXXX"
           [class.is-invalid]="isFieldInvalid('whatsAppNumber')"
         />
       </div>
@@ -155,8 +155,8 @@
           >العمر مطلوب</span
         >
         <span *ngIf="teacherForm.get('age')?.errors?.['min']"
-          >العمر يجب أن يكون 18 سنة على الأقل</span
-        >
+          >العمر يجب أن يكون من 1 الى 100 سنة
+        </span>
       </div>
     </div>
 

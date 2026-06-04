@@ -1,0 +1,462 @@
+<!-- teacher-requests.component.html -->
+<main class="page-wrapper">
+  <!-- ============================================================
+         1. HERO / HEADER
+    ============================================================ -->
+  <header class="hero" role="banner">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <h1 class="hero__title">طلبات المعلمين</h1>
+        <p class="hero__subtitle">
+          مراجعة وإدارة طلبات الانضمام للمعلمين — قبول، تعليق، أو رفض الطلبات
+          بكل سهولة
+        </p>
+      </div>
+
+      <aside class="hero__stat-card" aria-label="إحصائية سريعة">
+        <span class="stat-number">{{ pendingTeachers.length }}</span>
+        <span class="stat-label">طلبات جديدة معلقة</span>
+      </aside>
+    </div>
+  </header>
+
+  <!-- ============================================================
+         2. STATS ROW
+    ============================================================ -->
+  <section aria-label="نظرة عامة على الطلبات">
+    <div class="section-label">
+      <span class="section-label__title">نظرة عامة</span>
+    </div>
+
+    <div class="stats-row">
+      <article class="stat-card" aria-label="إجمالي الطلبات">
+        <div class="stat-card__top">
+          <span class="stat-card__percent">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="18 15 12 9 6 15" />
+            </svg>
+            40%
+          </span>
+          <div class="stat-card__icon" aria-hidden="true">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="12" r="4" />
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card__value">{{ totalCount }}</div>
+        <div class="stat-card__label">إجمالي الطلبات</div>
+        <div class="stat-card__line">
+          <div class="stat-card__line-fill" style="width: 70%"></div>
+        </div>
+      </article>
+
+      <article class="stat-card" aria-label="الطلبات قيد المراجعة">
+        <div class="stat-card__top">
+          <span class="stat-card__percent stat-card__percent--gold">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="18 15 12 9 6 15" />
+            </svg>
+            20%
+          </span>
+          <div class="stat-card__icon stat-card__icon--gold" aria-hidden="true">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card__value">{{ pendingTeachers.length }}</div>
+        <div class="stat-card__label">الطلبات قيد المراجعة</div>
+        <div class="stat-card__line">
+          <div
+            class="stat-card__line-fill stat-card__line-fill--gold"
+            style="width: 43%"
+          ></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================================================
+         3. MAIN TABLE CARD
+    ============================================================ -->
+  <section aria-label="جدول طلبات المعلمين">
+    <div class="section-label">
+      <span class="section-label__title">قائمة الطلبات</span>
+      <a href="#" class="section-label__link" aria-label="تقرير مفصل">
+        تقرير مفصل
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+        >
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </a>
+    </div>
+
+    <div class="table-card">
+      <div class="table-card__header">
+        <div class="table-card__title-group">
+          <h2 class="table-card__title">
+            <span class="title-dot" aria-hidden="true"></span>
+            طلبات المعلمين المعلقة
+          </h2>
+          <p class="table-card__subtitle">
+            المتقدمون الجدد بانتظار مراجعة وقرار الإدارة
+          </p>
+        </div>
+
+        <div class="table-card__controls">
+          <div class="search-input" role="search">
+            <span class="search-input__icon" aria-hidden="true">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </span>
+            <label for="search-requests" class="u-sr-only"
+              >بحث في الطلبات</label
+            >
+            <input
+              type="search"
+              id="search-requests"
+              placeholder="بحث بالاسم  "
+              (input)="onSearch($event)"
+              autocomplete="off"
+            />
+          </div>
+
+          <button class="btn-filter" type="button" aria-la bel="تصفية الطلبات">
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="4" y1="6" x2="20" y2="6" />
+              <line x1="8" y1="12" x2="16" y2="12" />
+              <line x1="11" y1="18" x2="13" y2="18" />
+            </svg>
+            تصفية
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="table-card__body"
+        role="region"
+        aria-label="بيانات الطلبات"
+        tabindex="0"
+      >
+        <table class="data-table" aria-describedby="table-desc">
+          <caption id="table-desc" class="u-sr-only">
+            جدول يعرض طلبات المعلمين المعلقة مع إمكانية قبول أو رفض كل طلب
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">المتقدم</th>
+              <th scope="col" class="col-email">البريد الإلكتروني</th>
+              <th scope="col" class="col-nationality">الجنسية</th>
+              <th scope="col" class="col-age">السن</th>
+              <th scope="col">الحالة</th>
+              <th scope="col">الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Loading State -->
+            <tr *ngIf="isLoading">
+              <td colspan="6" class="text-center">جاري التحميل...</td>
+            </tr>
+
+            <!-- Error State -->
+            <tr *ngIf="!isLoading && errorMessage">
+              <td colspan="6" class="text-center" style="color: #dc2626">
+                {{ errorMessage }}
+              </td>
+            </tr>
+
+            <!-- No Data State -->
+            <tr
+              *ngIf="
+                !isLoading && !errorMessage && pendingTeachers.length === 0
+              "
+            >
+              <td colspan="6" class="text-center">
+                لا توجد طلبات معلقة حالياً
+              </td>
+            </tr>
+
+            <!-- Data Rows -->
+            <tr *ngFor="let teacher of pendingTeachers">
+              <td>
+                <div class="avatar-cell">
+                  <div
+                    class="avatar avatar--initials"
+                    [style.background]="getAvatarColor(teacher.fullName)"
+                    [style.color]="getAvatarTextColor(teacher.fullName)"
+                  >
+                    {{ getInitials(teacher.fullName) }}
+                  </div>
+                  <span class="name-col">{{ teacher.fullName }}</span>
+                </div>
+              </td>
+              <td class="col-email">
+                <span class="email-cell">{{ teacher.email }}</span>
+              </td>
+              <td class="col-nationality">{{ teacher.nationality }}</td>
+              <td class="col-age">{{ teacher.age }}</td>
+              <td>
+                <span class="status-badge status-badge--pending" role="status">
+                  قيد المراجعة
+                </span>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <!-- تعديل زر العرض - change (click) to pass the whole teacher object -->
+                  <button
+                    class="action-btn action-btn--view"
+                    type="button"
+                    (click)="viewRequest(teacher)"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  </button>
+                  <!-- تعديل زر القبول - إضافة teacher.fullName -->
+                  <button
+                    class="action-btn action-btn--approve"
+                    type="button"
+                    (click)="
+                      approveRequest(teacher.teacherId, teacher.fullName)
+                    "
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <nav class="pagination" aria-label="تصفح صفحات الجدول">
+        <p class="pagination__info">
+          عرض 1 – {{ pendingTeachers.length }} من إجمالي {{ totalCount }} طلب
+        </p>
+        <div class="pagination__controls">
+          <button
+            class="pagination__btn"
+            type="button"
+            (click)="changePage(currentPage - 1)"
+            [disabled]="currentPage === 1"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+          <button
+            class="pagination__btn pagination__btn--active"
+            type="button"
+            aria-current="page"
+          >
+            {{ currentPage }}
+          </button>
+          <button
+            class="pagination__btn"
+            type="button"
+            (click)="changePage(currentPage + 1)"
+            [disabled]="currentPage >= totalPages"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </section>
+</main>
+<!-- Modal - عرض كل البيانات -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>📋 تفاصيل المعلم</h3>
+      <button class="modal-close" (click)="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body" *ngIf="selectedTeacher">
+      <!-- الصورة الشخصية -->
+      <div class="detail-row" *ngIf="selectedTeacher.profileImagePath">
+        <div class="detail-label">الصورة الشخصية:</div>
+        <div class="detail-value">
+          <img
+            [src]="selectedTeacher.profileImagePath"
+            alt="صورة المعلم"
+            class="profile-image"
+          />
+        </div>
+      </div>
+
+      <!-- الاسم الكامل -->
+      <div class="detail-row">
+        <div class="detail-label">الاسم الكامل:</div>
+        <div class="detail-value">
+          {{ selectedTeacher.fullName || "غير مدخل" }}
+        </div>
+      </div>
+
+      <!-- البريد الإلكتروني -->
+      <div class="detail-row">
+        <div class="detail-label">البريد الإلكتروني:</div>
+        <div class="detail-value">
+          {{ selectedTeacher.email || "غير مدخل" }}
+        </div>
+      </div>
+
+      <!-- رقم الواتساب -->
+      <div class="detail-row">
+        <div class="detail-label">رقم الواتساب:</div>
+        <div class="detail-value">
+          {{ selectedTeacher.whatsAppNumber || "غير مدخل" }}
+        </div>
+      </div>
+
+      <!-- الجنس -->
+      <div class="detail-row">
+        <div class="detail-label">الجنس:</div>
+        <div class="detail-value">
+          <span *ngIf="selectedTeacher.gender === 'Male'">ذكر</span>
+          <span *ngIf="selectedTeacher.gender === 'Female'">أنثى</span>
+          <span
+            *ngIf="
+              selectedTeacher.gender !== 'Male' &&
+              selectedTeacher.gender !== 'Female'
+            "
+            >{{ selectedTeacher.gender }}</span
+          >
+        </div>
+      </div>
+
+      <!-- السن -->
+      <div class="detail-row">
+        <div class="detail-label">السن:</div>
+        <div class="detail-value">{{ selectedTeacher.age }} سنة</div>
+      </div>
+
+      <!-- الجنسية -->
+      <div class="detail-row">
+        <div class="detail-label">الجنسية:</div>
+        <div class="detail-value">
+          {{ selectedTeacher.nationality || "غير مدخلة" }}
+        </div>
+      </div>
+
+      <!-- نبذة تعريفية -->
+      <div class="detail-row">
+        <div class="detail-label">نبذة تعريفية:</div>
+        <div class="detail-value summary-text">
+          {{ selectedTeacher.summary || "لا يوجد ملخص" }}
+        </div>
+      </div>
+
+      <!-- حالة الطلب -->
+      <div class="detail-row">
+        <div class="detail-label">حالة الطلب:</div>
+        <div class="detail-value">
+          <span
+            class="status-badge"
+            [class.status-approved]="selectedTeacher.isApproved"
+            [class.status-pending]="!selectedTeacher.isApproved"
+          >
+            {{ selectedTeacher.isApproved ? "تم القبول" : "قيد المراجعة" }}
+          </span>
+        </div>
+      </div>
+
+      <!-- رقم المعلم -->
+      <div class="detail-row">
+        <div class="detail-label">رقم المعلم:</div>
+        <div class="detail-value">{{ selectedTeacher.teacherId }}</div>
+      </div>
+
+      <!-- رقم المستخدم -->
+      <div class="detail-row">
+        <div class="detail-label">رقم المستخدم:</div>
+        <div class="detail-value">{{ selectedTeacher.userId || "0" }}</div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeModal()">إغلاق</button>
+    </div>
+  </div>
+</div>

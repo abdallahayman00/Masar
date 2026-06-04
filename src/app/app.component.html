@@ -1,1 +1,212 @@
-<router-outlet></router-outlet>
+<!-- app.component.html -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.30.0/dist/tabler-icons.min.css"
+/>
+<app-spinner *ngIf="isAppLoading"></app-spinner>
+
+<!-- باقي المحتوى يظهر بعد ما السبينر يختفي -->
+<ng-container *ngIf="!isAppLoading">
+  <!-- لو مش في صفحة auth -->
+  <ng-container *ngIf="!isAuthRoute; else authOnly">
+    <div class="rtl-app">
+      <div
+        class="mobile-overlay"
+        [class.open]="isMobileSidebarOpen"
+        (click)="closeMobileSidebar()"
+      ></div>
+      <button
+        class="mobile-fab"
+        (click)="toggleMobileSidebar()"
+        aria-label="فتح القائمة"
+      >
+        <i class="ti ti-menu-2"></i>
+      </button>
+
+      <!-- Sidebar -->
+      <aside
+        class="sidebar"
+        [class.collapsed]="isCollapsed"
+        [class.mobile-open]="isMobileSidebarOpen"
+        role="navigation"
+        aria-label="القائمة الرئيسية"
+      >
+        <div class="sidebar-inner">
+          <div class="logo-zone">
+            <div class="logo-gem">
+              <span class="logo-gem-letter">ر</span>
+            </div>
+            <div class="logo-text">
+              <div class="logo-name">رتَّل</div>
+              <div class="logo-sub">نظام تحفيظ القرآن الكريم</div>
+            </div>
+          </div>
+
+          <div
+            class="user-card"
+            role="button"
+            tabindex="0"
+            aria-label="ملف المستخدم"
+          >
+            <div class="user-avatar">
+              <span class="user-avatar-txt">أ</span>
+            </div>
+            <div class="user-meta">
+              <div class="user-name">أحمد الشافعي</div>
+              <div class="user-progress-row">
+                <span class="user-juz"
+                  ><i class="ti ti-star"></i> أدمن النظام</span
+                >
+              </div>
+            </div>
+          </div>
+
+          @if (isAdmin) {
+            <nav class="nav-scroll" aria-label="روابط التنقل">
+              <div class="nav-section">
+                <div class="section-header">
+                  <span class="section-label"> لوحة التحكم</span>
+                  <div class="section-header-line"></div>
+                </div>
+                <!-- Dashboard -->
+                <!-- Dashboard -->
+                <div class="nav-item-wrap">
+                  <a
+                    class="nav-item"
+                    routerLink="/dashboard"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="onNavigate()"
+                  >
+                    <i class="ti ti-layout-dashboard nav-icon"></i>
+                    <span class="nav-label">لوحة التحكم</span>
+                  </a>
+                  <div class="nav-tooltip">لوحة التحكم</div>
+                </div>
+                <div class="section-header">
+                  <span class="section-label"> المعلمين </span>
+                  <div class="section-header-line"></div>
+                </div>
+                <!-- Teacher Requests -->
+                <div class="nav-item-wrap">
+                  <a
+                    class="nav-item"
+                    routerLink="/teacher-requests"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="onNavigate()"
+                  >
+                    <i class="ti ti-user-plus nav-icon"></i>
+                    <span class="nav-label">طلبات المعلمين</span>
+                  </a>
+                  <div class="nav-tooltip">طلبات المعلمين</div>
+                </div>
+                <!-- Approved Teachers -->
+                <div class="nav-item-wrap">
+                  <a
+                    class="nav-item"
+                    routerLink="/approved-teachers"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="onNavigate()"
+                  >
+                    <i class="ti ti-rosette-discount-check-filled nav-icon"></i>
+                    <span class="nav-label">المعلمون المعتمدون</span>
+                  </a>
+
+                  <div class="nav-tooltip">المعلمون المعتمدون</div>
+                </div>
+
+                <div class="section-header">
+                  <span class="section-label"> الطلاب </span>
+                  <div class="section-header-line"></div>
+                </div>
+                <!-- Teacher Requests -->
+                <div class="nav-item-wrap">
+                  <a
+                    class="nav-item"
+                    routerLink="/student-requests"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="onNavigate()"
+                  >
+                    <i class="ti ti-users nav-icon"></i>
+                    <span class="nav-label"> الطلاب</span>
+                  </a>
+                  <div class="nav-tooltip">الطلاب</div>
+                </div>
+
+                <div class="section-header">
+                  <span class="section-label"> المسارات </span>
+                  <div class="section-header-line"></div>
+                </div>
+                <!-- Teacher Requests -->
+                <div class="nav-item-wrap">
+                  <a
+                    class="nav-item"
+                    routerLink="/tracks"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="onNavigate()"
+                  >
+                    <i class="ti ti-route nav-icon"></i>
+                    <span class="nav-label"> المسارات</span>
+                  </a>
+                  <div class="nav-tooltip">المسارات</div>
+                </div>
+
+                <div class="section-header">
+                  <span class="section-label"> الدفعات </span>
+                  <div class="section-header-line"></div>
+                </div>
+                <!-- Pending Batches - الدفعات المعلقة -->
+                <div class="nav-item-wrap">
+                  <a
+                    class="nav-item"
+                    routerLink="/pending-batches"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="onNavigate()"
+                  >
+                    <i class="ti ti-calendar-clock nav-icon"></i>
+                    <span class="nav-label"> الدفعات المعلقة</span>
+                  </a>
+                  <div class="nav-tooltip">الدفعات المعلقة</div>
+                </div>
+
+                <div class="nav-item-wrap">
+                  <a
+                    class="nav-item"
+                    routerLink="/accepted-batches"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="onNavigate()"
+                  >
+                    <i class="ti ti-rosette-discount-check nav-icon"></i>
+                    <span class="nav-label"> الدفعات المقبولة</span>
+                  </a>
+                  <div class="nav-tooltip">الدفعات المقبولة</div>
+                </div>
+              </div>
+            </nav>
+          }
+          <footer class="sidebar-footer">
+            <button class="logout-btn" (click)="logout()">
+              <i class="ti ti-logout"></i>
+              <span>تسجيل الخروج</span>
+            </button>
+          </footer>
+        </div>
+      </aside>
+
+      <!-- المحتوى الرئيسي -->
+      <main class="main-area">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </ng-container>
+  <ng-template #authOnly>
+    <!-- LOGIN / REGISTER فقط -->
+    <router-outlet></router-outlet>
+  </ng-template>
+</ng-container>

@@ -1,0 +1,463 @@
+<!-- approved-teachers.component.html -->
+<main class="page-wrapper">
+  <!-- ============================================================
+         1. HERO / HEADER
+    ============================================================ -->
+  <header class="hero" role="banner">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <h1 class="hero__title">المعلمون المعتمدون</h1>
+        <p class="hero__subtitle">
+          قائمة المعلمين المعتمدين في منصة تحفيظ القرآن الكريم
+        </p>
+      </div>
+
+      <aside class="hero__stat-card" aria-label="إحصائية سريعة">
+        <span class="stat-number">{{ totalCount }}</span>
+        <span class="stat-label">معلم معتمد</span>
+      </aside>
+    </div>
+  </header>
+  <app-filter-section
+    (filterApply)="onFilterApplied($event)"
+    [config]="{
+      showEmail: true,
+      showWhatsApp: true,
+      showGender: true,
+      showAgeRange: true,
+      showSortOrder: true,
+      showSearchName: true,
+      title: 'فلترة المعلمين المعتمدين',
+    }"
+  >
+  </app-filter-section>
+  <section aria-label="جدول المعلمين المعتمدين">
+    <div class="section-label">
+      <span class="section-label__title">
+        <i class="ti ti-school"></i>قائمة المعلمين</span
+      >
+      <!-- زر إضافة معلم جديد -->
+      <button class="btn-add-teacher" (click)="goToAddTeacher()">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M12 4v16m-8-8h16" />
+          <circle cx="12" cy="12" r="10" />
+        </svg>
+        إضافة معلم جديد
+      </button>
+    </div>
+
+    <div class="table-card">
+      <!-- باقي الجدول كما هو -->
+      <div class="table-card__header">
+        <div class="table-card__title-group">
+          <h2 class="table-card__title">
+            <span class="title-dot" aria-hidden="true"></span>
+            المعلمون المعتمدون
+          </h2>
+          <p class="table-card__subtitle">
+            قائمة المعلمين الذين تم قبول طلباتهم وانضمامهم للمنصة
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="table-card__body"
+        role="region"
+        aria-label="بيانات المعلمين"
+        tabindex="0"
+      >
+        <table class="data-table" aria-describedby="table-desc">
+          <caption id="table-desc" class="u-sr-only">
+            جدول يعرض المعلمين المعتمدين
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">الصورة</th>
+              <th scope="col">المعلم</th>
+              <th scope="col" class="col-email">البريد الإلكتروني</th>
+              <th scope="col" class="col-nationality">الجنسية</th>
+              <th scope="col" class="col-age">السن</th>
+              <th scope="col">الحالة</th>
+              <th scope="col">الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Loading State -->
+            <tr *ngIf="isLoading">
+              <td colspan="7" class="text-center">جاري التحميل...</td>
+            </tr>
+
+            <!-- Error State -->
+            <tr *ngIf="!isLoading && errorMessage">
+              <td colspan="7" class="text-center" style="color: #dc2626">
+                {{ errorMessage }}
+              </td>
+            </tr>
+
+            <!-- No Data State -->
+            <tr
+              *ngIf="
+                !isLoading && !errorMessage && approvedTeachers.length === 0
+              "
+            >
+              <td colspan="7" class="text-center">
+                لا يوجد معلمون معتمدون حالياً
+              </td>
+            </tr>
+
+            <!-- Data Rows -->
+            <tr *ngFor="let teacher of approvedTeachers">
+              <!-- عمود الصورة -->
+              <td class="col-profile-image">
+                <div class="profile-image-cell">
+                  <img
+                    *ngIf="teacher.profileImagePath"
+                    [src]="teacher.profileImagePath"
+                    alt="صورة المعلم"
+                    class="table-profile-image"
+                  />
+                  <div
+                    *ngIf="!teacher.profileImagePath"
+                    class="avatar avatar--initials table-avatar"
+                    [style.background]="getAvatarColor(teacher.fullName)"
+                    [style.color]="getAvatarTextColor(teacher.fullName)"
+                  >
+                    {{ getInitials(teacher.fullName) }}
+                  </div>
+                </div>
+              </td>
+
+              <!-- عمود الاسم -->
+              <td>
+                <div class="avatar-cell">
+                  <span class="name-col">{{ teacher.fullName }}</span>
+                </div>
+              </td>
+
+              <td class="col-email">
+                <span class="email-cell">{{ teacher.email }}</span>
+              </td>
+              <td class="col-nationality">{{ teacher.nationality }}</td>
+              <td class="col-age">{{ teacher.age }}</td>
+              <td>
+                <span class="status-badge status-badge--accepted" role="status">
+                  معتمد ✓
+                </span>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <button
+                    class="action-btn action-btn--view"
+                    type="button"
+                    (click)="viewRequest(teacher)"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  </button>
+
+                  <button
+                    class="action-btn action-btn--password"
+                    type="button"
+                    (click)="openChangePasswordModal(teacher)"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                    >
+                      <rect x="3" y="11" width="18" height="10" rx="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                      <circle cx="12" cy="16" r="1" />
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <nav class="pagination" aria-label="تصفح صفحات الجدول">
+        <p class="pagination__info">
+          عرض 1 – {{ approvedTeachers.length }} من إجمالي {{ totalCount }} معلم
+        </p>
+        <div class="pagination__controls">
+          <button
+            class="pagination__btn"
+            type="button"
+            (click)="changePage(currentPage - 1)"
+            [disabled]="currentPage === 1"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+          <button
+            class="pagination__btn pagination__btn--active"
+            type="button"
+            aria-current="page"
+          >
+            {{ currentPage }}
+          </button>
+          <button
+            class="pagination__btn"
+            type="button"
+            (click)="changePage(currentPage + 1)"
+            [disabled]="currentPage >= totalPages"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </section>
+</main>
+
+<!-- Modal - عرض كل البيانات (نفسه بدون تغيير) -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>📋 تفاصيل المعلم</h3>
+      <button class="modal-close" (click)="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body" *ngIf="selectedTeacher">
+      <!-- الصورة الشخصية -->
+      <div class="detail-row" *ngIf="selectedTeacher.profileImagePath">
+        <div class="detail-label">الصورة الشخصية:</div>
+        <div class="detail-value">
+          <img
+            [src]="selectedTeacher.profileImagePath"
+            alt="صورة المعلم"
+            class="profile-image"
+          />
+        </div>
+      </div>
+
+      <!-- الاسم الكامل -->
+      <div class="detail-row">
+        <div class="detail-label">الاسم الكامل:</div>
+        <div class="detail-value">
+          {{ selectedTeacher.fullName || "غير مدخل" }}
+        </div>
+      </div>
+
+      <!-- البريد الإلكتروني -->
+      <div class="detail-row">
+        <div class="detail-label">البريد الإلكتروني:</div>
+        <div class="detail-value">
+          {{ selectedTeacher.email || "غير مدخل" }}
+        </div>
+      </div>
+
+      <!-- رقم الواتساب -->
+      <div class="detail-row">
+        <div class="detail-label">رقم الواتساب:</div>
+        <div class="detail-value">
+          {{ selectedTeacher.whatsAppNumber || "غير مدخل" }}
+        </div>
+      </div>
+
+      <!-- الجنس -->
+      <div class="detail-row">
+        <div class="detail-label">الجنس:</div>
+        <div class="detail-value">
+          <span *ngIf="selectedTeacher.gender === 'Male'">ذكر</span>
+          <span *ngIf="selectedTeacher.gender === 'Female'">أنثى</span>
+          <span
+            *ngIf="
+              selectedTeacher.gender !== 'Male' &&
+              selectedTeacher.gender !== 'Female'
+            "
+            >{{ selectedTeacher.gender }}</span
+          >
+        </div>
+      </div>
+
+      <!-- السن -->
+      <div class="detail-row">
+        <div class="detail-label">السن:</div>
+        <div class="detail-value">{{ selectedTeacher.age }} سنة</div>
+      </div>
+
+      <!-- الجنسية -->
+      <div class="detail-row">
+        <div class="detail-label">الجنسية:</div>
+        <div class="detail-value">
+          {{ selectedTeacher.nationality || "غير مدخلة" }}
+        </div>
+      </div>
+
+      <!-- نبذة تعريفية -->
+      <div class="detail-row">
+        <div class="detail-label">نبذة تعريفية:</div>
+        <div class="detail-value summary-text">
+          {{ selectedTeacher.summary || "لا يوجد ملخص" }}
+        </div>
+      </div>
+
+      <!-- حالة الطلب -->
+      <div class="detail-row">
+        <div class="detail-label">حالة الطلب:</div>
+        <div class="detail-value">
+          <span class="status-badge status-approved">معتمد ✓</span>
+        </div>
+      </div>
+
+      <!-- رقم المعلم -->
+      <div class="detail-row">
+        <div class="detail-label">رقم المعلم:</div>
+        <div class="detail-value">{{ selectedTeacher.teacherId }}</div>
+      </div>
+
+      <!-- رقم المستخدم -->
+      <div class="detail-row">
+        <div class="detail-label">رقم المستخدم:</div>
+        <div class="detail-value">{{ selectedTeacher.userId || "0" }}</div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeModal()">إغلاق</button>
+    </div>
+  </div>
+</div>
+<!-- Change Password Modal -->
+<div
+  class="modal-overlay"
+  *ngIf="showPasswordModal"
+  (click)="closePasswordModal()"
+>
+  <div class="modal-content password-modal" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="modal-header">
+      <h3>تغيير كلمة المرور</h3>
+      <button class="modal-close" (click)="closePasswordModal()">✕</button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+      <!-- Teacher Info -->
+      <div class="password-user-box">
+        <div class="password-user-avatar">
+          {{ getInitials(passwordTeacher?.fullName || "") }}
+        </div>
+
+        <div class="password-user-info">
+          <h4>{{ passwordTeacher?.fullName }}</h4>
+          <p>{{ passwordTeacher?.email }}</p>
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="password-field">
+        <label>كلمة المرور الجديدة</label>
+
+        <div class="password-input-wrapper">
+          <input
+            [(ngModel)]="newPassword"
+            [type]="showPassword ? 'text' : 'password'"
+            placeholder="أدخل كلمة المرور الجديدة"
+            class="password-input"
+          />
+
+          <button
+            type="button"
+            class="toggle-password-btn"
+            (click)="showPassword = !showPassword"
+          >
+            <svg
+              *ngIf="!showPassword"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+
+            <svg
+              *ngIf="showPassword"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M17.94 17.94A10.94 10.94 0 0112 19c-7 0-11-7-11-7a21.77 21.77 0 015.06-5.94"
+              />
+              <path
+                d="M9.9 4.24A10.94 10.94 0 0112 5c7 0 11 7 11 7a21.8 21.8 0 01-3.17 4.36"
+              />
+              <path d="M1 1l22 22" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="password-field">
+        <label>تأكيد كلمة المرور</label>
+
+        <input
+          [(ngModel)]="confirmPassword"
+          type="password"
+          placeholder="أعد كتابة كلمة المرور"
+          class="password-input"
+        />
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message" *ngIf="passwordError">
+        {{ passwordError }}
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer password-footer">
+      <button class="btn-secondary" (click)="closePasswordModal()">
+        إلغاء
+      </button>
+
+      <button
+        class="btn-primary"
+        (click)="saveNewPassword()"
+        [disabled]="isSaving"
+      >
+        {{ isSaving ? "جاري الحفظ..." : "حفظ كلمة المرور" }}
+      </button>
+    </div>
+  </div>
+</div>

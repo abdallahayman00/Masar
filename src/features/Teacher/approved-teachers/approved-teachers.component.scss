@@ -1,0 +1,876 @@
+// ============================================
+// MODAL DESIGN - CALM QURAN THEME
+// Elegant • Soft • Premium Islamic UI
+// ============================================
+
+$primary-dark: #1f3a2e;
+$primary-soft: #2f5241;
+
+$gold-soft: #bfa36a;
+$gold-light: #d8c7a0;
+
+$paper: #f7f4ec;
+$paper-dark: #ebe4d5;
+
+$text-dark: #2f2f2f;
+$text-soft: #666666;
+
+$border-soft: #e2dac9;
+
+/* ============================================
+   MODAL OVERLAY
+============================================ */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 25, 18, 0.65);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+/* ============================================
+   MODAL CONTAINER
+============================================ */
+
+.modal-content {
+  width: 92%;
+  max-width: 560px;
+  max-height: 85vh;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: auto;
+
+  border-radius: 28px;
+
+  background: $paper;
+
+  background-image: radial-gradient(
+    circle at top right,
+    rgba(191, 163, 106, 0.06),
+    transparent 45%
+  );
+
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(191, 163, 106, 0.25);
+
+  animation: modalFade 0.3s ease;
+
+  direction: rtl;
+
+  border: 1px solid rgba(191, 163, 106, 0.12);
+}
+
+/* ============================================
+   ANIMATION
+============================================ */
+
+@keyframes modalFade {
+  from {
+    opacity: 0;
+    transform: translateY(25px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ============================================
+   SCROLLBAR
+============================================ */
+
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: rgba(191, 163, 106, 0.45);
+  border-radius: 20px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(191, 163, 106, 0.65);
+}
+
+/* ============================================
+   HEADER
+============================================ */
+
+.modal-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 1.2rem 1.6rem;
+
+  background: linear-gradient(135deg, $primary-soft 0%, $primary-dark 100%);
+
+  border-radius: 28px 28px 0 0;
+
+  border-bottom: 1px solid rgba(216, 199, 160, 0.25);
+
+  h3 {
+    margin: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+
+    font-size: 1.2rem;
+    font-weight: 700;
+
+    color: $gold-light;
+
+    letter-spacing: 0.5px;
+
+    &::before {
+      content: "﷽";
+
+      font-family: "Amiri", "Traditional Arabic", serif;
+
+      font-size: 1.1rem;
+
+      opacity: 0.95;
+    }
+  }
+}
+
+/* ============================================
+   CLOSE BUTTON
+============================================ */
+
+.modal-close {
+  width: 34px;
+  height: 34px;
+
+  border: 1px solid rgba(216, 199, 160, 0.22);
+
+  background: rgba(216, 199, 160, 0.08);
+
+  color: $gold-light;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+
+  font-size: 1rem;
+
+  &:hover {
+    background: $gold-light;
+    color: $primary-dark;
+
+    transform: scale(1.05);
+  }
+}
+
+/* ============================================
+   BODY
+============================================ */
+
+.modal-body {
+  padding: 1.7rem;
+  flex: 1;
+}
+
+/* ============================================
+   DETAIL ROW
+============================================ */
+
+.detail-row {
+  display: flex;
+  gap: 1rem;
+
+  margin-bottom: 1rem;
+
+  padding: 0.9rem 1rem;
+
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.45);
+
+  border: 1px solid rgba(191, 163, 106, 0.08);
+
+  border-right: 3px solid rgba(191, 163, 106, 0.45);
+
+  transition: all 0.22s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.72);
+
+    transform: translateY(-1px);
+
+    border-right-color: rgba(191, 163, 106, 0.8);
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  .detail-label {
+    min-width: 115px;
+
+    font-size: 0.87rem;
+    font-weight: 700;
+
+    color: $primary-soft;
+  }
+
+  .detail-value {
+    flex: 1;
+
+    color: $text-dark;
+
+    font-size: 0.93rem;
+
+    line-height: 1.6;
+
+    word-break: break-word;
+  }
+}
+
+/* ============================================
+   SUMMARY
+============================================ */
+
+.summary-text {
+  line-height: 1.9;
+
+  background: #f9f6ef;
+
+  border: 1px solid #e6dcc9;
+
+  border-radius: 14px;
+
+  padding: 1rem;
+
+  color: #4d4d4d;
+
+  font-size: 0.92rem;
+
+  white-space: pre-wrap;
+}
+
+/* ============================================
+   PROFILE IMAGE
+============================================ */
+
+.profile-image {
+  width: 84px;
+  height: 84px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+
+  border: 2px solid rgba(191, 163, 106, 0.55);
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ============================================
+   STATUS BADGES
+============================================ */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 0.38rem 1rem;
+
+  border-radius: 999px;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.status-approved {
+  background: rgba(47, 82, 65, 0.08);
+
+  color: $primary-soft;
+
+  border: 1px solid rgba(47, 82, 65, 0.2);
+
+  &::before {
+    content: "✓";
+  }
+}
+
+.status-pending {
+  background: rgba(191, 163, 106, 0.1);
+
+  color: #9b7b39;
+
+  border: 1px solid rgba(191, 163, 106, 0.22);
+
+  &::before {
+    content: "⏳";
+  }
+}
+
+/* ============================================
+   FOOTER
+============================================ */
+
+.modal-footer {
+  position: sticky;
+  bottom: 0;
+
+  display: flex;
+  justify-content: flex-end;
+
+  padding: 1rem 1.7rem;
+
+  background: $paper;
+
+  border-top: 1px solid $border-soft;
+
+  border-radius: 0 0 28px 28px;
+}
+
+/* ============================================
+   BUTTON
+============================================ */
+
+.btn-secondary {
+  padding: 0.65rem 1.7rem;
+
+  border-radius: 999px;
+
+  border: 1px solid rgba(216, 199, 160, 0.25);
+
+  background: linear-gradient(135deg, $primary-soft, $primary-dark);
+
+  color: #f8f1df;
+
+  font-size: 0.88rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+
+  &:hover {
+    background: linear-gradient(135deg, #264437, #1a3026);
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+/* ============================================
+   BODY LOCK
+============================================ */
+
+body.modal-open {
+  overflow: hidden;
+}
+
+/* ============================================
+   UTILITIES
+============================================ */
+
+.text-center {
+  text-align: center;
+}
+
+/* ============================================
+   RESPONSIVE
+============================================ */
+
+@media (max-width: 640px) {
+  .modal-content {
+    width: 100%;
+    max-height: 90vh;
+    border-radius: 24px;
+  }
+
+  .modal-header {
+    padding: 1rem 1.2rem;
+
+    h3 {
+      font-size: 1rem;
+
+      &::before {
+        font-size: 0.95rem;
+      }
+    }
+  }
+
+  .modal-body {
+    padding: 1.2rem;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    gap: 0.45rem;
+
+    .detail-label {
+      min-width: 100%;
+    }
+  }
+
+  .modal-footer {
+    padding: 1rem 1.2rem;
+  }
+}
+// approved-teachers.component.scss
+
+// Styles for profile image in table
+.profile-image-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.table-profile-image {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #d4af37;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.table-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.col-profile-image {
+  width: 70px;
+  text-align: center;
+}
+
+// باقي الـ Styles كما هي من الـ teacher-requests.component.scss
+// إضافة في approved-teachers.component.scss
+.action-btn--view {
+  background: rgba(191, 163, 106, 0.12);
+  color: #bfa36a;
+
+  svg {
+    stroke: #bfa36a;
+  }
+
+  &:hover {
+    background: #bfa36a;
+    color: white;
+
+    svg {
+      stroke: white;
+      transform: scale(1.05);
+    }
+  }
+}
+
+.btn-add-teacher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.4rem;
+  background: linear-gradient(135deg, #2f5241, #1f3a2e);
+  border: 1px solid rgba(191, 163, 106, 0.35);
+  border-radius: 999px;
+  color: #f8f1df;
+  font-family: "Tajawal", "Cairo", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  svg {
+    width: 18px;
+    height: 18px;
+    stroke: #d8c7a0;
+    transition: transform 0.25s ease;
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, #3a6b55, #2a4a3a);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    border-color: rgba(191, 163, 106, 0.55);
+
+    svg {
+      transform: rotate(90deg);
+      stroke: #f8f1df;
+    }
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      #d8c7a0,
+      #bfa36a,
+      #d8c7a0,
+      transparent
+    );
+    transition: all 0.4s ease;
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  &:hover::after {
+    width: 80%;
+  }
+}
+
+.section-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1f3a2e;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &::before {
+      content: "";
+      display: inline-block;
+      width: 4px;
+      height: 20px;
+      background: linear-gradient(180deg, #bfa36a, #d8c7a0);
+      border-radius: 999px;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .btn-add-teacher {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.78rem;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .section-label {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+.action-btn--password {
+  background: rgba(59, 130, 246, 0.12);
+  color: #2563eb;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+
+  &:hover {
+    background: #2563eb;
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
+  }
+}
+.password-modal {
+  max-width: 500px;
+}
+
+/* User Info Card */
+.password-user-box {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.2rem;
+  background: linear-gradient(
+    135deg,
+    rgba(191, 163, 106, 0.08),
+    rgba(47, 82, 65, 0.05)
+  );
+  border-radius: 20px;
+  margin-bottom: 1.8rem;
+  border: 1px solid rgba(191, 163, 106, 0.15);
+  transition: all 0.3s ease;
+}
+
+.password-user-avatar {
+  width: 55px;
+  height: 55px;
+  background: linear-gradient(135deg, #2f5241, #1f3a2e);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: #d8c7a0;
+  border: 2px solid rgba(216, 199, 160, 0.4);
+  flex-shrink: 0;
+}
+
+.password-user-info {
+  flex: 1;
+
+  h4 {
+    margin: 0 0 0.3rem 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #2f5241;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #888;
+  }
+}
+
+/* Form Fields */
+.password-field {
+  margin-bottom: 1.3rem;
+
+  label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2f5241;
+    margin-bottom: 0.6rem;
+    padding-right: 0.5rem;
+  }
+}
+
+/* Password Input Wrapper */
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1.5px solid #e2dac9;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: #fff;
+  transition: all 0.25s ease;
+  direction: ltr;
+  text-align: right;
+
+  &:focus {
+    outline: none;
+    border-color: #bfa36a;
+    box-shadow: 0 0 0 3px rgba(191, 163, 106, 0.15);
+  }
+
+  &::placeholder {
+    color: #bbb;
+    font-size: 0.85rem;
+  }
+}
+
+/* Toggle Password Button */
+.toggle-password-btn {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    stroke: #999;
+    transition: stroke 0.2s;
+  }
+
+  &:hover {
+    background: rgba(191, 163, 106, 0.1);
+
+    svg {
+      stroke: #bfa36a;
+    }
+  }
+}
+
+/* Error Message */
+.error-message {
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  border-right: 3px solid #dc2626;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  color: #b91c1c;
+  margin-top: 0.8rem;
+  text-align: center;
+}
+
+/* Footer Buttons */
+.password-footer {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+
+  .btn-secondary {
+    background: transparent;
+    border: 1.5px solid #e2dac9;
+    color: #666;
+    padding: 0.65rem 1.5rem;
+    border-radius: 999px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+
+    &:hover {
+      background: #f5f0e8;
+      border-color: #bfa36a;
+      color: #2f5241;
+      transform: translateY(-1px);
+    }
+  }
+
+  .btn-primary {
+    padding: 0.65rem 1.7rem;
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(135deg, #2f5241, #1f3a2e);
+    color: #f8f1df;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #3a6b55, #2a4a3a);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+/* Loading State Animation */
+.btn-primary:disabled {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    right: 1rem;
+    margin-top: -8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .password-user-box {
+    padding: 1rem;
+  }
+
+  .password-user-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 1rem;
+  }
+
+  .password-user-info {
+    h4 {
+      font-size: 0.9rem;
+    }
+
+    p {
+      font-size: 0.7rem;
+    }
+  }
+
+  .password-input {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  .password-footer {
+    flex-direction: column-reverse;
+
+    .btn-secondary,
+    .btn-primary {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}

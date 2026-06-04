@@ -1,0 +1,143 @@
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+
+  @media (min-width: 768px) {
+    left: auto;
+    right: 24px;
+    bottom: 24px;
+    max-width: 380px;
+  }
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  animation: slideInRight 0.3s ease forwards;
+  border-right: 4px solid;
+
+  &--success {
+    border-right-color: #10b981;
+    .toast__icon {
+      color: #10b981;
+    }
+    .toast__progress {
+      background: #10b981;
+    }
+  }
+
+  &--error {
+    border-right-color: #ef4444;
+    .toast__icon {
+      color: #ef4444;
+    }
+    .toast__progress {
+      background: #ef4444;
+    }
+  }
+
+  &--warning {
+    border-right-color: #f59e0b;
+    .toast__icon {
+      color: #f59e0b;
+    }
+    .toast__progress {
+      background: #f59e0b;
+    }
+  }
+
+  &--info {
+    border-right-color: #3b82f6;
+    .toast__icon {
+      color: #3b82f6;
+    }
+    .toast__progress {
+      background: #3b82f6;
+    }
+  }
+
+  &__icon {
+    font-size: 22px;
+    font-weight: bold;
+    min-width: 32px;
+    text-align: center;
+  }
+
+  &__content {
+    flex: 1;
+  }
+
+  &__title {
+    font-weight: 700;
+    font-size: 14px;
+    color: #1e293b;
+    margin-bottom: 4px;
+  }
+
+  &__message {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.4;
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #94a3b8;
+    padding: 4px;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #475569;
+    }
+  }
+
+  &__progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    opacity: 0.3;
+    animation: progressShrink linear forwards;
+    transform-origin: right;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes progressShrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}

@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   loading = false;
   errorMessage = '';
-  successMessage = ''; // إضافة رسالة النجاح
+  successMessage = '';
   showPassword = false;
 
   constructor(
@@ -46,6 +46,7 @@ export class LoginComponent implements OnInit {
     this.router.navigate(['/auth/register']);
   }
 
+  // login.component.ts (الجزء المعدل من onSubmit)
   onSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
@@ -54,7 +55,7 @@ export class LoginComponent implements OnInit {
 
     this.loading = true;
     this.errorMessage = '';
-    this.successMessage = ''; // مسح رسالة النجاح السابقة
+    this.successMessage = '';
 
     const { email, password, rememberMe } = this.loginForm.value;
 
@@ -62,29 +63,33 @@ export class LoginComponent implements OnInit {
       next: (res) => {
         this.loading = false;
 
-        // ✅ تخزين التوكن حسب اختيار rememberMe
-        const token = res?.token || res?.data?.token;
-        if (token) {
-          if (rememberMe) {
-            localStorage.setItem('token', token);
-          } else {
-            sessionStorage.setItem('token', token);
-          }
+        let token = res?.token;
+        let role = res?.role;
+
+        // 🔥 توحيد صيغة الدور: أول حرف كبير والباقي صغير -> "Admin" أو "Teacher"
+        if (role && typeof role === 'string') {
+          role = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
         } else {
-          console.warn('No token received from API', res);
+          role = ''; // fallback
         }
 
-        // عرض رسالة نجاح قبل التوجيه
-        this.successMessage = '✓ تم تسجيل الدخول بنجاح... جاري التحويل';
+        const storage = rememberMe ? localStorage : sessionStorage;
 
-        // التوجيه بعد نصف ثانية لإظهار رسالة النجاح
+        if (token) {
+          storage.setItem('token', token);
+        }
+        if (role) {
+          storage.setItem('role', role);
+        }
+
+        this.successMessage = '✓ تم تسجيل الدخول بنجاح...';
+
         setTimeout(() => {
           this.router.navigate(['/dashboard']);
-        }, 500);
+        }, 0);
       },
-      error: (err) => {
+      error: () => {
         this.loading = false;
-        // رسالة خطأ ثابتة بغض النظر عن الخطأ القادم من API
         this.errorMessage = '⚠️ البريد الإلكتروني أو كلمة المرور غير صحيحة';
       },
     });

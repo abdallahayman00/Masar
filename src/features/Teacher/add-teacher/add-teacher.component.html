@@ -1,0 +1,358 @@
+<!-- add-teacher.component.html -->
+<main class="page-wrapper">
+  <!-- ============================================================
+         1. HERO / HEADER
+    ============================================================ -->
+  <header class="hero" role="banner">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <h1 class="hero__title">إضافة معلم جديد</h1>
+        <p class="hero__subtitle">
+          إضافة معلم جديد إلى منصة تحفيظ القرآن الكريم — قم بإدخال بيانات المعلم
+        </p>
+      </div>
+
+      <aside class="hero__stat-card" aria-label="إحصائية سريعة">
+        <span class="stat-number">+</span>
+        <span class="stat-label">معلم جديد</span>
+      </aside>
+    </div>
+  </header>
+
+  <!-- ============================================================
+         2. FORM CARD
+    ============================================================ -->
+  <section aria-label="نموذج إضافة معلم">
+    <div class="section-label">
+      <span class="section-label__title">بيانات المعلم</span>
+      <button type="button" class="section-label__link" (click)="closeForm()">
+        إغلاق
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+        >
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="form-card">
+      <form (ngSubmit)="onSubmit()" #teacherForm="ngForm">
+        <div class="form-grid">
+          <!-- اسم المستخدم -->
+          <div class="form-row">
+            <label class="form-label required" for="userName"
+              >اسم المستخدم</label
+            >
+            <input
+              type="text"
+              id="userName"
+              name="userName"
+              [(ngModel)]="teacherData.userName"
+              #userName="ngModel"
+              required
+              placeholder="أدخل اسم المستخدم"
+              class="form-input"
+              [class.error]="userName.invalid && userName.touched"
+            />
+            <div
+              class="form-error"
+              *ngIf="userName.invalid && userName.touched"
+            >
+              اسم المستخدم مطلوب
+            </div>
+          </div>
+
+          <!-- البريد الإلكتروني -->
+          <div class="form-row">
+            <label class="form-label required" for="email"
+              >البريد الإلكتروني</label
+            >
+            <input
+              type="email"
+              id="email"
+              name="email"
+              [(ngModel)]="teacherData.email"
+              #email="ngModel"
+              required
+              email
+              placeholder="أدخل البريد الإلكتروني"
+              class="form-input"
+              [class.error]="email.invalid && email.touched"
+            />
+            <div class="form-error" *ngIf="email.invalid && email.touched">
+              <span *ngIf="email.errors?.['required']"
+                >البريد الإلكتروني مطلوب</span
+              >
+              <span *ngIf="email.errors?.['email']"
+                >أدخل بريد إلكتروني صحيح</span
+              >
+            </div>
+          </div>
+
+          <!-- كلمة المرور -->
+          <div class="form-row">
+            <label class="form-label required" for="password"
+              >كلمة المرور</label
+            >
+            <div class="password-input-wrapper">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                id="password"
+                name="password"
+                [(ngModel)]="teacherData.password"
+                #password="ngModel"
+                required
+                minlength="6"
+                placeholder="أدخل كلمة المرور"
+                class="form-input"
+                [class.error]="password.invalid && password.touched"
+              />
+              <button
+                type="button"
+                class="toggle-password"
+                (click)="togglePasswordVisibility()"
+              >
+                <svg
+                  *ngIf="!showPassword"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+                <svg
+                  *ngIf="showPassword"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+                  />
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                </svg>
+              </button>
+            </div>
+            <div
+              class="form-error"
+              *ngIf="password.invalid && password.touched"
+            >
+              <span *ngIf="password.errors?.['required']"
+                >كلمة المرور مطلوبة</span
+              >
+              <span *ngIf="password.errors?.['minlength']"
+                >كلمة المرور يجب أن تكون 6 أحرف على الأقل</span
+              >
+            </div>
+          </div>
+
+          <!-- العمر -->
+          <div class="form-row">
+            <label class="form-label required" for="age">العمر</label>
+            <input
+              type="number"
+              id="age"
+              name="age"
+              [(ngModel)]="teacherData.age"
+              #age="ngModel"
+              required
+              min="18"
+              max="100"
+              placeholder="أدخل العمر"
+              class="form-input"
+              [class.error]="age.invalid && age.touched"
+            />
+            <div class="form-error" *ngIf="age.invalid && age.touched">
+              <span *ngIf="age.errors?.['required']">العمر مطلوب</span>
+              <span *ngIf="age.errors?.['min']"
+                >العمر يجب أن يكون 18 سنة على الأقل</span
+              >
+              <span *ngIf="age.errors?.['max']"
+                >العمر يجب أن لا يتجاوز 100 سنة</span
+              >
+            </div>
+          </div>
+
+          <!-- رقم واتس آب -->
+          <div class="form-row">
+            <label class="form-label required" for="whatsAppNumber"
+              >رقم واتس آب</label
+            >
+            <input
+              type="tel"
+              id="whatsAppNumber"
+              name="whatsAppNumber"
+              [(ngModel)]="teacherData.whatsAppNumber"
+              #whatsAppNumber="ngModel"
+              required
+              placeholder="أدخل رقم واتس آب"
+              class="form-input"
+              [class.error]="whatsAppNumber.invalid && whatsAppNumber.touched"
+            />
+            <div
+              class="form-error"
+              *ngIf="whatsAppNumber.invalid && whatsAppNumber.touched"
+            >
+              رقم واتس آب مطلوب
+            </div>
+          </div>
+
+          <!-- الرقم القومي -->
+          <div class="form-row">
+            <label class="form-label required" for="nationalId"
+              >الرقم القومي</label
+            >
+            <input
+              type="text"
+              id="nationalId"
+              name="nationalId"
+              [(ngModel)]="teacherData.nationalId"
+              #nationalId="ngModel"
+              required
+              minlength="14"
+              maxlength="14"
+              pattern="[0-9]{14}"
+              placeholder="أدخل الرقم القومي (14 رقم)"
+              class="form-input"
+              [class.error]="nationalId.invalid && nationalId.touched"
+            />
+            <div
+              class="form-error"
+              *ngIf="nationalId.invalid && nationalId.touched"
+            >
+              <span *ngIf="nationalId.errors?.['required']"
+                >الرقم القومي مطلوب</span
+              >
+              <span
+                *ngIf="
+                  nationalId.errors?.['minlength'] ||
+                  nationalId.errors?.['maxlength']
+                "
+                >الرقم القومي يجب أن يكون 14 رقم</span
+              >
+              <span *ngIf="nationalId.errors?.['pattern']">أدخل أرقام فقط</span>
+            </div>
+          </div>
+
+          <!-- الجنس -->
+          <div class="form-row">
+            <label class="form-label required" for="gender">الجنس</label>
+            <select
+              id="gender"
+              name="gender"
+              [(ngModel)]="teacherData.gender"
+              #gender="ngModel"
+              required
+              class="form-select"
+              [class.error]="gender.invalid && gender.touched"
+            >
+              <option value="" disabled>اختر الجنس</option>
+              <option value="Male">ذكر</option>
+              <option value="Female">أنثى</option>
+            </select>
+            <div class="form-error" *ngIf="gender.invalid && gender.touched">
+              يرجى اختيار الجنس
+            </div>
+          </div>
+
+          <!-- دولة الإقامة -->
+          <div class="form-row">
+            <label class="form-label required" for="residenceCountry"
+              >دولة الإقامة</label
+            >
+            <input
+              type="text"
+              id="residenceCountry"
+              name="residenceCountry"
+              [(ngModel)]="teacherData.residenceCountry"
+              #residenceCountry="ngModel"
+              required
+              placeholder="أدخل دولة الإقامة"
+              class="form-input"
+              [class.error]="
+                residenceCountry.invalid && residenceCountry.touched
+              "
+            />
+            <div
+              class="form-error"
+              *ngIf="residenceCountry.invalid && residenceCountry.touched"
+            >
+              دولة الإقامة مطلوبة
+            </div>
+          </div>
+
+          <!-- الجنسية -->
+          <div class="form-row">
+            <label class="form-label required" for="nationality">الجنسية</label>
+            <input
+              type="text"
+              id="nationality"
+              name="nationality"
+              [(ngModel)]="teacherData.nationality"
+              #nationality="ngModel"
+              required
+              placeholder="أدخل الجنسية"
+              class="form-input"
+              [class.error]="nationality.invalid && nationality.touched"
+            />
+            <div
+              class="form-error"
+              *ngIf="nationality.invalid && nationality.touched"
+            >
+              الجنسية مطلوبة
+            </div>
+          </div>
+
+          <!-- نبذة عن المعلم -->
+          <div class="form-row full-width">
+            <label class="form-label required" for="summary"
+              >نبذة عن المعلم</label
+            >
+            <textarea
+              id="summary"
+              name="summary"
+              [(ngModel)]="teacherData.summary"
+              #summary="ngModel"
+              required
+              rows="5"
+              placeholder="أدخل نبذة عن المعلم (خبراته، مؤهلاته، إجازاته...)"
+              class="form-textarea"
+              [class.error]="summary.invalid && summary.touched"
+            ></textarea>
+            <div class="form-error" *ngIf="summary.invalid && summary.touched">
+              النبذة التعريفية مطلوبة
+            </div>
+          </div>
+        </div>
+
+        <!-- أزرار الإجراءات -->
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="closeForm()">
+            إلغاء
+          </button>
+          <button
+            type="submit"
+            class="btn-primary"
+            [disabled]="teacherForm.invalid || isSubmitting"
+          >
+            <span *ngIf="!isSubmitting">إضافة معلم</span>
+            <span *ngIf="isSubmitting">جاري الإضافة...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>

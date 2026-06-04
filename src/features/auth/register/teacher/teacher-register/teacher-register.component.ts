@@ -48,7 +48,7 @@ export class TeacherRegisterComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       whatsAppNumber: ['', Validators.required],
-      age: ['', [Validators.required, Validators.min(18), Validators.max(100)]],
+      age: ['', [Validators.required, Validators.min(1), Validators.max(100)]],
       nationality: ['', Validators.required],
       gender: ['', Validators.required],
       residenceCountry: ['', Validators.required],

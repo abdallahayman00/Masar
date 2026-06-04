@@ -1,0 +1,292 @@
+<!-- pending-batches.component.html -->
+<main class="page-wrapper">
+  <!-- HERO / HEADER -->
+  <header class="hero" role="banner">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <h1 class="hero__title">الدفعات المعلقة</h1>
+        <p class="hero__subtitle">
+          مراجعة وإدارة الدفعات المعلقة — قبول أو رفض الطلبات بكل سهولة
+        </p>
+      </div>
+
+      <aside class="hero__stat-card" aria-label="إحصائية سريعة">
+        <span class="stat-number">{{ pendingBatches.length }}</span>
+        <span class="stat-label">دفعات جديدة معلقة</span>
+      </aside>
+    </div>
+  </header>
+
+  <!-- STATS ROW -->
+  <section aria-label="نظرة عامة على الدفعات">
+    <div class="section-label">
+      <span class="section-label__title">نظرة عامة</span>
+    </div>
+
+    <div class="stats-row">
+      <article class="stat-card" aria-label="إجمالي الدفعات">
+        <div class="stat-card__top">
+          <span class="stat-card__percent">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="18 15 12 9 6 15" />
+            </svg>
+            40%
+          </span>
+          <div class="stat-card__icon" aria-hidden="true">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <path d="M4 4h16v16H4z" />
+              <line x1="8" y1="8" x2="16" y2="8" />
+              <line x1="8" y1="12" x2="16" y2="12" />
+              <line x1="8" y1="16" x2="12" y2="16" />
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card__value">{{ totalCount }}</div>
+        <div class="stat-card__label">إجمالي الدفعات</div>
+        <div class="stat-card__line">
+          <div class="stat-card__line-fill" style="width: 70%"></div>
+        </div>
+      </article>
+
+      <article class="stat-card" aria-label="الدفعات قيد المراجعة">
+        <div class="stat-card__top">
+          <span class="stat-card__percent stat-card__percent--gold">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="18 15 12 9 6 15" />
+            </svg>
+            20%
+          </span>
+          <div class="stat-card__icon stat-card__icon--gold" aria-hidden="true">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card__value">{{ pendingBatches.length }}</div>
+        <div class="stat-card__label">الدفعات قيد المراجعة</div>
+        <div class="stat-card__line">
+          <div
+            class="stat-card__line-fill stat-card__line-fill--gold"
+            style="width: 43%"
+          ></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- MAIN TABLE CARD -->
+  <section aria-label="جدول الدفعات المعلقة">
+    <div class="section-label">
+      <span class="section-label__title">قائمة الدفعات</span>
+    </div>
+
+    <div class="table-card">
+      <div class="table-card__header">
+        <div class="table-card__title-group">
+          <h2 class="table-card__title">
+            <span class="title-dot" aria-hidden="true"></span>
+            الدفعات المعلقة
+          </h2>
+          <p class="table-card__subtitle">
+            الدفعات الجديدة بانتظار مراجعة وقرار الإدارة
+          </p>
+        </div>
+
+        <div class="table-card__controls">
+          <div class="search-input" role="search">
+            <span class="search-input__icon" aria-hidden="true">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </span>
+            <label for="search-batches" class="u-sr-only">بحث في الدفعات</label>
+            <input
+              type="search"
+              id="search-batches"
+              placeholder="بحث..."
+              (input)="onSearch($event)"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="table-card__body"
+        role="region"
+        aria-label="بيانات الدفعات"
+        tabindex="0"
+      >
+        <table class="data-table" aria-describedby="table-desc">
+          <caption id="table-desc" class="u-sr-only">
+            جدول يعرض الدفعات المعلقة مع إمكانية قبول أو رفض كل دفعة
+          </caption>
+          <!-- pending-batches.component.html -->
+          <!-- الجدول - الأعمدة حسب البيانات الجديدة -->
+          <thead>
+            <tr>
+              <th scope="col">اسم الطالب</th>
+              <th scope="col">اسم المعلم</th>
+              <th scope="col">اسم المسار</th>
+              <th scope="col">الأيام</th>
+              <th scope="col">الوقت</th>
+              <th scope="col">الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let batch of pendingBatches">
+              <td>
+                <div class="avatar-cell">
+                  <div
+                    class="avatar avatar--initials"
+                    [style.background]="getAvatarColor(batch.studentName)"
+                    [style.color]="getAvatarTextColor(batch.studentName)"
+                  >
+                    {{ getInitials(batch.studentName) }}
+                  </div>
+                  <span class="name-col">{{ batch.studentName }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="avatar-cell">
+                  <div
+                    class="avatar avatar--initials"
+                    [style.background]="getAvatarColor(batch.teacherName)"
+                    [style.color]="getAvatarTextColor(batch.teacherName)"
+                  >
+                    {{ getInitials(batch.teacherName) }}
+                  </div>
+                  <span class="name-col">{{ batch.teacherName }}</span>
+                </div>
+              </td>
+              <td>{{ batch.trackName }}</td>
+              <td>{{ batch.firstDay }} - {{ batch.secondDay }}</td>
+              <td>{{ batch.time }}</td>
+              <td>
+                <div class="actions-cell">
+                  <button
+                    class="action-btn action-btn--view"
+                    type="button"
+                    (click)="viewBatch(batch)"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    عرض
+                  </button>
+                  <button
+                    class="action-btn action-btn--approve"
+                    type="button"
+                    (click)="approveBatch(batch)"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    قبول
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <nav class="pagination" aria-label="تصفح صفحات الجدول">
+        <p class="pagination__info">
+          عرض 1 – {{ pendingBatches.length }} من إجمالي {{ totalCount }} دفعة
+        </p>
+        <div class="pagination__controls">
+          <button
+            class="pagination__btn"
+            type="button"
+            (click)="changePage(currentPage - 1)"
+            [disabled]="currentPage === 1"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+          <button
+            class="pagination__btn pagination__btn--active"
+            type="button"
+            aria-current="page"
+          >
+            {{ currentPage }}
+          </button>
+          <button
+            class="pagination__btn"
+            type="button"
+            (click)="changePage(currentPage + 1)"
+            [disabled]="currentPage >= totalPages"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </section>
+</main>

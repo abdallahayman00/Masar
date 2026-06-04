@@ -1,0 +1,625 @@
+<!-- tracks.component.html -->
+<main class="page-wrapper">
+  <!-- ============================================================
+         1. HERO / HEADER
+    ============================================================ -->
+  <header class="hero" role="banner">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <h1 class="hero__title">المسارات التعليمية</h1>
+        <p class="hero__subtitle">
+          قائمة المسارات التعليمية المتاحة في منصة تحفيظ القرآن الكريم
+        </p>
+      </div>
+
+      <aside class="hero__stat-card" aria-label="إحصائية سريعة">
+        <span class="stat-number">{{ tracks.length }}</span>
+        <span class="stat-label">مسار تعليمي</span>
+      </aside>
+    </div>
+  </header>
+
+  <!-- رسائل النجاح والخطأ -->
+  <div class="messages-container" *ngIf="successMessage || errorMessage">
+    <div *ngIf="successMessage" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage" class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+  </div>
+
+  <!-- ============================================================
+         3. TRACKS TABLE
+    ============================================================ -->
+  <section aria-label="جدول المسارات التعليمية">
+    <div class="section-label">
+      <span class="section-label__title"> قائمة المسارات </span>
+      <button class="btn-add-teacher" (click)="openAddModal()">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M12 4v16m-8-8h16" />
+          <circle cx="12" cy="12" r="10" />
+        </svg>
+        إضافة مسار جديد
+      </button>
+    </div>
+
+    <div class="table-card">
+      <div class="table-card__header">
+        <div class="table-card__title-group">
+          <h2 class="table-card__title">
+            <span class="title-dot" aria-hidden="true"></span>
+            المسارات التعليمية
+          </h2>
+          <p class="table-card__subtitle">
+            قائمة المسارات المتاحة للطلاب في المنصة
+          </p>
+        </div>
+        <div class="filter-grid">
+          <div class="filter-group">
+            <label class="filter-label">🔍 بحث بالاسم</label>
+            <input
+              type="text"
+              [(ngModel)]="searchTerm"
+              (input)="applyFilters()"
+              placeholder="ابحث عن مسار..."
+              class="filter-input"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="table-card__body"
+        role="region"
+        aria-label="بيانات المسارات"
+        tabindex="0"
+      >
+        <table class="data-table" aria-describedby="table-desc">
+          <caption id="table-desc" class="u-sr-only">
+            جدول يعرض المسارات التعليمية
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">المسار</th>
+              <th scope="col">الوصف</th>
+              <th scope="col">مدة الحصة</th>
+              <th scope="col">عدد الحصص</th>
+              <th scope="col">سعر الحصة</th>
+              <th scope="col">السعر الإجمالي</th>
+              <th scope="col">الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Loading State -->
+            <tr *ngIf="isLoading">
+              <td colspan="8" class="text-center">
+                <div class="spinner-small"></div>
+                جاري التحميل...
+              </td>
+            </tr>
+
+            <!-- Error State -->
+            <tr *ngIf="!isLoading && errorMessage && tracks.length === 0">
+              <td colspan="8" class="text-center" style="color: #dc2626">
+                {{ errorMessage }}
+                <button class="retry-btn" (click)="loadTracks()">
+                  إعادة المحاولة
+                </button>
+              </td>
+            </tr>
+
+            <!-- No Data State -->
+            <tr
+              *ngIf="
+                !isLoading &&
+                !errorMessage &&
+                filteredTracks.length === 0 &&
+                tracks.length > 0
+              "
+            >
+              <td colspan="8" class="text-center">
+                لا توجد نتائج مطابقة للبحث
+              </td>
+            </tr>
+
+            <tr *ngIf="!isLoading && !errorMessage && tracks.length === 0">
+              <td colspan="8" class="text-center">
+                لا توجد مسارات تعليمية حالياً
+                <button class="retry-btn" (click)="openAddModal()">
+                  أضف أول مسار
+                </button>
+              </td>
+            </tr>
+
+            <!-- Data Rows -->
+            <tr *ngFor="let track of getPaginatedTracks(); let i = index">
+              <td class="col-index">
+                {{ (currentPage - 1) * pageSize + i + 1 }}
+              </td>
+              <td class="col-track-name">
+                <div class="track-name-cell">
+                  <div
+                    class="avatar avatar--initials table-avatar"
+                    [style.background]="getRandomColor(track.name || '')"
+                  >
+                    {{ getInitials(track.name || "") }}
+                  </div>
+                  <span class="name-col">{{ track.name }}</span>
+                </div>
+              </td>
+              <td class="col-description">
+                <span class="description-cell"
+                  >{{ track.description | slice: 0 : 50
+                  }}{{
+                    (track.description?.length || 0) > 50 ? "..." : ""
+                  }}</span
+                >
+              </td>
+              <td class="col-duration">{{ track.sessionDuration }} دقيقة</td>
+              <td class="col-sessions">{{ track.numberOfSessions }} حصة</td>
+              <td class="col-session-price">
+                {{ formatPrice(track.sessionPrice) }}
+              </td>
+              <td class="col-price">
+                <span class="price-badge">{{
+                  formatPrice(track.trackPrice)
+                }}</span>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <button
+                    class="action-btn action-btn--view"
+                    type="button"
+                    (click)="viewTrackDetails(track)"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  </button>
+                  <button
+                    class="action-btn action-btn--edit"
+                    type="button"
+                    (click)="openEditModalFromTrack(track)"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M17 3l4 4-7 7H10v-4l7-7z" />
+                      <path d="M4 20h16" />
+                    </svg>
+                  </button>
+                  <button
+                    class="action-btn action-btn--delete"
+                    type="button"
+                    (click)="deleteTrack(track)"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M4 7h16" />
+                      <path d="M10 11v6" />
+                      <path d="M14 11v6" />
+                      <path d="M5 7l1 13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-13" />
+                      <path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <nav
+        class="pagination"
+        aria-label="تصفح صفحات الجدول"
+        *ngIf="filteredTracks.length > 0"
+      >
+        <p class="pagination__info">
+          عرض {{ (currentPage - 1) * pageSize + 1 }} –
+          {{ getMin(currentPage * pageSize, filteredTracks.length) }} من إجمالي
+          {{ filteredTracks.length }} مسار
+        </p>
+        <div class="pagination__controls">
+          <button
+            class="pagination__btn"
+            type="button"
+            (click)="changePage(currentPage - 1)"
+            [disabled]="currentPage === 1"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+          <button
+            *ngFor="let page of getPageNumbers()"
+            class="pagination__btn"
+            [class.pagination__btn--active]="page === currentPage"
+            (click)="changePage(page)"
+          >
+            {{ page }}
+          </button>
+          <button
+            class="pagination__btn"
+            type="button"
+            (click)="changePage(currentPage + 1)"
+            [disabled]="currentPage >= totalPages"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </section>
+</main>
+
+<!-- ============================================================
+        MODAL: ADD NEW TRACK
+    ============================================================ -->
+<div class="modal-overlay" *ngIf="showAddModal" (click)="closeAddModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>إضافة مسار جديد</h3>
+      <button class="modal-close" (click)="closeAddModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label>اسم المسار *</label>
+          <input
+            type="text"
+            [(ngModel)]="newTrack.TrackName"
+            class="form-control"
+            placeholder="أدخل اسم المسار"
+          />
+        </div>
+
+        <div class="form-group full-width">
+          <label>وصف المسار *</label>
+          <textarea
+            [(ngModel)]="newTrack.description"
+            rows="4"
+            class="form-control"
+            placeholder="أدخل وصف المسار"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>عدد الحصص *</label>
+          <input
+            type="number"
+            [(ngModel)]="newTrack.NumberOfSessions"
+            class="form-control"
+            min="1"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>مدة الحصة (دقيقة) *</label>
+          <input
+            type="number"
+            [(ngModel)]="newTrack.SessionMinutes"
+            class="form-control"
+            min="1"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>سعر الحصة (ج.م) *</label>
+          <input
+            type="number"
+            [(ngModel)]="newTrack.SessionPrice"
+            class="form-control"
+            min="0"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>سعر المسار (ج.م) *</label>
+          <input
+            type="number"
+            [(ngModel)]="newTrack.Price"
+            class="form-control"
+            min="0"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>ملف إضافي</label>
+          <input
+            type="file"
+            (change)="onFileSelected($event, 'file')"
+            class="form-control"
+            accept=".pdf,.doc,.docx,.zip"
+          />
+          <small class="form-hint">PDF, DOC, DOCX, ZIP (حد أقصى 10MB)</small>
+        </div>
+
+        <div class="form-group">
+          <label>صورة المسار</label>
+          <input
+            type="file"
+            (change)="onFileSelected($event, 'photo')"
+            class="form-control"
+            accept="image/*"
+          />
+          <small class="form-hint">JPG, PNG (حد أقصى 2MB)</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeAddModal()">إلغاء</button>
+      <button
+        class="btn-primary"
+        (click)="addNewTrack()"
+        [disabled]="isSubmitting"
+      >
+        {{ isSubmitting ? "جاري الإضافة..." : "إضافة المسار" }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+        MODAL: VIEW TRACK DETAILS
+    ============================================================ -->
+<div class="modal-overlay" *ngIf="showViewModal" (click)="closeViewModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>تفاصيل المسار التعليمي</h3>
+      <button class="modal-close" (click)="closeViewModal()">✕</button>
+    </div>
+
+    <div class="modal-body" *ngIf="selectedTrack">
+      <!-- صورة المسار - قابلة للنقر -->
+      <div class="detail-row" *ngIf="selectedTrack.coverImagePath">
+        <div class="detail-label">صورة المسار:</div>
+        <div class="detail-value">
+          <a
+            [href]="selectedTrack.coverImagePath"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="image-link"
+            title="اضغط لفتح الصورة في علامة تبويب جديدة"
+          >
+            <img
+              [src]="selectedTrack.coverImagePath"
+              alt="صورة المسار"
+              class="profile-image clickable-image"
+            />
+            <span class="open-link-badge">🔗 افتح الصورة</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- باقي التفاصيل -->
+      <div class="detail-row">
+        <div class="detail-label">اسم المسار:</div>
+        <div class="detail-value">{{ selectedTrack.name || "غير مدخل" }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">الوصف:</div>
+        <div class="detail-value summary-text">
+          {{ selectedTrack.description || "لا يوجد وصف" }}
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">عدد الحصص:</div>
+        <div class="detail-value">{{ selectedTrack.numberOfSessions }} حصة</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">مدة الحصة:</div>
+        <div class="detail-value">
+          {{ selectedTrack.sessionDuration }} دقيقة
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">سعر الحصة:</div>
+        <div class="detail-value">
+          {{ formatPrice(selectedTrack.sessionPrice) }}
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">السعر الإجمالي:</div>
+        <div class="detail-value price-total">
+          {{ formatPrice(selectedTrack.trackPrice) }}
+        </div>
+      </div>
+
+      <!-- الملفات المرفقة - قابلة للنقر -->
+      <div
+        class="detail-row"
+        *ngIf="
+          selectedTrack.attachments && selectedTrack.attachments.length > 0
+        "
+      >
+        <div class="detail-label">الملفات المرفقة:</div>
+        <div class="detail-value">
+          <ul class="attachments-list">
+            <li *ngFor="let attachment of selectedTrack.attachments">
+              <a
+                [href]="attachment"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="attachment-link"
+              >
+                📎 {{ getFileNameFromUrl(attachment) }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeViewModal()">إغلاق</button>
+      <button class="btn-primary" (click)="openEditModal()">
+        ✏️ تعديل المسار
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+        MODAL: EDIT TRACK
+    ============================================================ -->
+<div class="modal-overlay" *ngIf="showEditModal" (click)="closeEditModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>✏️ تعديل المسار التعليمي</h3>
+      <button class="modal-close" (click)="closeEditModal()">✕</button>
+    </div>
+
+    <div class="modal-body" *ngIf="editingTrack">
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label>اسم المسار *</label>
+          <input
+            type="text"
+            [(ngModel)]="editingTrack.TrackName"
+            class="form-control"
+            placeholder="أدخل اسم المسار"
+          />
+        </div>
+
+        <div class="form-group full-width">
+          <label>وصف المسار *</label>
+          <textarea
+            [(ngModel)]="editingTrack.description"
+            rows="4"
+            class="form-control"
+            placeholder="أدخل وصف المسار"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>عدد الحصص *</label>
+          <input
+            type="number"
+            [(ngModel)]="editingTrack.NumberOfSessions"
+            class="form-control"
+            min="1"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>مدة الحصة (دقيقة) *</label>
+          <input
+            type="number"
+            [(ngModel)]="editingTrack.SessionMinutes"
+            class="form-control"
+            min="1"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>سعر الحصة (ج.م) *</label>
+          <input
+            type="number"
+            [(ngModel)]="editingTrack.SessionPrice"
+            class="form-control"
+            min="0"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>سعر المسار (ج.م) *</label>
+          <input
+            type="number"
+            [(ngModel)]="editingTrack.Price"
+            class="form-control"
+            min="0"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>تغيير الملف الإضافي</label>
+          <input
+            type="file"
+            (change)="onEditFileSelected($event, 'file')"
+            class="form-control"
+            accept=".pdf,.doc,.docx,.zip"
+          />
+          <small class="form-hint" *ngIf="editingTrack.existingFile">
+            الملف الحالي: {{ getFileNameFromUrl(editingTrack.existingFile) }}
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>تغيير صورة المسار</label>
+          <input
+            type="file"
+            (change)="onEditFileSelected($event, 'photo')"
+            class="form-control"
+            accept="image/*"
+          />
+          <small class="form-hint" *ngIf="editingTrack.existingPhoto">
+            الصورة الحالية: موجودة
+            <a
+              [href]="editingTrack.existingPhoto"
+              target="_blank"
+              class="preview-link"
+              >معاينة</a
+            >
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeEditModal()">إلغاء</button>
+      <button
+        class="btn-primary"
+        (click)="updateTrack()"
+        [disabled]="isSubmitting"
+      >
+        {{ isSubmitting ? "جاري التحديث..." : "💾 حفظ التغييرات" }}
+      </button>
+    </div>
+  </div>
+</div>
+<app-toast />

@@ -1,0 +1,320 @@
+<div class="filter-section" [class.filter-expanded]="isExpanded">
+  <div class="filter-header" (click)="toggleFilter()">
+    <div class="filter-title">
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <line x1="4" y1="6" x2="20" y2="6"></line>
+        <line x1="8" y1="12" x2="16" y2="12"></line>
+        <line x1="11" y1="18" x2="13" y2="18"></line>
+      </svg>
+      <span>{{ config.title || "فلترة متقدمة" }}</span>
+    </div>
+    <div class="filter-badge" *ngIf="hasActiveFilters">
+      {{ activeFiltersCount }} فلتر نشط
+    </div>
+    <svg
+      class="filter-arrow"
+      [class.rotated]="isExpanded"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+  </div>
+
+  <div class="filter-body" *ngIf="isExpanded">
+    <div class="filter-grid">
+      <!-- فلتر البحث بالاسم -->
+      <div class="filter-group" *ngIf="config.showSearchName !== false">
+        <label class="filter-label">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          الاسم
+        </label>
+        <input
+          type="text"
+          class="filter-input"
+          [(ngModel)]="filters.searchName"
+          (input)="onFilterInputChange()"
+          placeholder="ابحث بالاسم..."
+          [class.active]="filters.searchName"
+        />
+      </div>
+
+      <!-- فلتر البحث بالبريد الإلكتروني -->
+      <div class="filter-group" *ngIf="config.showEmail !== false">
+        <label class="filter-label">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <path d="m22 7-10 7L2 7"></path>
+          </svg>
+          البريد الإلكتروني
+        </label>
+        <input
+          type="email"
+          class="filter-input"
+          [(ngModel)]="filters.searchEmail"
+          (input)="onFilterInputChange()"
+          placeholder="البريد الإلكتروني..."
+          [class.active]="filters.searchEmail"
+        />
+      </div>
+
+      <!-- فلتر البحث بالواتساب -->
+      <div class="filter-group" *ngIf="config.showWhatsApp !== false">
+        <label class="filter-label">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
+            ></path>
+          </svg>
+          رقم الواتساب
+        </label>
+        <input
+          type="tel"
+          class="filter-input"
+          [(ngModel)]="filters.searchWhatsApp"
+          (input)="onFilterInputChange()"
+          placeholder="رقم الواتساب..."
+          [class.active]="filters.searchWhatsApp"
+        />
+      </div>
+
+      <!-- فلتر الجنس -->
+      <div class="filter-group" *ngIf="config.showGender !== false">
+        <label class="filter-label">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2v4M12 18v4M2 12h4M18 12h4"></path>
+          </svg>
+          الجنس
+        </label>
+        <select
+          class="filter-select"
+          [(ngModel)]="filters.gender"
+          (change)="applyFilters()"
+        >
+          <option value="">الكل</option>
+          <option value="Male">ذكر</option>
+          <option value="Female">أنثى</option>
+        </select>
+      </div>
+
+      <!-- فلتر العمر - من -->
+      <div class="filter-group" *ngIf="config.showAgeRange !== false">
+        <label class="filter-label">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          العمر من
+        </label>
+        <input
+          type="number"
+          class="filter-input"
+          [(ngModel)]="filters.minAge"
+          (input)="onFilterInputChange()"
+          placeholder="الحد الأدنى"
+          min="0"
+          max="120"
+          [class.active]="filters.minAge"
+        />
+      </div>
+
+      <!-- فلتر العمر - إلى -->
+      <div class="filter-group" *ngIf="config.showAgeRange !== false">
+        <label class="filter-label">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          العمر إلى
+        </label>
+        <input
+          type="number"
+          class="filter-input"
+          [(ngModel)]="filters.maxAge"
+          (input)="onFilterInputChange()"
+          placeholder="الحد الأقصى"
+          min="0"
+          max="120"
+          [class.active]="filters.maxAge"
+        />
+      </div>
+
+      <!-- فلتر الترتيب -->
+      <div class="filter-group" *ngIf="config.showSortOrder !== false">
+        <label class="filter-label">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M3 6h18M3 12h18M3 18h18"></path>
+          </svg>
+          ترتيب حسب
+        </label>
+        <select
+          class="filter-select"
+          [(ngModel)]="filters.sortOrder"
+          (change)="applyFilters()"
+        >
+          <option value="">الافتراضي</option>
+          <option value="name_asc">الاسم (أ-ي)</option>
+          <option value="name_desc">الاسم (ي-أ)</option>
+          <option value="age_asc">العمر (تصاعدي)</option>
+          <option value="age_desc">العمر (تنازلي)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- أزرار الإجراءات -->
+    <div class="filter-actions">
+      <button
+        class="btn-filter-clear"
+        (click)="clearAllFilters()"
+        *ngIf="hasActiveFilters"
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M18 6L6 18M6 6l12 12"></path>
+        </svg>
+        مسح الكل
+      </button>
+      <button class="btn-filter-apply" (click)="applyFilters()">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        تطبيق الفلتر
+      </button>
+    </div>
+
+    <!-- الفلاتر النشطة -->
+    <div class="active-filters" *ngIf="hasActiveFilters">
+      <span class="active-filters-title">الفلاتر النشطة:</span>
+      <div class="filter-tags">
+        <span class="filter-tag" *ngIf="filters.searchName">
+          الاسم: {{ filters.searchName }}
+          <button
+            class="filter-tag-remove"
+            (click)="removeFilter('searchName')"
+          >
+            ×
+          </button>
+        </span>
+        <span class="filter-tag" *ngIf="filters.searchEmail">
+          البريد: {{ filters.searchEmail }}
+          <button
+            class="filter-tag-remove"
+            (click)="removeFilter('searchEmail')"
+          >
+            ×
+          </button>
+        </span>
+        <span class="filter-tag" *ngIf="filters.searchWhatsApp">
+          واتساب: {{ filters.searchWhatsApp }}
+          <button
+            class="filter-tag-remove"
+            (click)="removeFilter('searchWhatsApp')"
+          >
+            ×
+          </button>
+        </span>
+        <span class="filter-tag" *ngIf="filters.gender">
+          الجنس: {{ filters.gender === "Male" ? "ذكر" : "أنثى" }}
+          <button class="filter-tag-remove" (click)="removeFilter('gender')">
+            ×
+          </button>
+        </span>
+        <span class="filter-tag" *ngIf="filters.minAge">
+          العمر من: {{ filters.minAge }}
+          <button class="filter-tag-remove" (click)="removeFilter('minAge')">
+            ×
+          </button>
+        </span>
+        <span class="filter-tag" *ngIf="filters.maxAge">
+          العمر إلى: {{ filters.maxAge }}
+          <button class="filter-tag-remove" (click)="removeFilter('maxAge')">
+            ×
+          </button>
+        </span>
+        <span class="filter-tag" *ngIf="filters.sortOrder">
+          الترتيب: {{ getSortOrderText() }}
+          <button class="filter-tag-remove" (click)="removeFilter('sortOrder')">
+            ×
+          </button>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
