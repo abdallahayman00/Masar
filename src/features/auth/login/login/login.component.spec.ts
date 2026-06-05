@@ -61,16 +61,15 @@ export class LoginComponent implements OnInit {
       next: (res) => {
         this.loading = false;
 
-        // ✅ تخزين التوكن حسب اختيار rememberMe
         const token = res?.token || res?.data?.token;
+        const role = res?.role || res?.data?.role;
+
         if (token) {
-          if (rememberMe) {
-            localStorage.setItem('token', token);
-          } else {
-            sessionStorage.setItem('token', token);
-          }
-        } else {
-          console.warn('No token received from API', res);
+          localStorage.setItem('token', token);
+        }
+
+        if (role) {
+          localStorage.setItem('role', role);
         }
 
         this.router.navigate(['/dashboard']);

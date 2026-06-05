@@ -10,11 +10,7 @@ export const authInterceptor: HttpInterceptorFn = (
   next: HttpHandlerFn,
 ) => {
   const token =
-    localStorage.getItem('authToken') ||
-    localStorage.getItem('token') ||
-    sessionStorage.getItem('authToken') ||
-    sessionStorage.getItem('token');
-
+    localStorage.getItem('token') || sessionStorage.getItem('token');
   if (!token) {
     return next(req);
   }

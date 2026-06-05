@@ -76,10 +76,11 @@ export class LoginComponent implements OnInit {
         const storage = rememberMe ? localStorage : sessionStorage;
 
         if (token) {
-          storage.setItem('token', token);
+          localStorage.setItem('token', token);
         }
+
         if (role) {
-          storage.setItem('role', role);
+          localStorage.setItem('role', role);
         }
 
         this.successMessage = '✓ تم تسجيل الدخول بنجاح...';

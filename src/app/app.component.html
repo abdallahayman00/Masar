@@ -190,6 +190,30 @@
               </div>
             </nav>
           }
+          @if (isTeacher) {
+            <nav class="nav-scroll" aria-label="روابط التنقل">
+              <div class="nav-section">
+                <div class="section-header">
+                  <span class="section-label"> لوحة التحكم المعلم</span>
+                  <div class="section-header-line"></div>
+                </div>
+                <!-- Dashboard -->
+                <!-- Dashboard -->
+                <div class="nav-item-wrap">
+                  <a
+                    class="nav-item"
+                    routerLink="/dashboard"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="onNavigate()"
+                  >
+                    <i class="ti ti-layout-dashboard nav-icon"></i>
+                    <span class="nav-label"> لوحة التحكم المعلم </span>
+                  </a>
+                </div>
+              </div>
+            </nav>
+          }
           <footer class="sidebar-footer">
             <button class="logout-btn" (click)="logout()">
               <i class="ti ti-logout"></i>

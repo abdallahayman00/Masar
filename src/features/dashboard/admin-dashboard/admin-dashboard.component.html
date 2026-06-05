@@ -1,0 +1,682 @@
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Amiri+Quran&family=Tajawal:wght@300;400;500;700&display=swap"
+  rel="stylesheet"
+/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<div class="page-wrapper" dir="rtl">
+  <header class="hero" role="banner">
+    <div class="hero__inner">
+      <!-- اليمين -->
+      <div class="hero__content" style="color: white">
+        <div class="hero__badge">
+          <span class="hero__badge-dot"></span>
+          منصة تحفيظ القرآن الكريم
+        </div>
+
+        <h1 class="hero__title">لوحة التحكم الرئيسية</h1>
+        <p class="hero__greeting">{{ greeting }}</p>
+      </div>
+
+      <!-- الشمال -->
+      <div class="hero__summary" *ngIf="!isLoading && hasAnyData">
+        <div class="hero__date-item">
+          <span class="hero__date-icon">🌙</span>
+          <span class="hero__date-text" style="color: white">{{
+            hijriDate
+          }}</span>
+        </div>
+        <span class="hero__date-icon">📅</span>
+        <span class="hero__date-text" style="color: white">{{
+          gregorianDate
+        }}</span>
+      </div>
+    </div>
+  </header>
+  <!-- ═══════════════════════════════════════════════════════
+       FILTER BAR
+  ═══════════════════════════════════════════════════════ -->
+  <section class="filter-bar reveal-on-scroll" aria-label="فلاتر البيانات">
+    <div class="filter-bar__inner">
+      <div class="filter-bar__label">
+        <span class="filter-bar__label-icon">🔍</span>
+        تصفية البيانات
+      </div>
+
+      <div class="filter-bar__controls">
+        <div class="filter-group">
+          <label class="filter-label">السنة</label>
+          <select
+            class="filter-select"
+            [(ngModel)]="selectedYear"
+            (change)="onFilterChange()"
+          >
+            <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">الشهر</label>
+          <select
+            class="filter-select"
+            [(ngModel)]="selectedMonth"
+            (change)="onFilterChange()"
+          >
+            <option *ngFor="let m of months" [value]="m.value">
+              {{ m.label }}
+            </option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">تحديث</label>
+          <button class="filter-btn" (click)="fetchStats()">
+            <span class="filter-btn__icon">↻</span>
+            تحديث البيانات
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-bar__meta" *ngIf="lastUpdated">
+        آخر تحديث: {{ lastUpdated }}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       KPI CARDS
+  ═══════════════════════════════════════════════════════ -->
+  <section class="section reveal-on-scroll" aria-label="مؤشرات الأداء الرئيسية">
+    <div class="section__header">
+      <h2 class="section__title">
+        <span class="section__title-bar"></span>
+        مؤشرات الأداء
+      </h2>
+      <span class="section__month-tag"
+        >{{ currentMonthName }} {{ selectedYear }}</span
+      >
+    </div>
+
+    <div class="kpi-grid">
+      <!-- Students -->
+      <div
+        class="kpi-card kpi-card--emerald"
+        tabindex="0"
+        aria-label="إجمالي الطلاب"
+      >
+        <div class="kpi-card__shimmer"></div>
+        <div class="kpi-card__header">
+          <div class="kpi-card__icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              aria-hidden="true"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+          </div>
+          <div class="kpi-card__ring-wrap">
+            <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+              <circle
+                cx="28"
+                cy="28"
+                r="22"
+                fill="none"
+                stroke="rgba(255,255,255,0.15)"
+                stroke-width="3"
+              />
+              <circle
+                cx="28"
+                cy="28"
+                r="22"
+                fill="none"
+                stroke="rgba(255,255,255,0.7)"
+                stroke-width="3"
+                [attr.stroke-dasharray]="
+                  (2 * 3.14159 * 22 * stats.studentsCount) / 50 + ' 999'
+                "
+                stroke-linecap="round"
+                transform="rotate(-90 28 28)"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="kpi-card__value" id="cnt-students">
+          {{ stats.studentsCount }}
+        </div>
+        <div class="kpi-card__label">إجمالي الطلاب</div>
+        <div class="kpi-card__progress">
+          <div
+            class="kpi-card__progress-fill"
+            [style.width.%]="(stats.studentsCount / 50) * 100"
+          ></div>
+        </div>
+        <div class="kpi-card__sparkline" aria-hidden="true">
+          <svg viewBox="0 0 80 32" preserveAspectRatio="none">
+            <polyline
+              [attr.points]="
+                '0,28 16,22 32,18 48,14 64,10 80,' +
+                (32 - stats.studentsCount * 2.5)
+              "
+              fill="none"
+              stroke="rgba(255,255,255,0.5)"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Teachers -->
+      <div
+        class="kpi-card kpi-card--gold"
+        tabindex="0"
+        aria-label="إجمالي المعلمين"
+      >
+        <div class="kpi-card__shimmer"></div>
+        <div class="kpi-card__header">
+          <div class="kpi-card__icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              aria-hidden="true"
+            >
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+          </div>
+          <div class="kpi-card__ring-wrap">
+            <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+              <circle
+                cx="28"
+                cy="28"
+                r="22"
+                fill="none"
+                stroke="rgba(255,255,255,0.15)"
+                stroke-width="3"
+              />
+              <circle
+                cx="28"
+                cy="28"
+                r="22"
+                fill="none"
+                stroke="rgba(255,255,255,0.7)"
+                stroke-width="3"
+                [attr.stroke-dasharray]="
+                  (2 * 3.14159 * 22 * stats.teachersCount) / 20 + ' 999'
+                "
+                stroke-linecap="round"
+                transform="rotate(-90 28 28)"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="kpi-card__value" id="cnt-teachers">
+          {{ stats.teachersCount }}
+        </div>
+        <div class="kpi-card__label">المعلمون المعتمدون</div>
+        <div class="kpi-card__progress">
+          <div
+            class="kpi-card__progress-fill"
+            [style.width.%]="(stats.teachersCount / 20) * 100"
+          ></div>
+        </div>
+        <div class="kpi-card__sparkline" aria-hidden="true">
+          <svg viewBox="0 0 80 32" preserveAspectRatio="none">
+            <polyline
+              [attr.points]="
+                '0,30 20,26 40,20 60,16 80,' + (32 - stats.teachersCount * 3)
+              "
+              fill="none"
+              stroke="rgba(255,255,255,0.5)"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Bookings -->
+      <div class="kpi-card kpi-card--forest" tabindex="0" aria-label="الحجوزات">
+        <div class="kpi-card__shimmer"></div>
+        <div class="kpi-card__header">
+          <div class="kpi-card__icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              aria-hidden="true"
+            >
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+          </div>
+          <div class="kpi-card__ring-wrap">
+            <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+              <circle
+                cx="28"
+                cy="28"
+                r="22"
+                fill="none"
+                stroke="rgba(255,255,255,0.15)"
+                stroke-width="3"
+              />
+              <circle
+                cx="28"
+                cy="28"
+                r="22"
+                fill="none"
+                stroke="rgba(255,255,255,0.7)"
+                stroke-width="3"
+                [attr.stroke-dasharray]="
+                  (2 * 3.14159 * 22 * stats.bookingsCount) / 30 + ' 999'
+                "
+                stroke-linecap="round"
+                transform="rotate(-90 28 28)"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="kpi-card__value" id="cnt-bookings">
+          {{ stats.bookingsCount }}
+        </div>
+        <div class="kpi-card__label">الحجوزات النشطة</div>
+        <div class="kpi-card__progress">
+          <div
+            class="kpi-card__progress-fill"
+            [style.width.%]="(stats.bookingsCount / 30) * 100"
+          ></div>
+        </div>
+        <div class="kpi-card__sparkline" aria-hidden="true">
+          <svg viewBox="0 0 80 32" preserveAspectRatio="none">
+            <polyline
+              [attr.points]="
+                '0,32 30,28 60,20 80,' + (32 - stats.bookingsCount * 2)
+              "
+              fill="none"
+              stroke="rgba(255,255,255,0.5)"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Tracks -->
+      <div
+        class="kpi-card kpi-card--sage"
+        tabindex="0"
+        aria-label="المسارات التعليمية"
+      >
+        <div class="kpi-card__shimmer"></div>
+        <div class="kpi-card__header">
+          <div class="kpi-card__icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              aria-hidden="true"
+            >
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+            </svg>
+          </div>
+          <div class="kpi-card__ring-wrap">
+            <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+              <circle
+                cx="28"
+                cy="28"
+                r="22"
+                fill="none"
+                stroke="rgba(255,255,255,0.15)"
+                stroke-width="3"
+              />
+              <circle
+                cx="28"
+                cy="28"
+                r="22"
+                fill="none"
+                stroke="rgba(255,255,255,0.7)"
+                stroke-width="3"
+                [attr.stroke-dasharray]="
+                  (2 * 3.14159 * 22 * stats.tracksCount) / 10 + ' 999'
+                "
+                stroke-linecap="round"
+                transform="rotate(-90 28 28)"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="kpi-card__value" id="cnt-tracks">
+          {{ stats.tracksCount }}
+        </div>
+        <div class="kpi-card__label">المسارات التعليمية</div>
+        <div class="kpi-card__progress">
+          <div
+            class="kpi-card__progress-fill"
+            [style.width.%]="(stats.tracksCount / 10) * 100"
+          ></div>
+        </div>
+        <div class="kpi-card__sparkline" aria-hidden="true">
+          <svg viewBox="0 0 80 32" preserveAspectRatio="none">
+            <polyline
+              [attr.points]="
+                '0,30 20,24 40,18 60,12 80,' + (32 - stats.tracksCount * 2.8)
+              "
+              fill="none"
+              stroke="rgba(255,255,255,0.5)"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       DATA STORY
+  ═══════════════════════════════════════════════════════ -->
+  <section class="story-section reveal-on-scroll" aria-label="قصة الشهر">
+    <div class="story__label">✦ قصة الشهر</div>
+    <blockquote class="story__text">{{ storyText }}</blockquote>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       EXECUTIVE INSIGHTS
+  ═══════════════════════════════════════════════════════ -->
+  <section class="section reveal-on-scroll" aria-label="الرؤى التنفيذية">
+    <div class="section__header">
+      <h2 class="section__title">
+        <span class="section__title-bar"></span>
+        الرؤى التنفيذية
+      </h2>
+    </div>
+    <div class="insights-grid">
+      <div
+        *ngFor="let insight of insights; trackBy: trackByInsight"
+        class="insight-card"
+        [class.insight-card--success]="insight.type === 'success'"
+        [class.insight-card--warning]="insight.type === 'warning'"
+        [class.insight-card--info]="insight.type === 'info'"
+        [class.insight-card--neutral]="insight.type === 'neutral'"
+      >
+        <div class="insight-card__icon">{{ insight.icon }}</div>
+        <div class="insight-card__body">
+          <div class="insight-card__title">{{ insight.title }}</div>
+          <div class="insight-card__msg">{{ insight.message }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       CHARTS
+  ═══════════════════════════════════════════════════════ -->
+  <section class="charts-row reveal-on-scroll" aria-label="التحليلات البصرية">
+    <div class="section__header" style="margin-bottom: 20px">
+      <h2 class="section__title">
+        <span class="section__title-bar"></span>
+        التحليلات البصرية
+      </h2>
+    </div>
+
+    <div class="charts-main-grid">
+      <!-- Health Score -->
+      <div
+        class="chart-panel chart-panel--health"
+        aria-label="مؤشر الصحة العام"
+      >
+        <div class="chart-panel__title">مؤشر صحة المنصة</div>
+        <div class="chart-panel__sub">محسوب ديناميكياً من جميع البيانات</div>
+        <div class="health-gauge">
+          <svg
+            width="140"
+            height="140"
+            viewBox="0 0 140 140"
+            aria-hidden="true"
+          >
+            <circle
+              cx="70"
+              cy="70"
+              r="52"
+              fill="none"
+              stroke="rgba(31,96,64,0.12)"
+              stroke-width="10"
+            />
+            <circle
+              id="healthRing"
+              cx="70"
+              cy="70"
+              r="52"
+              fill="none"
+              [style.stroke]="healthColor"
+              stroke-width="10"
+              stroke-linecap="round"
+              transform="rotate(-90 70 70)"
+            />
+          </svg>
+          <div class="health-gauge__center">
+            <span class="health-gauge__value" id="cnt-health">{{
+              healthScore
+            }}</span>
+            <span class="health-gauge__pct">%</span>
+            <div class="health-gauge__label" [style.color]="healthColor">
+              {{ healthLabel }}
+            </div>
+          </div>
+        </div>
+        <div class="health-legend">
+          <div class="health-legend-item">
+            <span class="health-legend-dot" style="background: #329665"></span
+            >ممتاز (70+)
+          </div>
+          <div class="health-legend-item">
+            <span class="health-legend-dot" style="background: #c8a415"></span
+            >متوسط (40-69)
+          </div>
+          <div class="health-legend-item">
+            <span class="health-legend-dot" style="background: #d85a30"></span
+            >يحتاج تطوير (أقل من 40)
+          </div>
+        </div>
+      </div>
+
+      <!-- Radar Chart -->
+      <div class="chart-panel" aria-label="مقارنة رادار">
+        <div class="chart-panel__title">مقارنة المؤشرات</div>
+        <div class="chart-panel__sub">Radar Chart — المنظور الشامل</div>
+        <div class="chart-wrap" style="height: 220px">
+          <canvas id="chartRadar" role="img" aria-label="مخطط رادار"></canvas>
+        </div>
+      </div>
+
+      <!-- Polar Chart -->
+      <div class="chart-panel" aria-label="توزيع قطبي">
+        <div class="chart-panel__title">توزيع قطبي</div>
+        <div class="chart-panel__sub">Polar Area — تمثيل الأوزان النسبية</div>
+        <div class="chart-wrap" style="height: 220px">
+          <canvas id="chartPolar" role="img" aria-label="مخطط قطبي"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="charts-secondary-grid">
+      <!-- Doughnut -->
+      <div class="chart-panel" aria-label="مخطط دائري">
+        <div class="chart-panel__title">التوزيع الدائري</div>
+        <div class="chart-panel__sub">Doughnut Premium</div>
+        <div class="chart-wrap" style="height: 200px; position: relative">
+          <canvas
+            id="chartDoughnut"
+            role="img"
+            aria-label="مخطط دائري"
+          ></canvas>
+          <div class="donut-center-overlay">
+            <div class="donut-center-overlay__val">
+              {{
+                stats.studentsCount +
+                  stats.teachersCount +
+                  stats.bookingsCount +
+                  stats.tracksCount
+              }}
+            </div>
+            <div class="donut-center-overlay__lbl">إجمالي</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Horizontal Bar -->
+      <div class="chart-panel" aria-label="مخطط أعمدة أفقية">
+        <div class="chart-panel__title">مقارنة المؤشرات</div>
+        <div class="chart-panel__sub">Horizontal Bar — ترتيب تصاعدي</div>
+        <div class="chart-wrap" style="height: 200px">
+          <canvas
+            id="chartHBar"
+            role="img"
+            aria-label="مخطط أعمدة أفقية"
+          ></canvas>
+        </div>
+      </div>
+
+      <!-- Area Trend -->
+      <div class="chart-panel chart-panel--wide" aria-label="اتجاه المنصة">
+        <div class="chart-panel__title">اتجاه المنصة عبر الأشهر</div>
+        <div class="chart-panel__sub">KPI Area Trend</div>
+        <div class="chart-wrap" style="height: 200px">
+          <canvas id="chartArea" role="img" aria-label="مخطط مساحة"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       BOTTOM ROW
+  ═══════════════════════════════════════════════════════ -->
+  <div class="bottom-row reveal-on-scroll">
+    <!-- Activity Timeline -->
+    <div class="timeline-panel" aria-label="سجل النشاط">
+      <div class="timeline-panel__title">
+        <span class="section__title-bar"></span>
+        سجل النشاط
+      </div>
+      <div class="timeline-list">
+        <div class="timeline-item" *ngFor="let ev of timeline">
+          <div class="timeline-item__icon">{{ ev.icon }}</div>
+          <div class="timeline-item__body">
+            <div class="timeline-item__label">{{ ev.label }}</div>
+            <div class="timeline-item__value">{{ ev.value }}</div>
+          </div>
+          <div class="timeline-item__time">{{ ev.time }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-panel" *ngIf="!hasAnyData" aria-label="لا توجد بيانات">
+      <div class="empty-panel__illustration" aria-hidden="true">
+        <svg
+          viewBox="0 0 120 120"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            cx="60"
+            cy="60"
+            r="55"
+            fill="rgba(50,150,101,0.07)"
+            stroke="rgba(50,150,101,0.2)"
+            stroke-width="1"
+          />
+          <path
+            d="M40 75 C40 55 80 55 80 75"
+            stroke="#329665"
+            stroke-width="2"
+            stroke-linecap="round"
+            fill="none"
+            opacity="0.6"
+          />
+          <circle cx="48" cy="50" r="5" fill="#329665" opacity="0.5" />
+          <circle cx="72" cy="50" r="5" fill="#329665" opacity="0.5" />
+          <path
+            d="M30 38 L90 38"
+            stroke="#c8a415"
+            stroke-width="1.5"
+            stroke-dasharray="4 4"
+            stroke-linecap="round"
+            opacity="0.5"
+          />
+          <path
+            d="M30 82 L90 82"
+            stroke="#c8a415"
+            stroke-width="1.5"
+            stroke-dasharray="4 4"
+            stroke-linecap="round"
+            opacity="0.5"
+          />
+          <path
+            d="M38 38 L38 82 M82 38 L82 82"
+            stroke="rgba(31,96,64,0.2)"
+            stroke-width="1"
+          />
+        </svg>
+      </div>
+      <div class="empty-panel__title">لا توجد بيانات لهذه الفترة</div>
+      <div class="empty-panel__desc">
+        لم يُسجَّل أي نشاط في {{ currentMonthName }} {{ selectedYear }}
+      </div>
+      <div class="empty-panel__suggestions">
+        <div class="suggestion-chip">🗓️ جرّب شهراً آخر</div>
+        <div class="suggestion-chip">➕ أضف طلاباً جدداً</div>
+        <div class="suggestion-chip">👨‍🏫 سجّل معلمًا</div>
+      </div>
+    </div>
+
+    <!-- Summary Panel -->
+    <div class="summary-panel" *ngIf="hasAnyData" aria-label="ملخص سريع">
+      <div class="summary-panel__title">
+        <span class="section__title-bar"></span>
+        ملخص سريع
+      </div>
+      <div class="summary-stats">
+        <div class="summary-stat">
+          <div class="summary-stat__val">
+            {{ stats.studentsCount + stats.teachersCount }}
+          </div>
+          <div class="summary-stat__lbl">إجمالي المستخدمين</div>
+        </div>
+        <div class="summary-stat">
+          <div class="summary-stat__val">
+            {{
+              stats.teachersCount > 0
+                ? (stats.studentsCount / stats.teachersCount | number: "1.1-1")
+                : "—"
+            }}
+          </div>
+          <div class="summary-stat__lbl">طالب لكل معلم</div>
+        </div>
+        <div class="summary-stat">
+          <div class="summary-stat__val">{{ stats.tracksCount }}</div>
+          <div class="summary-stat__lbl">مسار تعليمي</div>
+        </div>
+        <div class="summary-stat">
+          <div class="summary-stat__val" [style.color]="healthColor">
+            {{ healthScore }}%
+          </div>
+          <div class="summary-stat__lbl">مؤشر الصحة</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, firstValueFrom } from 'rxjs';
+import { Observable, catchError, firstValueFrom, of } from 'rxjs';
 
 export interface LoginRequest {
   email: string;
@@ -67,19 +67,25 @@ export class AuthService {
   async initializeApp(): Promise<boolean> {
     const token =
       localStorage.getItem('token') || sessionStorage.getItem('token');
-
-    // مفيش تسجيل دخول
     if (!token) return true;
 
     try {
-      await firstValueFrom(this.http.get(`${this.baseUrl}/api/Account/Me`));
-
+      await firstValueFrom(
+        this.http.get(`${this.baseUrl}/api/Account/Me`).pipe(
+          catchError((err) => {
+            // فقط إذا كان 401 (غير مصرح) نمسح التوكن
+            if (err.status === 401) {
+              localStorage.removeItem('token');
+              sessionStorage.removeItem('token');
+            }
+            // أي خطأ آخر (CORS, 404, 500) لا نمسح التوكن
+            return of(null);
+          }),
+        ),
+      );
       return true;
     } catch {
-      // لو التوكن بايظ نمسحه
-      localStorage.removeItem('token');
-      sessionStorage.removeItem('token');
-
+      // أي خطأ غير متوقع (نادر) لا نمسح التوكن
       return true;
     }
   }
