@@ -9,9 +9,11 @@ import {
   RouterLinkActive,
 } from '@angular/router';
 import { filter } from 'rxjs/operators';
-
+import { TeacherService } from '../core/services/teacher.service'; // المسار حسب مشروعك
+import { ToastService } from '../core/services/toast.service';
 import { SpinnerComponent } from '../shared/components/spinner/spinner.component';
 import { AuthService } from '../core/services/auth.service';
+import { ToastComponent } from '../features/toast/toast/toast.component'; // أضف هذا
 
 @Component({
   selector: 'app-root',
@@ -22,6 +24,7 @@ import { AuthService } from '../core/services/auth.service';
     RouterLinkActive,
     CommonModule,
     SpinnerComponent,
+    ToastComponent, // <-- أضف هنا
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
@@ -31,6 +34,8 @@ export class AppComponent implements OnInit {
   isMobileSidebarOpen = false;
   isAuthRoute = false;
   isAppLoading = true;
+  teacherData: any;
+  selectedImageFile: File | null = null;
 
   // ⚠️ لم نعد نعتمد على this.role المخزنة في ngOnInit
   // بل سنقرأ الدور ديناميكياً من التخزين عند الحاجة (في الـ getters)
@@ -38,23 +43,43 @@ export class AppComponent implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
+    private teacherService: TeacherService, // <-- حقن الخدمة
+    private toastService: ToastService,
   ) {}
 
   ngOnInit() {
-    // لا نحتاج لتعيين this.role بعد الآن
-    // سنقرأ الدور من localStorage/sessionStorage مباشرة في get isAdmin
-
-    // loading spinner (مثل ما هو)
     setTimeout(() => {
       this.isAppLoading = false;
     }, 1500);
 
-    // detect auth routes
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.isAuthRoute = event.urlAfterRedirects.startsWith('/auth');
       });
+
+    // ✅ استدعاء جلب بيانات المعلم إذا كان المستخدم معلمًا
+    if (this.isTeacher) {
+      this.loadTeacherData();
+    }
+  }
+
+  private loadTeacherData() {
+    const teacherId =
+      localStorage.getItem('teacherId') || sessionStorage.getItem('teacherId');
+    if (!teacherId) {
+      console.warn('لا يوجد teacherId مخزن');
+      return;
+    }
+    this.teacherService.getTeacherDetails(+teacherId).subscribe({
+      next: (data) => {
+        this.teacherData = data;
+        console.log('تم جلب بيانات المعلم:', this.teacherData);
+      },
+      error: (err) => {
+        console.error('فشل في جلب بيانات المعلم:', err);
+      },
+    });
   }
 
   // ================= ROLE HELPERS (المعدلة) =================
@@ -121,5 +146,38 @@ export class AppComponent implements OnInit {
     if (window.innerWidth > 640) {
       this.isMobileSidebarOpen = false;
     }
+  }
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedImageFile = file;
+      this.uploadTeacherImage(); // رفع فوري مع إظهار التوست
+    }
+  }
+
+  uploadTeacherImage() {
+    if (!this.selectedImageFile) {
+      this.toastService.warning('الرجاء اختيار صورة أولاً');
+      return;
+    }
+    const teacherId = localStorage.getItem('teacherId');
+    if (!teacherId) {
+      this.toastService.error('لم يتم العثور على معرف المعلم');
+      return;
+    }
+
+    this.teacherService
+      .uploadProfileImage(+teacherId, this.selectedImageFile)
+      .subscribe({
+        next: (res) => {
+          this.toastService.success('تم رفع الصورة بنجاح');
+          this.loadTeacherData(); // تحديث البيانات
+          this.selectedImageFile = null; // إعادة تعيين الملف المختار
+        },
+        error: (err) => {
+          console.error(err);
+          this.toastService.error('فشل رفع الصورة، حاول مرة أخرى');
+        },
+      });
   }
 }

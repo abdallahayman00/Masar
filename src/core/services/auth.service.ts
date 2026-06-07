@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, firstValueFrom, of } from 'rxjs';
+import {
+  Observable,
+  catchError,
+  finalize,
+  firstValueFrom,
+  of,
+  tap,
+} from 'rxjs';
 
 export interface LoginRequest {
   email: string;
@@ -37,10 +44,39 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   // ---------------- LOGIN ----------------
-  login(data: LoginRequest): Observable<any> {
-    return this.http.post(`${this.baseUrl}/Login`, data);
+  // دالة مساعدة لفك تشفير الـ JWT
+  private decodeToken(token: string): any {
+    try {
+      const payload = token.split('.')[1];
+      return JSON.parse(atob(payload));
+    } catch (e) {
+      return null;
+    }
   }
 
+  login(data: LoginRequest): Observable<any> {
+    return this.http.post(`${this.baseUrl}/Login`, data).pipe(
+      tap((response: any) => {
+        if (response.token) {
+          localStorage.setItem('token', response.token);
+
+          // استخراج الـ nameidentifier من التوكن
+          const decoded = this.decodeToken(response.token);
+          const userId =
+            decoded?.[
+              'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
+            ];
+
+          if (userId && response.role?.toLowerCase() === 'teacher') {
+            localStorage.setItem('teacherId', userId);
+          }
+        }
+        if (response.role) {
+          localStorage.setItem('role', response.role);
+        }
+      }),
+    );
+  }
   // ---------------- REGISTER STUDENT ----------------
   registerStudent(data: StudentRegisterRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}/StudentRegister`, data);
@@ -53,8 +89,14 @@ export class AuthService {
 
   // ---------------- LOGOUT ----------------
   logout(): Observable<any> {
-    // ✅ الـ interceptor يضيف التوكن تلقائياً، لا حاجة لإضافته يدوياً
-    return this.http.post(`${this.baseUrl}/api/Account/Logout`, {});
+    return this.http.post(`${this.baseUrl}/api/Account/Logout`, {}).pipe(
+      finalize(() => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        localStorage.removeItem('teacherId');
+        sessionStorage.clear();
+      }),
+    );
   }
   // ---------------- CHANGE PASSWORD ----------------
   changePassword(data: ChangePasswordRequest): Observable<any> {
@@ -73,19 +115,16 @@ export class AuthService {
       await firstValueFrom(
         this.http.get(`${this.baseUrl}/api/Account/Me`).pipe(
           catchError((err) => {
-            // فقط إذا كان 401 (غير مصرح) نمسح التوكن
             if (err.status === 401) {
               localStorage.removeItem('token');
               sessionStorage.removeItem('token');
             }
-            // أي خطأ آخر (CORS, 404, 500) لا نمسح التوكن
             return of(null);
           }),
         ),
       );
       return true;
     } catch {
-      // أي خطأ غير متوقع (نادر) لا نمسح التوكن
       return true;
     }
   }

@@ -4,6 +4,8 @@
   href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.30.0/dist/tabler-icons.min.css"
 />
 <app-spinner *ngIf="isAppLoading"></app-spinner>
+<app-toast />
+<!-- هنا -->
 
 <!-- باقي المحتوى يظهر بعد ما السبينر يختفي -->
 <ng-container *ngIf="!isAppLoading">
@@ -41,27 +43,26 @@
               <div class="logo-sub">نظام تحفيظ القرآن الكريم</div>
             </div>
           </div>
-
-          <div
-            class="user-card"
-            role="button"
-            tabindex="0"
-            aria-label="ملف المستخدم"
-          >
-            <div class="user-avatar">
-              <span class="user-avatar-txt">أ</span>
-            </div>
-            <div class="user-meta">
-              <div class="user-name">أحمد الشافعي</div>
-              <div class="user-progress-row">
-                <span class="user-juz"
-                  ><i class="ti ti-star"></i> أدمن النظام</span
-                >
+          @if (isAdmin) {
+            <div
+              class="user-card"
+              role="button"
+              tabindex="0"
+              aria-label="ملف المستخدم"
+            >
+              <div class="user-avatar">
+                <span class="user-avatar-txt">أ</span>
+              </div>
+              <div class="user-meta">
+                <div class="user-name">أحمد الشافعي</div>
+                <div class="user-progress-row">
+                  <span class="user-juz"
+                    ><i class="ti ti-star"></i> أدمن النظام</span
+                  >
+                </div>
               </div>
             </div>
-          </div>
 
-          @if (isAdmin) {
             <nav class="nav-scroll" aria-label="روابط التنقل">
               <div class="nav-section">
                 <div class="section-header">
@@ -191,6 +192,48 @@
             </nav>
           }
           @if (isTeacher) {
+            <div class="teacher-card" role="button" tabindex="0">
+              <div class="teacher-avatar-area">
+                <div class="teacher-avatar-wrapper">
+                  @if (teacherData?.profileImagePath) {
+                    <img
+                      [src]="teacherData.profileImagePath"
+                      alt="صورة المعلم"
+                      class="teacher-avatar-img"
+                    />
+                  } @else {
+                    <div class="teacher-avatar-placeholder">
+                      <span>{{ teacherData?.fullName?.[0] || "م" }}</span>
+                    </div>
+                  }
+                  <button
+                    class="teacher-avatar-edit-btn"
+                    (click)="$event.stopPropagation(); fileInput.click()"
+                  >
+                    <i class="ti ti-pencil"></i>
+                  </button>
+                  <input
+                    type="file"
+                    #fileInput
+                    hidden
+                    accept="image/*"
+                    (change)="onFileSelected($event)"
+                  />
+                </div>
+              </div>
+              <div class="teacher-info">
+                <div class="teacher-badge">
+                  <i class="ti ti-star-filled"></i>
+                  <span>{{ teacherData?.fullName || "معلم القرآن" }} </span>
+                </div>
+                @if (teacherData?.email) {
+                  <div class="teacher-email">
+                    <i class="ti ti-mail"></i>
+                    <span>{{ teacherData.email }}</span>
+                  </div>
+                }
+              </div>
+            </div>
             <nav class="nav-scroll" aria-label="روابط التنقل">
               <div class="nav-section">
                 <div class="section-header">
