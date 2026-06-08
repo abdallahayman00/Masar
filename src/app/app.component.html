@@ -257,6 +257,74 @@
               </div>
             </nav>
           }
+          @if (isStudent) {
+            <div
+              class="user-card"
+              role="button"
+              tabindex="0"
+              aria-label="ملف المستخدم"
+            >
+              <div class="student-avatar">
+                <span class="student-avatar-txt">{{
+                  studentData.studentName.at(0)?.toUpperCase()
+                }}</span>
+              </div>
+              <div class="teacher-info my-2">
+                <div class="user-name">{{ studentData.studentName }}</div>
+                @if (studentData.studentEmail) {
+                  <div class="teacher-email">
+                    <i class="ti ti-mail"></i>
+                    <span>{{ studentData.studentEmail }}</span>
+                  </div>
+                }
+                <div class="teacher-email divider">
+                  <i class="ti ti-school"></i>
+                  <span> {{ studentData.trackCount }} دورات مسجلة</span>
+                </div>
+              </div>
+            </div>
+
+            <nav class="nav-scroll" aria-label="روابط التنقل">
+              <div class="nav-section">
+                <div class="section-header">
+                  <span class="section-label"> لوحة التحكم</span>
+                  <div class="section-header-line"></div>
+                </div>
+                <!-- Dashboard -->
+                <!-- Dashboard -->
+                <div class="nav-item-wrap">
+                  <a
+                    class="nav-item"
+                    routerLink="/dashboard"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="onNavigate()"
+                  >
+                    <i class="ti ti-layout-dashboard nav-icon"></i>
+                    <span class="nav-label">لوحة التحكم</span>
+                  </a>
+                  <div class="nav-tooltip">لوحة التحكم</div>
+                </div>
+                <div class="section-header">
+                  <span class="section-label"> المسارات </span>
+                  <div class="section-header-line"></div>
+                </div>
+                <div class="nav-item-wrap">
+                  <a
+                    class="nav-item"
+                    routerLink="/student-tracks"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="onNavigate()"
+                  >
+                    <i class="ti ti-route nav-icon"></i>
+                    <span class="nav-label"> المسارات</span>
+                  </a>
+                  <div class="nav-tooltip">المسارات</div>
+                </div>
+              </div>
+            </nav>
+          }
           <footer class="sidebar-footer">
             <button class="logout-btn" (click)="logout()">
               <i class="ti ti-logout"></i>

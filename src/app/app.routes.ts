@@ -2,6 +2,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '../core/guards/auth.guard';
 import { adminGuard } from '../core/guards/admin.guard';
+import { studentGuard } from '../core/guards/student.guard';
 
 export const routes: Routes = [
   {
@@ -114,8 +115,20 @@ export const routes: Routes = [
         (m) => m.AcceptedBatchesComponent,
       ),
   },
+
+  {
+    path: 'student-tracks',
+    canActivate: [authGuard, studentGuard],
+    loadComponent: () =>
+      import('../features/student-tracks/student-tracks.component').then(
+        (m) => m.StudentTracksComponent,
+      )
+  },
+  
   {
     path: '**',
     redirectTo: 'auth/login',
   },
+
+  
 ];

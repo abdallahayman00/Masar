@@ -1573,3 +1573,35 @@ body {
 .sidebar.collapsed .teacher-avatar-edit-btn i {
   font-size: 10px;
 }
+
+.divider {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin: 8px 0;
+}
+
+.student-avatar {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  line-height: 1;
+  background: linear-gradient(145deg, var(--forest-lt), var(--forest));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 3px solid rgba(200, 164, 21, 0.724);
+  box-shadow: 0 2px 8px rgba(23, 73, 46, 0.2);
+}
+
+.student-avatar-txt {
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  line-height: 1;
+}

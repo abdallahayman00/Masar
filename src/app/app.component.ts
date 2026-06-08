@@ -2,18 +2,20 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
 import {
-  Router,
   NavigationEnd,
-  RouterOutlet,
+  Router,
   RouterLink,
   RouterLinkActive,
+  RouterOutlet,
 } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { StudentCad } from '../core/interfaces/student-cad';
+import { AuthService } from '../core/services/auth.service';
+import { StudentService } from '../core/services/student.service';
 import { TeacherService } from '../core/services/teacher.service'; // المسار حسب مشروعك
 import { ToastService } from '../core/services/toast.service';
-import { SpinnerComponent } from '../shared/components/spinner/spinner.component';
-import { AuthService } from '../core/services/auth.service';
 import { ToastComponent } from '../features/toast/toast/toast.component'; // أضف هذا
+import { SpinnerComponent } from '../shared/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-root',
@@ -35,6 +37,7 @@ export class AppComponent implements OnInit {
   isAuthRoute = false;
   isAppLoading = true;
   teacherData: any;
+  studentData!: StudentCad;
   selectedImageFile: File | null = null;
 
   // ⚠️ لم نعد نعتمد على this.role المخزنة في ngOnInit
@@ -44,6 +47,7 @@ export class AppComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private teacherService: TeacherService, // <-- حقن الخدمة
+    private studentService: StudentService,
     private toastService: ToastService,
   ) {}
 
@@ -61,6 +65,10 @@ export class AppComponent implements OnInit {
     // ✅ استدعاء جلب بيانات المعلم إذا كان المستخدم معلمًا
     if (this.isTeacher) {
       this.loadTeacherData();
+    }
+
+    if (this.isStudent) {
+      this.loadStudentData();
     }
   }
 
@@ -82,6 +90,22 @@ export class AppComponent implements OnInit {
     });
   }
 
+  private loadStudentData() {
+    const studentId =
+      localStorage.getItem('studentId') || sessionStorage.getItem('studentId');
+    if (!studentId) {
+      console.warn('لا يوجد studentId مخزن');
+      return;
+    }
+    this.studentService.getStudentCardInfo(+studentId).subscribe({
+      next: (res) => {
+        this.studentData = res
+        console.log(this.studentData)
+      }
+    })
+
+  }
+
   // ================= ROLE HELPERS (المعدلة) =================
   get isAdmin(): boolean {
     // نقرأ الدور فوراً من التخزين عند كل استدعاء
@@ -95,6 +119,12 @@ export class AppComponent implements OnInit {
     const role =
       localStorage.getItem('role') || sessionStorage.getItem('role') || '';
     return role.toLowerCase() === 'teacher';
+  }
+
+   get isStudent(): boolean {
+    const role =
+      localStorage.getItem('role') || sessionStorage.getItem('role') || '';
+    return role.toLowerCase() === 'student';
   }
 
   // ================= LOGOUT (بدون تغيير) =================

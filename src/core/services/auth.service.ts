@@ -70,6 +70,9 @@ export class AuthService {
           if (userId && response.role?.toLowerCase() === 'teacher') {
             localStorage.setItem('teacherId', userId);
           }
+          if (userId && response.role?.toLowerCase() === 'student') {
+            localStorage.setItem('studentId', userId);
+          }
         }
         if (response.role) {
           localStorage.setItem('role', response.role);
