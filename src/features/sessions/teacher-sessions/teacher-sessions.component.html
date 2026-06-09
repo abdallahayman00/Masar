@@ -1,0 +1,238 @@
+<!-- teacher-sessions.component.html -->
+<main class="page-wrapper">
+  <!-- HERO / HEADER -->
+  <header class="hero" role="banner">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <h1 class="hero__title">جلسات اليوم</h1>
+        <p class="hero__subtitle">جدول الجلسات الخاصة بك - عرض حسب الحالة</p>
+      </div>
+      <aside class="hero__stat-card" aria-label="إحصائية سريعة">
+        <span class="stat-number">{{ totalSessionsCount }}</span>
+        <span class="stat-label">جلسة اليوم</span>
+      </aside>
+    </div>
+  </header>
+
+  <div class="filter-tabs">
+    <button
+      *ngFor="let status of statusTabs"
+      class="filter-tab"
+      [class.active]="selectedStatus === status.value"
+      (click)="filterByStatus(status.value)"
+    >
+      <i [class]="status.icon"></i>
+      <span>{{ status.label }}</span>
+      <span class="badge">{{ getStatusCount(status.value) }}</span>
+    </button>
+  </div>
+
+  <section aria-label="جدول الجلسات">
+    <div class="section-label">
+      <span class="section-label__title">
+        <i class="ti ti-video"></i> الجلسات
+      </span>
+    </div>
+
+    <div class="table-card">
+      <div class="table-card__header">
+        <div class="table-card__title-group">
+          <h2 class="table-card__title">
+            <span class="title-dot" aria-hidden="true"></span>
+            جلسات اليوم
+          </h2>
+          <p class="table-card__subtitle">قائمة بالجلسات المقررة مع الطلاب</p>
+        </div>
+      </div>
+
+      <div
+        class="table-card__body"
+        role="region"
+        aria-label="بيانات الجلسات"
+        tabindex="0"
+      >
+        <table class="data-table" aria-describedby="table-desc">
+          <caption id="table-desc" class="u-sr-only">
+            جدول يعرض جلسات اليوم
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">الطالب</th>
+              <th scope="col">المسار</th>
+              <th scope="col">رقم الجلسة</th>
+              <th scope="col">الحالة</th>
+              <th scope="col">الوقت</th>
+              <th scope="col">رابط اللقاء</th>
+              <th scope="col">الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="isLoading">
+              <td colspan="7" class="text-center">جاري التحميل...</td>
+            </tr>
+            <tr *ngIf="!isLoading && errorMessage">
+              <td colspan="7" class="text-center" style="color: #dc2626">
+                {{ errorMessage }}
+              </td>
+            </tr>
+            <tr
+              *ngIf="
+                !isLoading && !errorMessage && filteredSessions.length === 0
+              "
+            >
+              <td colspan="7" class="text-center">لا توجد جلسات بهذه الحالة</td>
+            </tr>
+            <tr *ngFor="let session of filteredSessions">
+              <td>
+                <div class="avatar-cell">
+                  <span class="name-col">{{ session.studentName }}</span>
+                </div>
+              </td>
+              <td>{{ session.trackName }}</td>
+              <td>{{ session.numberOfSession }}</td>
+              <td>
+                <span
+                  class="status-badge"
+                  [ngClass]="getStatusClass(session.sessionStatus)"
+                >
+                  {{ getStatusText(session.sessionStatus) }}
+                </span>
+              </td>
+              <td>{{ session.sessionTime }}</td>
+              <td>
+                <a
+                  *ngIf="session.sessionMeetLink"
+                  [href]="session.sessionMeetLink"
+                  target="_blank"
+                  class="meet-link"
+                >
+                  رابط الاجتماع
+                </a>
+                <span *ngIf="!session.sessionMeetLink" class="no-link"
+                  >لا يوجد</span
+                >
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <button
+                    class="action-btn action-btn--view"
+                    type="button"
+                    (click)="viewSessionDetails(session)"
+                  >
+                    تفاصيل
+                  </button>
+                  <button
+                    class="action-btn action-btn--link"
+                    type="button"
+                    (click)="openAddLinkModal(session)"
+                  >
+                    <i class="fas fa-link"></i>
+                    رابط
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Modal عرض تفاصيل الجلسة -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>📋 تفاصيل الجلسة</h3>
+      <button class="modal-close" (click)="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" *ngIf="selectedSession">
+      <div class="detail-row">
+        <div class="detail-label">الطالب:</div>
+        <div class="detail-value">{{ selectedSession.studentName }}</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">المسار:</div>
+        <div class="detail-value">{{ selectedSession.trackName }}</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">رقم الجلسة:</div>
+        <div class="detail-value">{{ selectedSession.numberOfSession }}</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">الحالة:</div>
+        <div class="detail-value">
+          {{ getStatusText(selectedSession.sessionStatus) }}
+        </div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">الوقت:</div>
+        <div class="detail-value">{{ selectedSession.sessionTime }}</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">رابط اللقاء:</div>
+        <div class="detail-value">
+          <a
+            *ngIf="selectedSession.sessionMeetLink"
+            [href]="selectedSession.sessionMeetLink"
+            target="_blank"
+            >اضغط للدخول</a
+          >
+          <span *ngIf="!selectedSession.sessionMeetLink">غير متوفر</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeModal()">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal إضافة / تعديل رابط اللقاء -->
+<div class="modal-overlay" *ngIf="showLinkModal" (click)="closeLinkModal()">
+  <div class="modal-content modal-small" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>🔗 إضافة رابط الاجتماع</h3>
+      <button class="modal-close" (click)="closeLinkModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-row">
+        <div class="detail-label">الطالب:</div>
+        <div class="detail-value">
+          {{ selectedSessionForLink?.studentName }}
+        </div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">الجلسة رقم:</div>
+        <div class="detail-value">
+          {{ selectedSessionForLink?.numberOfSession }}
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="meetingLink">رابط الاجتماع:</label>
+        <input
+          type="url"
+          id="meetingLink"
+          class="form-input"
+          [(ngModel)]="newMeetingLink"
+          placeholder="https://meet.google.com/..."
+          dir="ltr"
+        />
+        <small class="input-hint"
+          >أدخل رابط صالح (يبدأ بـ http:// أو https://)</small
+        >
+        <div class="error-message" *ngIf="linkError">{{ linkError }}</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeLinkModal()">إلغاء</button>
+      <button
+        class="btn-primary"
+        (click)="submitMeetingLink()"
+        [disabled]="isSavingLink"
+      >
+        {{ isSavingLink ? "جاري الحفظ..." : "حفظ الرابط" }}
+      </button>
+    </div>
+  </div>
+</div>
