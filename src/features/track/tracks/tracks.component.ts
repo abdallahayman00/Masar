@@ -32,6 +32,10 @@ export class TracksComponent implements OnInit {
     TrackPhoto: undefined,
   };
 
+  // ✅ متغير للتحكم في صلاحيات المستخدم
+  isAdmin: boolean = false;
+  isTeacher: boolean = false;
+  isStudent: boolean = false;
   // الملفات المرفوعة
   selectedFile: File | null = null;
   selectedPhoto: File | null = null;
@@ -79,6 +83,7 @@ export class TracksComponent implements OnInit {
   ngOnInit(): void {
     this.loadTracks();
     this.checkStoredTokens(); // اتصل بها هنا مؤقتاً
+    this.loadUserRole(); // ✅ تحميل دور المستخدم
   }
 
   // ================ تحميل المسارات ================
@@ -98,7 +103,18 @@ export class TracksComponent implements OnInit {
       },
     });
   }
+  private loadUserRole(): void {
+    const role =
+      localStorage.getItem('role') || sessionStorage.getItem('role') || '';
+    this.isAdmin = role.toLowerCase() === 'admin';
+    this.isTeacher = role.toLowerCase() === 'teacher';
+    this.isStudent = role.toLowerCase() === 'student';
 
+    console.log('👤 User role:', role);
+    console.log('isAdmin:', this.isAdmin);
+    console.log('isTeacher:', this.isTeacher);
+    console.log('isStudent:', this.isStudent);
+  }
   // ================ تطبيق الفلترة ================
   applyFilters(): void {
     let filtered = [...this.tracks];

@@ -3,6 +3,8 @@ import { Routes } from '@angular/router';
 import { authGuard } from '../core/guards/auth.guard';
 import { adminGuard } from '../core/guards/admin.guard';
 import { studentGuard } from '../core/guards/student.guard';
+import { teacherGuard } from '../core/guards/teacher.guard';
+import { adminOrTeacherGuard } from '../core/guards/adminOrTeacherGuard.guard';
 
 export const routes: Routes = [
   {
@@ -90,7 +92,7 @@ export const routes: Routes = [
   // ✅ Tracks Routes (المسارات)
   {
     path: 'tracks',
-    canActivate: [authGuard, adminGuard],
+    canActivate: [authGuard, adminOrTeacherGuard],
     loadComponent: () =>
       import('../features/track/tracks/tracks.component').then(
         (m) => m.TracksComponent,
@@ -122,13 +124,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import('../features/student-tracks/student-tracks.component').then(
         (m) => m.StudentTracksComponent,
-      )
+      ),
   },
-  
+
   {
     path: '**',
     redirectTo: 'auth/login',
   },
-
-  
 ];

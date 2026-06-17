@@ -255,6 +255,24 @@
                   </a>
                 </div>
               </div>
+              <div class="section-header">
+                <span class="section-label"> المسارات </span>
+                <div class="section-header-line"></div>
+              </div>
+              <!-- Teacher Requests -->
+              <div class="nav-item-wrap">
+                <a
+                  class="nav-item"
+                  routerLink="/tracks"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="onNavigate()"
+                >
+                  <i class="ti ti-route nav-icon"></i>
+                  <span class="nav-label"> المسارات</span>
+                </a>
+                <div class="nav-tooltip">المسارات</div>
+              </div>
             </nav>
           }
           @if (isStudent) {
