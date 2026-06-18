@@ -1,0 +1,699 @@
+<!-- available-times.component.html -->
+<main class="page-wrapper">
+  <!-- ============================================================
+         1. HERO / HEADER
+    ============================================================ -->
+  <header class="hero" role="banner">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <h1 class="hero__title">المواعيد المتاحة</h1>
+        <p class="hero__subtitle">
+          عرض وإدارة المواعيد المتاحة للمعلم — حجز أو إلغاء المواعيد بكل سهولة
+        </p>
+      </div>
+
+      <aside class="hero__stat-card" aria-label="إحصائية سريعة">
+        <span class="stat-number">{{ availableSlots.length }}</span>
+        <span class="stat-label">مواعيد متاحة</span>
+      </aside>
+    </div>
+  </header>
+
+  <!-- ============================================================
+         2. STATS ROW
+    ============================================================ -->
+  <section aria-label="نظرة عامة على المواعيد">
+    <div class="section-label">
+      <span class="section-label__title">نظرة عامة</span>
+    </div>
+
+    <div class="stats-row">
+      <article class="stat-card" aria-label="المواعيد المتاحة">
+        <div class="stat-card__top">
+          <span class="stat-card__percent">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="18 15 12 9 6 15" />
+            </svg>
+            {{ availablePercentage }}%
+          </span>
+          <div class="stat-card__icon" aria-hidden="true">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card__value">{{ availableCount }}</div>
+        <div class="stat-card__label">مواعيد متاحة</div>
+        <div class="stat-card__line">
+          <div class="stat-card__line-fill"></div>
+        </div>
+      </article>
+
+      <article class="stat-card" aria-label="المواعيد المحجوزة">
+        <div class="stat-card__top">
+          <span class="stat-card__percent stat-card__percent--gold">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="18 15 12 9 6 15" />
+            </svg>
+            {{ bookedPercentage }}%
+          </span>
+          <div class="stat-card__icon stat-card__icon--gold" aria-hidden="true">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card__value">{{ bookedCount }}</div>
+        <div class="stat-card__label">مواعيد محجوزة</div>
+        <div class="stat-card__line">
+          <div class="stat-card__line-fill stat-card__line-fill--gold"></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================================================
+         3. MAIN TABLE CARD
+    ============================================================ -->
+  <section aria-label="جدول المواعيد المتاحة">
+    <div class="section-label">
+      <span class="section-label__title">قائمة المواعيد</span>
+      <button class="btn-add-teacher" (click)="openCreateModal()">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M12 4v16m-8-8h16" />
+          <circle cx="12" cy="12" r="10" />
+        </svg>
+        إضافة ميعاد جديد
+      </button>
+    </div>
+
+    <div class="table-card">
+      <div class="table-card__header">
+        <div class="table-card__title-group">
+          <h2 class="table-card__title">
+            <span class="title-dot" aria-hidden="true"></span>
+            المواعيد المتاحة للمعلم
+          </h2>
+          <p class="table-card__subtitle">
+            عرض جميع المواعيد المتاحة والمحجوزة مع إمكانية الحجز
+          </p>
+        </div>
+
+        <div class="table-card__controls">
+          <div class="search-input" role="search">
+            <span class="search-input__icon" aria-hidden="true">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </span>
+            <label for="search-slots" class="u-sr-only">بحث في المواعيد</label>
+            <input
+              type="search"
+              id="search-slots"
+              placeholder="بحث بالوقت أو اليوم"
+              (input)="onSearch($event)"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="table-card__body"
+        role="region"
+        aria-label="بيانات المواعيد"
+        tabindex="0"
+      >
+        <table class="data-table" aria-describedby="table-desc">
+          <caption id="table-desc" class="u-sr-only">
+            جدول يعرض المواعيد المتاحة للمعلم مع إمكانية الحجز
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">الوقت</th>
+              <th scope="col" class="col-email">اليوم الأول</th>
+              <th scope="col" class="col-nationality">اليوم الثاني</th>
+              <th scope="col" class="col-age">الحالة</th>
+              <th scope="col">الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Loading State -->
+            <tr *ngIf="isLoading">
+              <td colspan="5" class="text-center">جاري التحميل...</td>
+            </tr>
+
+            <!-- Error State -->
+            <tr *ngIf="!isLoading && errorMessage">
+              <td colspan="5" class="text-center" style="color: #dc2626">
+                {{ errorMessage }}
+              </td>
+            </tr>
+
+            <!-- No Data State -->
+            <tr
+              *ngIf="!isLoading && !errorMessage && filteredSlots.length === 0"
+            >
+              <td colspan="5" class="text-center">
+                لا توجد مواعيد متاحة حالياً
+              </td>
+            </tr>
+            <tr
+              *ngFor="
+                let slot of filteredSlots
+                  | slice
+                    : (currentPage - 1) * itemsPerPage
+                    : currentPage * itemsPerPage
+              "
+            >
+              <td>
+                <div class="avatar-cell">
+                  <div
+                    class="avatar"
+                    [style.background]="slot.color"
+                    style="color: white"
+                  >
+                    {{ slot.time | slice: 0 : 2 }}
+                  </div>
+                  <span class="name-col">{{ slot.time }}</span>
+                </div>
+              </td>
+              <td class="col-email">
+                <span class="email-cell">{{ slot.firstDay }}</span>
+              </td>
+              <td class="col-nationality">{{ slot.secondDay }}</td>
+              <td>
+                <span
+                  class="status-badge"
+                  [class.status-badge--pending]="!slot.isBooked"
+                  [class.status-badge--approved]="slot.isBooked"
+                  role="status"
+                >
+                  {{ slot.isBooked ? "محجوز" : "متاح" }}
+                </span>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <!-- View Button -->
+                  <button
+                    class="action-btn action-btn--view"
+                    type="button"
+                    (click)="viewSlotDetails(slot)"
+                    [disabled]="isDeleting"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  </button>
+
+                  <!-- Delete Button -->
+                  <button
+                    class="action-btn action-btn--delete"
+                    type="button"
+                    (click)="deleteSlot(slot.id)"
+                    [disabled]="isDeleting || slot.isBooked"
+                    [title]="
+                      slot.isBooked ? 'لا يمكن حذف موعد محجوز' : 'حذف الموعد'
+                    "
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M4 7h16" />
+                      <path d="M10 11v6" />
+                      <path d="M14 11v6" />
+                      <path d="M5 7l1 13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-13" />
+                      <path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <nav class="pagination" aria-label="تصفح صفحات الجدول">
+        <p class="pagination__info">
+          عرض 1 – {{ filteredSlots.length }} من إجمالي
+          {{ availableSlots.length }} موعد
+        </p>
+        <div class="pagination__controls">
+          <button
+            class="pagination__btn"
+            type="button"
+            (click)="changePage(currentPage - 1)"
+            [disabled]="currentPage === 1"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+          <button
+            class="pagination__btn pagination__btn--active"
+            type="button"
+            aria-current="page"
+          >
+            {{ currentPage }}
+          </button>
+          <button
+            class="pagination__btn"
+            type="button"
+            (click)="changePage(currentPage + 1)"
+            [disabled]="currentPage >= totalPages"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </section>
+</main>
+
+<!-- Modal - عرض تفاصيل الموعد -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>📋 تفاصيل الموعد</h3>
+      <button class="modal-close" (click)="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body" *ngIf="selectedSlot">
+      <!-- رقم الموعد -->
+      <div class="detail-row">
+        <div class="detail-label">رقم الموعد:</div>
+        <div class="detail-value">{{ selectedSlot.id }}</div>
+      </div>
+
+      <!-- الوقت -->
+      <div class="detail-row">
+        <div class="detail-label">الوقت:</div>
+        <div class="detail-value">{{ selectedSlot.time }}</div>
+      </div>
+
+      <!-- اليوم الأول -->
+      <div class="detail-row">
+        <div class="detail-label">اليوم الأول:</div>
+        <div class="detail-value">{{ selectedSlot.firstDay }}</div>
+      </div>
+
+      <!-- اليوم الثاني -->
+      <div class="detail-row">
+        <div class="detail-label">اليوم الثاني:</div>
+        <div class="detail-value">{{ selectedSlot.secondDay }}</div>
+      </div>
+
+      <!-- اللون -->
+      <div class="detail-row">
+        <div class="detail-label">اللون:</div>
+        <div class="detail-value">
+          <span
+            class="color-preview"
+            [style.background]="selectedSlot.color"
+            style="
+              display: inline-block;
+              width: 30px;
+              height: 30px;
+              border-radius: 4px;
+            "
+          ></span>
+          {{ selectedSlot.color }}
+        </div>
+      </div>
+
+      <!-- الحالة -->
+      <div class="detail-row">
+        <div class="detail-label">الحالة:</div>
+        <div class="detail-value">
+          <span
+            class="status-badge"
+            [class.status-approved]="selectedSlot.isBooked"
+            [class.status-pending]="!selectedSlot.isBooked"
+          >
+            {{ selectedSlot.isBooked ? "محجوز" : "متاح" }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeModal()">إغلاق</button>
+    </div>
+  </div>
+</div>
+<!-- ============================================================
+     MODAL - CREATE NEW SLOT
+     ============================================================ -->
+<div class="modal-overlay" *ngIf="showCreateModal" (click)="closeCreateModal()">
+  <div
+    class="modal-content modal-content--create"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="modal-header">
+      <h3>➕ إضافة ميعاد جديد</h3>
+      <button class="modal-close" (click)="closeCreateModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- اليوم الأول -->
+      <div class="form-group">
+        <label for="firstDay">اليوم الأول *</label>
+        <select
+          id="firstDay"
+          [(ngModel)]="newSlot.firstDay"
+          class="form-control"
+        >
+          <option value="" disabled>اختر اليوم الأول</option>
+          <option *ngFor="let day of daysOfWeek" [value]="day">
+            {{ day }}
+          </option>
+        </select>
+      </div>
+
+      <!-- اليوم الثاني -->
+      <div class="form-group">
+        <label for="secondDay">اليوم الثاني *</label>
+        <select
+          id="secondDay"
+          [(ngModel)]="newSlot.secondDay"
+          class="form-control"
+        >
+          <option value="" disabled>اختر اليوم الثاني</option>
+          <option *ngFor="let day of daysOfWeek" [value]="day">
+            {{ day }}
+          </option>
+        </select>
+      </div>
+
+      <!-- الوقت -->
+      <div class="form-group">
+        <label for="sessionTime">الوقت *</label>
+        <input
+          type="text"
+          id="sessionTime"
+          [(ngModel)]="newSlot.sessionTime"
+          class="form-control"
+          placeholder="مثال: 15:30:00"
+          dir="ltr"
+        />
+        <small class="form-hint">صيغة الوقت: HH:mm:ss (مثال: 15:30:00)</small>
+      </div>
+
+      <!-- اختيار اللون -->
+      <div class="form-group">
+        <label>اختر اللون</label>
+        <div class="color-picker">
+          <div
+            *ngFor="let color of presetColors"
+            class="color-option"
+            [style.background]="color"
+            [class.active]="newSlot.color === color"
+            (click)="selectColor(color)"
+          ></div>
+          <div class="color-option color-option--custom">
+            <input
+              type="color"
+              [(ngModel)]="newSlot.color"
+              class="color-input"
+              title="اختر لون مخصص"
+            />
+          </div>
+        </div>
+        <div class="selected-color-preview">
+          <span>اللون المختار: </span>
+          <span class="color-badge" [style.background]="newSlot.color"></span>
+          <span class="color-hex">{{ newSlot.color }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button
+        class="btn-secondary"
+        (click)="closeCreateModal()"
+        [disabled]="isCreating"
+      >
+        إلغاء
+      </button>
+      <button
+        class="btn-primary"
+        (click)="createSlot()"
+        [disabled]="isCreating"
+      >
+        {{ isCreating ? "جاري الإضافة..." : "إضافة" }}
+      </button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" *ngIf="showCreateModal" (click)="closeCreateModal()">
+  <div
+    class="modal-content modal-content--create"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="modal-header">
+      <h3>➕ إضافة ميعاد جديد</h3>
+      <button class="modal-close" (click)="closeCreateModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- اليوم الأول - Required -->
+      <div
+        class="form-group"
+        [class.has-error]="!newSlot.firstDay && submitted"
+      >
+        <label for="firstDay">
+          اليوم الأول
+          <span class="required-asterisk">*</span>
+        </label>
+        <select
+          id="firstDay"
+          [(ngModel)]="newSlot.firstDay"
+          class="form-control"
+          #firstDaySelect="ngModel"
+          required
+        >
+          <option value="" disabled>اختر اليوم الأول</option>
+          <option *ngFor="let day of daysOfWeek" [value]="day">
+            {{ day }}
+          </option>
+        </select>
+        <small class="error-message" *ngIf="!newSlot.firstDay && submitted">
+          يرجى اختيار اليوم الأول
+        </small>
+      </div>
+
+      <!-- اليوم الثاني - Required -->
+      <div
+        class="form-group"
+        [class.has-error]="!newSlot.secondDay && submitted"
+      >
+        <label for="secondDay">
+          اليوم الثاني
+          <span class="required-asterisk">*</span>
+        </label>
+        <select
+          id="secondDay"
+          [(ngModel)]="newSlot.secondDay"
+          class="form-control"
+          #secondDaySelect="ngModel"
+          required
+        >
+          <option value="" disabled>اختر اليوم الثاني</option>
+          <option *ngFor="let day of daysOfWeek" [value]="day">
+            {{ day }}
+          </option>
+        </select>
+        <small class="error-message" *ngIf="!newSlot.secondDay && submitted">
+          يرجى اختيار اليوم الثاني
+        </small>
+      </div>
+
+      <!-- الوقت - Required -->
+      <div class="form-group" [class.has-error]="isTimeInvalid() && submitted">
+        <label>
+          الوقت
+          <span class="required-asterisk">*</span>
+        </label>
+        <div class="time-picker">
+          <div class="time-select-group">
+            <!-- ساعات -->
+            <div class="time-select-wrapper">
+              <span class="time-select-label">ساعة</span>
+              <select
+                class="time-select"
+                [(ngModel)]="selectedHour"
+                (change)="updateTime()"
+              >
+                <option *ngFor="let hour of hours" [value]="hour">
+                  {{ hour }}
+                </option>
+              </select>
+            </div>
+
+            <span class="time-separator">:</span>
+
+            <!-- دقائق -->
+            <div class="time-select-wrapper">
+              <span class="time-select-label">دقيقة</span>
+              <select
+                class="time-select"
+                [(ngModel)]="selectedMinute"
+                (change)="updateTime()"
+              >
+                <option *ngFor="let minute of minutes" [value]="minute">
+                  {{ minute }}
+                </option>
+              </select>
+            </div>
+
+            <span class="time-separator">:</span>
+
+            <!-- صباحي/مسائي -->
+            <div class="time-period-wrapper">
+              <span class="time-select-label">الفترة</span>
+              <select
+                class="time-period-select"
+                [(ngModel)]="selectedPeriod"
+                (change)="updateTime()"
+              >
+                <option *ngFor="let period of periods" [value]="period">
+                  {{ period }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="time-preview">
+            <span class="time-preview-label">الوقت المختار:</span>
+            <span class="time-preview-value"
+              >{{ selectedHour }}:{{ selectedMinute }}:{{ selectedSecond }}
+              {{ selectedPeriod }}</span
+            >
+          </div>
+        </div>
+        <small class="error-message" *ngIf="isTimeInvalid() && submitted">
+          يرجى اختيار الوقت
+        </small>
+        <small class="form-hint"
+          >اختر الساعة والدقائق والثواني من القوائم</small
+        >
+      </div>
+
+      <!-- اختيار اللون -->
+      <div class="form-group">
+        <label>اختر اللون</label>
+        <div class="color-picker">
+          <div
+            *ngFor="let color of presetColors"
+            class="color-option"
+            [style.background]="color"
+            [class.active]="newSlot.color === color"
+            (click)="selectColor(color)"
+          ></div>
+          <div class="color-option color-option--custom">
+            <input
+              type="color"
+              [(ngModel)]="newSlot.color"
+              class="color-input"
+              title="اختر لون مخصص"
+            />
+          </div>
+        </div>
+        <div class="selected-color-preview">
+          <span>اللون المختار: </span>
+          <span class="color-badge" [style.background]="newSlot.color"></span>
+          <span class="color-hex">{{ newSlot.color }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button
+        class="btn-secondary"
+        (click)="closeCreateModal()"
+        [disabled]="isCreating"
+      >
+        إلغاء
+      </button>
+      <button
+        class="btn-primary"
+        (click)="createSlot()"
+        [disabled]="isCreating"
+      >
+        {{ isCreating ? "جاري الإضافة..." : "إضافة" }}
+      </button>
+    </div>
+  </div>
+</div>

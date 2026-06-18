@@ -792,3 +792,63 @@ body.modal-open {
   border-color: #b39a4b;
   box-shadow: 0 0 0 4px rgba(138, 118, 65, 0.15);
 }
+// teacher-sessions.component.scss
+
+.action-btn {
+  &--link {
+    background-color: #6366f1;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background-color: #4f46e5;
+    }
+
+    i {
+      margin-left: 4px;
+    }
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #9ca3af;
+
+    &:hover {
+      background-color: #9ca3af;
+      transform: none;
+    }
+  }
+}
+
+// Tooltip للزر المعطل
+.action-btn[disabled] {
+  position: relative;
+
+  &:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #1f2937;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+    font-weight: 400;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  &:hover::before {
+    content: "";
+    position: absolute;
+    bottom: calc(100% + 2px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #1f2937;
+    z-index: 1000;
+  }
+}

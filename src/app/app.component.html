@@ -273,6 +273,46 @@
                 </a>
                 <div class="nav-tooltip">المسارات</div>
               </div>
+              <div class="section-header">
+                <span class="section-label">الجدول الأسبوعي</span>
+                <div class="section-header-line"></div>
+              </div>
+
+              <div class="nav-item-wrap">
+                <a
+                  class="nav-item"
+                  routerLink="/weekly-schedule"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="onNavigate()"
+                >
+                  <i class="ti ti-calendar-week nav-icon"></i>
+
+                  <span class="nav-label"> الجدول الأسبوعي </span>
+                </a>
+
+                <div class="nav-tooltip">الجدول الأسبوعي</div>
+              </div>
+              <div class="section-header">
+                <span class="section-label">المواعيد المتاحة</span>
+                <div class="section-header-line"></div>
+              </div>
+
+              <div class="nav-item-wrap">
+                <a
+                  class="nav-item"
+                  routerLink="/available-times"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="onNavigate()"
+                >
+                  <i class="ti ti-clock-hour-4 nav-icon"></i>
+
+                  <span class="nav-label"> المواعيد المتاحة </span>
+                </a>
+
+                <div class="nav-tooltip">المواعيد المتاحة</div>
+              </div>
             </nav>
           }
           @if (isStudent) {

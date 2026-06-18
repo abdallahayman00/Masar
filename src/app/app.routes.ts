@@ -128,6 +128,22 @@ export const routes: Routes = [
   },
 
   {
+    path: 'weekly-schedule',
+    canActivate: [authGuard, teacherGuard],
+    loadComponent: () =>
+      import('../features/weekly-schedule/weekly-schedule.component').then(
+        (m) => m.WeeklyScheduleComponent,
+      ),
+  },
+  {
+    path: 'available-times',
+    canActivate: [authGuard, teacherGuard],
+    loadComponent: () =>
+      import('../features/available-times/available-times.component').then(
+        (m) => m.AvailableTimesComponent,
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'auth/login',
   },

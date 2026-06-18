@@ -1,0 +1,294 @@
+<!-- weekly-schedule.component.html -->
+<main class="page-wrapper">
+  <!-- ============================================================
+       1. HERO / HEADER  (unchanged — do not modify)
+  ============================================================ -->
+  <header class="hero" role="banner">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <h1 class="hero__title">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+          الجدول الأسبوعي
+        </h1>
+        <p class="hero__subtitle">
+          استعراض وإدارة حصصك الأسبوعية بصورة واضحة وسهلة — أيام العمل، الأوقات،
+          والقاعات
+        </p>
+        <p *ngIf="scheduleData" style="color: white">
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          {{ scheduleData.weekStart }} — {{ scheduleData.weekEnd }}
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════════════════════════════
+       STATS GRID — 3 Calm Earthy Cards
+  ════════════════════════════════════════════════════════ -->
+  <div class="stats-grid" *ngIf="scheduleData && !loading">
+    <!-- Card 1 — Total sessions -->
+    <div class="stat-card stat-card--green">
+      <div class="stat-card__bg-circle"></div>
+      <div class="stat-icon">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+        </svg>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-val">{{ getTotalSessions() }}</span>
+        <span class="stat-lbl">إجمالي الحصص</span>
+      </div>
+    </div>
+
+    <!-- Card 2 — Active days -->
+    <div class="stat-card stat-card--gold">
+      <div class="stat-card__bg-circle"></div>
+      <div class="stat-icon">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <rect x="3" y="4" width="18" height="18" rx="2" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+        </svg>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-val">{{ getActiveDays() }}</span>
+        <span class="stat-lbl">أيام التدريس</span>
+      </div>
+    </div>
+  </div>
+  <!-- /stats-grid -->
+
+  <!-- ── LOADING ── -->
+  <div class="state-wrap" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>جاري تحميل الجدول…</p>
+  </div>
+
+  <!-- ── ERROR ── -->
+  <div class="state-wrap state-wrap--error" *ngIf="!loading && error">
+    <svg
+      width="32"
+      height="32"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="12" />
+      <line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
+    <p>{{ error }}</p>
+    <button class="retry-btn" (click)="loadSchedule()">إعادة المحاولة</button>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       SCHEDULE BOARD — CSS Grid (no <table>)
+  ════════════════════════════════════════════════════════ -->
+  <ng-container *ngIf="!loading && !error && scheduleData">
+    <!-- Board section title -->
+    <div class="board-header">
+      <div class="board-title">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+        </svg>
+        الجدول الأسبوعي
+      </div>
+      <div class="week-nav">
+        <button
+          class="icon-btn"
+          type="button"
+          (click)="prevWeek()"
+          aria-label="الأسبوع السابق"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+        <span class="week-label">{{ currentMonthLabel }}</span>
+        <button
+          class="icon-btn"
+          type="button"
+          (click)="nextWeek()"
+          aria-label="الأسبوع التالي"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+        <button class="icon-btn" type="button" aria-label="التقويم">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="schedule-board" role="region" aria-label="جدول الحصص الأسبوعي">
+      <div class="board-scroll">
+        <!-- ── Days header row ── -->
+        <div class="days-row">
+          <!-- empty corner above time column -->
+          <div class="corner-cell"></div>
+
+          <div
+            *ngFor="let day of orderedDays"
+            class="day-head"
+            [class.day-head--today]="isToday(day.date)"
+          >
+            <!-- Arabic day name — translated from API response -->
+            <span class="day-head__name">{{
+              getArabicDayName(day.dayName)
+            }}</span>
+            <span class="day-head__num">{{ getDayNum(day.date) }}</span>
+            <span class="today-pill" *ngIf="isToday(day.date)">اليوم</span>
+          </div>
+        </div>
+        <!-- /days-row -->
+
+        <!-- ── Time slot rows ── -->
+        <div
+          *ngFor="let time of scheduleData.allSessionTimes; let ti = index"
+          class="slot-row"
+        >
+          <!-- Time label -->
+          <div class="time-cell">
+            <div class="time-card">
+              <span class="time-card__val">{{ time }}</span>
+            </div>
+          </div>
+
+          <!-- One cell per day -->
+          <div
+            *ngFor="let day of orderedDays"
+            class="session-cell"
+            [class.session-cell--today]="isToday(day.date)"
+          >
+            <ng-container
+              *ngIf="
+                getSessionForTimeAndDay(day, time) as session;
+                else emptyTpl
+              "
+            >
+              <div
+                class="chip"
+                [ngClass]="getChipClasses(ti, day.date)"
+                [class.chip--now]="isCurrentSession(day.date, time)"
+                tabindex="0"
+                role="button"
+                [attr.aria-label]="
+                  'حصة ' + session.sessionType + ' الساعة ' + time
+                "
+              >
+                <span
+                  class="chip__now-badge"
+                  *ngIf="isCurrentSession(day.date, time)"
+                  >الآن</span
+                >
+                <span
+                  class="chip__icon"
+                  [innerHTML]="getChipIcon(ti)"
+                  aria-hidden="true"
+                ></span>
+                <span class="chip__name"
+                  >{{ "حصة" }} - {{ session.slotId }}</span
+                >
+              </div>
+            </ng-container>
+
+            <ng-template #emptyTpl>
+              <div class="empty-dot-grid" aria-hidden="true"></div>
+            </ng-template>
+          </div>
+        </div>
+        <!-- /slot-row -->
+      </div>
+      <!-- /board-scroll -->
+
+      <!-- ── Legend ── -->
+      <div class="legend" role="list" aria-label="دليل الألوان">
+        <div
+          class="legend-item"
+          role="listitem"
+          *ngFor="let item of legendItems"
+        >
+          <span class="legend-dot" [style.background]="item.color"></span>
+          <span>{{ item.label }}</span>
+        </div>
+        <div class="legend-item legend-item--today" role="listitem">
+          <span class="legend-dot legend-dot--today"></span>
+          <span>اليوم الحالي</span>
+        </div>
+      </div>
+    </div>
+    <!-- /schedule-board -->
+  </ng-container>
+</main>

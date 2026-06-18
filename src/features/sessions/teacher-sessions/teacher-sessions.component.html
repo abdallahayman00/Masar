@@ -123,8 +123,11 @@
                   </button>
                   <button
                     class="action-btn action-btn--link"
+                    [class.action-btn--disabled]="!canAddLink(session)"
                     type="button"
                     (click)="openAddLinkModal(session)"
+                    [disabled]="!canAddLink(session)"
+                    [title]="getLinkButtonTooltip(session)"
                   >
                     <i class="fas fa-link"></i>
                     رابط
@@ -206,6 +209,19 @@
         <div class="detail-label">الجلسة رقم:</div>
         <div class="detail-value">
           {{ selectedSessionForLink?.numberOfSession }}
+        </div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">الحالة:</div>
+        <div class="detail-value">
+          <span
+            class="status-badge"
+            [ngClass]="
+              getStatusClass(selectedSessionForLink?.sessionStatus || '')
+            "
+          >
+            {{ getStatusText(selectedSessionForLink?.sessionStatus || "") }}
+          </span>
         </div>
       </div>
       <div class="input-group">

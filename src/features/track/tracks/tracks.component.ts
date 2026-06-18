@@ -32,14 +32,14 @@ export class TracksComponent implements OnInit {
     TrackPhoto: undefined,
   };
 
-  // ✅ متغير للتحكم في صلاحيات المستخدم
-  isAdmin: boolean = false;
-  isTeacher: boolean = false;
-  isStudent: boolean = false;
   // الملفات المرفوعة
   selectedFile: File | null = null;
   selectedPhoto: File | null = null;
 
+  // ✅ متغير للتحكم في صلاحيات المستخدم
+  isAdmin: boolean = false;
+  isTeacher: boolean = false;
+  isStudent: boolean = false;
   // حالات التحميل
   isLoading: boolean = false;
   isSubmitting: boolean = false;

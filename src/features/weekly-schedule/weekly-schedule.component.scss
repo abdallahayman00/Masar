@@ -1,0 +1,744 @@
+// weekly-schedule.component.scss
+// ════════════════════════════════════════════════════════════
+//  Design Tokens — Calm Earthy / Nature palette
+//  (Muted greens, warm sands, soft blues — easy on the eyes)
+// ════════════════════════════════════════════════════════════
+
+// ── Neutral base ─────────────────────────────────────────────
+$cream: #f5f3ee;
+$cream-dark: #ede9e0;
+$stone: #c8c2b4;
+$stone-dark: #9e9688;
+$ink: #3a3630;
+$ink-light: #5c5750;
+
+// ── Sage green ───────────────────────────────────────────────
+$sage-50: #eef5ef;
+$sage-100: #d6e9d8;
+$sage-200: #b4d4b8;
+$sage-400: #6fa87a;
+$sage-600: #4a7c54;
+$sage-800: #2e5234;
+
+// ── Warm sand / gold ─────────────────────────────────────────
+$sand-50: #faf4e8;
+$sand-100: #f0e2c0;
+$sand-200: #e0ca96;
+$sand-400: #c4a052;
+$sand-600: #9a7830;
+$sand-800: #6a5020;
+
+// ── Dusty blue ───────────────────────────────────────────────
+$blue-50: #eaf0f5;
+$blue-100: #ccdce8;
+$blue-200: #a8c4d8;
+$blue-400: #6896b4;
+$blue-600: #3e6a8a;
+$blue-800: #234456;
+
+// ── Lavender ─────────────────────────────────────────────────
+$lav-50: #f0eef8;
+$lav-100: #d8d2f0;
+$lav-200: #bab2e0;
+$lav-400: #8878c4;
+$lav-600: #5e50a0;
+$lav-800: #3a3068;
+
+// ── Blush rose ───────────────────────────────────────────────
+$rose-50: #f8eef0;
+$rose-100: #eed0d5;
+$rose-200: #dea8b0;
+$rose-400: #c07080;
+$rose-600: #944858;
+$rose-800: #642834;
+
+// ── Layout vars ──────────────────────────────────────────────
+$border-soft: rgba($stone, 0.5);
+$rad-sm: 8px;
+$rad-md: 12px;
+$rad-lg: 18px;
+$rad-xl: 24px;
+$rad-pill: 999px;
+$tr: 0.2s ease;
+
+// ════════════════════════════════════════════════════════════
+//  TOP BAR  (kept as-is — minimal changes)
+// ════════════════════════════════════════════════════════════
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.week-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.week-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: $ink-light;
+  padding: 0 0.4rem;
+  min-width: 52px;
+  text-align: center;
+}
+
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid $border-soft;
+  border-radius: $rad-md;
+  background: #fff;
+  color: $ink-light;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background $tr,
+    color $tr,
+    border-color $tr;
+  flex-shrink: 0;
+
+  &:hover {
+    background: $sage-50;
+    color: $sage-600;
+    border-color: $sage-200;
+  }
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  STATS GRID — 3 calm earthy cards
+// ════════════════════════════════════════════════════════════
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 2rem;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stat-card {
+  border-radius: $rad-xl;
+  padding: 1.4rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+  border: 1.5px solid transparent;
+  transition:
+    transform $tr,
+    box-shadow $tr;
+  cursor: default;
+  direction: rtl;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba($ink, 0.1);
+  }
+
+  // decorative soft circle bottom-left
+  &__bg-circle {
+    position: absolute;
+    left: -24px;
+    bottom: -24px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+  }
+
+  // ── Green ──────────────────────────────────────────────────
+  &--green {
+    background: $sage-50;
+    border-color: $sage-100;
+
+    .stat-card__bg-circle {
+      background: $sage-400;
+    }
+    .stat-icon {
+      background: $sage-100;
+      color: $sage-600;
+    }
+    .stat-val {
+      color: $sage-800;
+    }
+    .stat-lbl {
+      color: $sage-600;
+    }
+  }
+
+  // ── Gold ───────────────────────────────────────────────────
+  &--gold {
+    background: $sand-50;
+    border-color: $sand-100;
+
+    .stat-card__bg-circle {
+      background: $sand-400;
+    }
+    .stat-icon {
+      background: $sand-100;
+      color: $sand-600;
+    }
+    .stat-val {
+      color: $sand-800;
+    }
+    .stat-lbl {
+      color: $sand-600;
+    }
+  }
+
+  // ── Blue ───────────────────────────────────────────────────
+  &--blue {
+    background: $blue-50;
+    border-color: $blue-100;
+
+    .stat-card__bg-circle {
+      background: $blue-400;
+    }
+    .stat-icon {
+      background: $blue-100;
+      color: $blue-600;
+    }
+    .stat-val {
+      color: $blue-800;
+    }
+    .stat-lbl {
+      color: $blue-600;
+    }
+  }
+}
+
+.stat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: $rad-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.stat-val {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.stat-unit {
+  font-size: 16px;
+  font-weight: 700;
+  margin-right: 1px;
+}
+
+.stat-lbl {
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+// ════════════════════════════════════════════════════════════
+//  STATE MESSAGES
+// ════════════════════════════════════════════════════════════
+.state-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 3rem 1rem;
+  color: $stone-dark;
+  font-size: 14px;
+
+  &--error svg {
+    color: #c0504a;
+  }
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid $sage-100;
+  border-top-color: $sage-400;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.retry-btn {
+  padding: 0.45rem 1.2rem;
+  background: $sage-600;
+  color: #fff;
+  border: none;
+  border-radius: $rad-md;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background $tr;
+
+  &:hover {
+    background: $sage-800;
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  BOARD HEADER
+// ════════════════════════════════════════════════════════════
+.board-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  direction: rtl;
+}
+
+.board-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: $ink;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  svg {
+    color: $sage-600;
+  }
+}
+
+.board-badge {
+  font-size: 11px;
+  font-weight: 600;
+  background: $cream;
+  color: $stone-dark;
+  border: 1px solid $stone;
+  padding: 4px 12px;
+  border-radius: $rad-pill;
+  direction: ltr;
+}
+
+// ════════════════════════════════════════════════════════════
+//  SCHEDULE BOARD
+// ════════════════════════════════════════════════════════════
+.schedule-board {
+  background: #fff;
+  border-radius: $rad-xl;
+  border: 1.5px solid $border-soft;
+  overflow: hidden;
+  box-shadow: 0 2px 16px rgba($ink, 0.06);
+  direction: rtl;
+}
+
+.board-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $sage-100;
+    border-radius: $rad-pill;
+  }
+}
+
+// ── Days header row ───────────────────────────────────────
+.days-row {
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr); // ← 7 أيام
+  min-width: 700px; // عشان متكسرش على الموبايل
+  border-bottom: 1.5px solid $border-soft;
+  background: $cream;
+}
+
+.corner-cell {
+  background: $cream-dark;
+  border-left: 1.5px solid $border-soft;
+}
+
+.day-head {
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  border-right: 1px solid rgba($stone, 0.3);
+  transition: background $tr;
+
+  &:last-child {
+    border-right: none;
+  }
+
+  &:not(.day-head--today) {
+    background: $cream;
+  }
+
+  &--today {
+    background: $sage-800;
+    position: relative;
+
+    .day-head__name {
+      color: #fff;
+    }
+    .day-head__num {
+      color: rgba(#fff, 0.7);
+    }
+  }
+
+  &__name {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: $ink;
+    line-height: 1.3;
+  }
+
+  &__num {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: $stone-dark;
+    margin-top: 2px;
+  }
+}
+
+.today-pill {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  background: rgba(#fff, 0.25);
+  color: #fff;
+  padding: 1px 7px;
+  border-radius: $rad-pill;
+  margin-top: 4px;
+  letter-spacing: 0.04em;
+  border: 1px solid rgba(#fff, 0.35);
+}
+
+// ── Slot rows ─────────────────────────────────────────────
+.slot-row {
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr); // ← 7 أيام
+  min-width: 700px; // عشان متكسرش على الموبايل
+  border-bottom: 1px solid rgba($stone, 0.25);
+  transition: background 0.15s;
+
+  &:last-child {
+    border-bottom: none;
+  }
+  &:hover {
+    background: rgba($sage-50, 0.6);
+  }
+}
+
+// ── Time cell ─────────────────────────────────────────────
+.time-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.4rem;
+  min-height: 82px;
+  background: $cream;
+  border-left: 1.5px solid $border-soft;
+}
+
+.time-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+
+  &__val {
+    font-size: 12px;
+    font-weight: 700;
+    color: $ink-light;
+    direction: ltr;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+  }
+}
+
+// ── Session cell ──────────────────────────────────────────
+.session-cell {
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 82px;
+  border-right: 1px solid rgba($stone, 0.2);
+  position: relative;
+
+  &:last-child {
+    border-right: none;
+  }
+  &--today {
+    background: rgba($sage-50, 0.5);
+  }
+}
+
+// ── Empty dot grid ────────────────────────────────────────
+.empty-dot-grid {
+  width: 100%;
+  height: 68px;
+  border-radius: $rad-sm;
+  background-image: radial-gradient(
+    circle,
+    rgba($stone, 0.45) 1px,
+    transparent 1px
+  );
+  background-size: 14px 14px;
+  opacity: 0.55;
+}
+
+// ════════════════════════════════════════════════════════════
+//  SESSION CHIP
+// ════════════════════════════════════════════════════════════
+.chip {
+  border-radius: $rad-md;
+  padding: 0.5rem 0.4rem;
+  width: 100%;
+  min-height: 68px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform $tr,
+    box-shadow $tr;
+  border: 1.5px solid transparent;
+
+  &:hover {
+    transform: scale(1.04);
+    box-shadow: 0 5px 16px rgba($ink, 0.12);
+  }
+
+  &:focus {
+    outline: 2px solid $sage-400;
+    outline-offset: 2px;
+  }
+
+  // Pulse for current session
+  &--now::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: $rad-md + 2;
+    border: 2px solid currentColor;
+    animation: pulseRing 1.8s ease-out infinite;
+    opacity: 0.35;
+  }
+
+  &__now-badge {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    font-size: 7.5px;
+    font-weight: 800;
+    background: currentColor;
+    color: #fff;
+    border-radius: $rad-pill;
+    padding: 1px 5px;
+    opacity: 0.9;
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.85;
+
+    svg {
+      width: 17px;
+      height: 17px;
+    }
+  }
+
+  &__name {
+    font-size: 10px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.3;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__slot {
+    font-size: 8.5px;
+    font-weight: 600;
+    opacity: 0.55;
+    direction: ltr;
+    letter-spacing: 0.02em;
+  }
+
+  // ── Color variants (calm, muted) ──────────────────────────
+
+  &--sage {
+    background: $sage-50;
+    border-color: $sage-200;
+    color: $sage-800;
+  }
+
+  &--sand {
+    background: $sand-50;
+    border-color: $sand-200;
+    color: $sand-800;
+  }
+
+  &--mist {
+    background: $blue-50;
+    border-color: $blue-200;
+    color: $blue-800;
+  }
+
+  &--lavender {
+    background: $lav-50;
+    border-color: $lav-200;
+    color: $lav-800;
+  }
+
+  &--blush {
+    background: $rose-50;
+    border-color: $rose-200;
+    color: $rose-800;
+  }
+
+  // ── TODAY emphasis — slightly thicker border + soft glow ──
+  &--today {
+    border-width: 2px;
+  }
+
+  &--today#{&}--sage {
+    border-color: $sage-400;
+    box-shadow: 0 0 0 3px rgba($sage-400, 0.18);
+  }
+  &--today#{&}--sand {
+    border-color: $sand-400;
+    box-shadow: 0 0 0 3px rgba($sand-400, 0.18);
+  }
+  &--today#{&}--mist {
+    border-color: $blue-400;
+    box-shadow: 0 0 0 3px rgba($blue-400, 0.18);
+  }
+  &--today#{&}--lavender {
+    border-color: $lav-400;
+    box-shadow: 0 0 0 3px rgba($lav-400, 0.18);
+  }
+  &--today#{&}--blush {
+    border-color: $rose-400;
+    box-shadow: 0 0 0 3px rgba($rose-400, 0.18);
+  }
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.08);
+    opacity: 0;
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  LEGEND
+// ════════════════════════════════════════════════════════════
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  padding: 0.7rem 1rem;
+  border-top: 1px solid rgba($stone, 0.35);
+  background: $cream;
+  direction: rtl;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: $stone-dark;
+
+  &--today {
+    margin-right: auto;
+    font-weight: 700;
+    color: $ink-light;
+  }
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &--today {
+    background: $sage-800;
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  RESPONSIVE
+// ════════════════════════════════════════════════════════════
+@media (max-width: 600px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .stat-val {
+    font-size: 28px;
+  }
+  .legend {
+    gap: 0.55rem;
+  }
+  .legend-item {
+    font-size: 10px;
+  }
+
+  .days-row,
+  .slot-row {
+    grid-template-columns: 58px repeat(var(--day-count, 6), 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

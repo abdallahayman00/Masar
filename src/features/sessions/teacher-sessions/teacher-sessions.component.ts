@@ -1,3 +1,4 @@
+// teacher-sessions.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -145,6 +146,32 @@ export class TeacherSessionsComponent implements OnInit {
     }
   }
 
+  // ============================================================
+  // CHECK IF SESSION CAN HAVE LINK
+  // ============================================================
+  canAddLink(session: Session): boolean {
+    // الحالات التي لا يمكن إضافة رابط لها
+    const blockedStatuses = [
+      SessionStatusEnum.Completed,
+      SessionStatusEnum.Missed,
+    ];
+    return !blockedStatuses.includes(
+      session.sessionStatus as SessionStatusEnum,
+    );
+  }
+
+  getLinkButtonTooltip(session: Session): string {
+    const status = session.sessionStatus;
+    switch (status) {
+      case SessionStatusEnum.Completed:
+        return 'لا يمكن إضافة رابط لجلسة مكتملة';
+      case SessionStatusEnum.Missed:
+        return 'لا يمكن إضافة رابط لجلسة غياب';
+      default:
+        return 'إضافة رابط الاجتماع';
+    }
+  }
+
   viewSessionDetails(session: Session): void {
     this.selectedSession = session;
     this.showModal = true;
@@ -156,6 +183,16 @@ export class TeacherSessionsComponent implements OnInit {
   }
 
   openAddLinkModal(session: Session): void {
+    // التحقق من إمكانية إضافة رابط
+    if (!this.canAddLink(session)) {
+      const statusText = this.getStatusText(session.sessionStatus);
+      this.toastService.warning(
+        `لا يمكن إضافة رابط لجلسة ${statusText}`,
+        'تنبيه',
+      );
+      return;
+    }
+
     this.selectedSessionForLink = session;
     this.newMeetingLink = session.sessionMeetLink || '';
     this.linkError = '';
@@ -172,6 +209,17 @@ export class TeacherSessionsComponent implements OnInit {
 
   submitMeetingLink(): void {
     if (!this.selectedSessionForLink) return;
+
+    // التحقق الإضافي قبل الحفظ
+    if (!this.canAddLink(this.selectedSessionForLink)) {
+      const statusText = this.getStatusText(
+        this.selectedSessionForLink.sessionStatus,
+      );
+      this.toastService.error(`لا يمكن إضافة رابط لجلسة ${statusText}`, 'خطأ');
+      this.closeLinkModal();
+      return;
+    }
+
     if (!this.newMeetingLink.trim()) {
       this.linkError = 'الرجاء إدخال رابط صالح';
       return;
@@ -216,7 +264,7 @@ export class TeacherSessionsComponent implements OnInit {
             this.selectedSession.sessionMeetLink = this.newMeetingLink;
           }
 
-          // إعادة تعيين المصفوفات لضمان تحديث view (لأن التغيير مباشر على الكائنات)
+          // إعادة تعيين المصفوفات لضمان تحديث view
           this.allSessions = [...this.allSessions];
           this.filteredSessions = [...this.filteredSessions];
           this.toastService.success('تم حفظ رابط الاجتماع بنجاح');
@@ -230,6 +278,7 @@ export class TeacherSessionsComponent implements OnInit {
         },
       });
   }
+
   get totalSessionsCount(): number {
     return this.allSessions.length;
   }
