@@ -100,7 +100,6 @@ export class AppComponent implements OnInit {
     this.studentService.getStudentCardInfo(+studentId).subscribe({
       next: (res) => {
         this.studentData = res
-        console.log(this.studentData)
       }
     })
 
@@ -133,6 +132,7 @@ export class AppComponent implements OnInit {
       next: () => {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
+        localStorage.removeItem('studentId');
         sessionStorage.clear();
         this.router.navigate(['/auth/login']);
       },
@@ -140,6 +140,7 @@ export class AppComponent implements OnInit {
         console.error('Logout Error:', err);
         localStorage.removeItem('token');
         localStorage.removeItem('role');
+        localStorage.removeItem('studentId');
         sessionStorage.clear();
         this.router.navigate(['/auth/login']);
       },

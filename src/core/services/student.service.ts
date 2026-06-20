@@ -63,13 +63,13 @@ export class StudentService {
   }
 
   // جلب الجلسات اليومية للطالب
-  getDailySessions(studentId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/DailySessions/${studentId}`);
+  getDailySessions(studentId: number, todayDate: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/DailySessions/${studentId}?date=${todayDate}`);
   }
 
   // جلب الجلسات الأسبوعية
-  getWeeklySessions(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/WeeklySessions`);
+  getWeeklySessions(studentId: number, startDate: string): Observable<any> {
+    return this.http.get<any[]>(`${this.baseUrl}/WeeklySessions?studentId=${studentId}&startDate=${startDate}`);
   }
 
   // جلب الجلسات الشهرية

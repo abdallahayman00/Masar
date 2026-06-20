@@ -12,6 +12,10 @@ import {
 import { routes } from './app.routes';
 import { authInterceptor } from '../core/interceptors/auth.interceptor';
 import { AuthService } from '../core/services/auth.service';
+import { registerLocaleData } from '@angular/common';
+import localeAr from '@angular/common/locales/ar-EG';
+
+registerLocaleData(localeAr);
 
 // دالة factory لـ APP_INITIALIZER
 export function initializeApp(authService: AuthService) {

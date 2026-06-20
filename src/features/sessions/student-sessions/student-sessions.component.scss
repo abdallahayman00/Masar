@@ -1,0 +1,234 @@
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.9rem;
+  border-radius: 40px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  background: rgba(0, 0, 0, 0.02);
+  backdrop-filter: blur(4px);
+
+  &--upcoming {
+    color: #6e5773;
+    background: rgba(167, 139, 156, 0.12);
+    border-left: 2px solid #a78b9c;
+  }
+
+  &--completed {
+    color: #4a6b60;
+    background: rgba(124, 154, 146, 0.1);
+    border-left: 2px solid #7c9a92;
+  }
+
+  &--missed {
+    color: #b56a56;
+    background: rgba(217, 158, 142, 0.12);
+    border-left: 2px solid #d99e8e;
+  }
+
+  &--ongoing {
+    color: #b87d3e;
+    background: rgba(224, 170, 110, 0.1);
+    border-left: 2px solid #e0aa6e;
+  }
+}
+
+.status-badge::before {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  margin-left: 0.3rem;
+  font-size: 0.7rem;
+  opacity: 0.7;
+  line-height: 0.5;
+  vertical-align: middle;
+}
+
+.status-badge--upcoming::before {
+  content: "\f783";
+}
+
+.status-badge--completed::before {
+  content: "\f058";
+}
+
+.status-badge--missed::before {
+  content: "\f5b1";
+}
+
+.status-badge--ongoing::before {
+  content: "\f017";
+}
+
+.data-table td,
+.data-table th {
+  vertical-align: middle;
+  text-align: center !important;
+  padding: 1rem 0.9rem;
+  border-bottom: 1px solid #f0f2f5;
+  font-size: 0.85rem;
+  color: #2c3e4e;
+}
+
+.data-table th {
+  font-weight: 600;
+  color: #5b6e8c;
+  background: #fbfcfd;
+  letter-spacing: 0.3px;
+}
+
+.avatar-cell {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+.table-card {
+  border-radius: 32px;
+  box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.06);
+  background: white;
+  transition: box-shadow 0.3s;
+
+  &:hover {
+    box-shadow: 0 24px 40px -16px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.meet-link {
+  color: #5b8c7a;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #2c5a4a;
+    text-decoration: underline;
+  }
+}
+
+.text-center {
+  text-align: center;
+}
+
+.meeting-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 40px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  &--active {
+    background: var(--forest);
+    color: #fff;
+    border: 1.5px solid var(--forest);
+
+    &:hover {
+      background: var(--forest-mid);
+      box-shadow: 0 4px 12px rgba(23, 73, 46, 0.25);
+    }
+  }
+
+  &--disabled {
+    background: rgba(0, 0, 0, 0.04);
+    color: var(--muted);
+    border: 1.5px solid rgba(0, 0, 0, 0.08);
+    cursor: default;
+  }
+}
+
+.filter-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin: 2rem 0 1.5rem;
+  padding: 0 1rem;
+}
+
+.filter-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.4rem;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-left: 3px solid transparent;
+  border-radius: 60px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #2c3e4e;
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  i {
+    font-size: 1rem;
+  }
+
+  .badge {
+    background: rgba(0, 0, 0, 0.06);
+    padding: 0.15rem 0.55rem;
+    border-radius: 40px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #5b6e8c;
+    transition: all 0.2s;
+  }
+
+  &:hover {
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px -8px rgba(0, 0, 0, 0.13);
+  }
+}
+
+// الجلسات اليومية
+.filter-tabs .filter-tab:nth-child(1) {
+  &:not(.active) {
+    border-left-color: #d99e8e;
+  }
+
+  &.active {
+    background: linear-gradient(120deg, #fdf3f0, #ffffff);
+    color: #a5604d;
+    border-color: transparent;
+    border-bottom: 2px solid #d99e8e;
+    border-left: 3px solid transparent;
+    box-shadow: 0 6px 14px -6px rgba(217, 158, 142, 0.25);
+    font-weight: 600;
+    transform: translateY(-1px);
+
+    .badge {
+      background: rgba(217, 158, 142, 0.15);
+      color: #a5604d;
+    }
+  }
+}
+
+// الجلسات الأسبوعية
+.filter-tabs .filter-tab:nth-child(2) {
+  &:not(.active) {
+    border-left-color: #7c9a92;
+  }
+
+  &.active {
+    background: linear-gradient(120deg, #eef4f2, #ffffff);
+    color: #4a6b63;
+    border-color: transparent;
+    border-bottom: 2px solid #7c9a92;
+    border-left: 3px solid transparent;
+    box-shadow: 0 6px 14px -6px rgba(124, 154, 146, 0.25);
+    font-weight: 600;
+    transform: translateY(-1px);
+
+    .badge {
+      background: rgba(124, 154, 146, 0.15);
+      color: #4a6b63;
+    }
+  }
+}

@@ -1,1 +1,231 @@
-<p>student-sessions works!</p>
+<main class="page-wrapper">
+  <!-- HERO / HEADER -->
+  <header class="hero" role="banner">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <h1 class="hero__title">جدول الجلسات</h1>
+        <p class="hero__subtitle">جدول الجلسات الخاصة بك</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="filter-tabs">
+    <button
+      class="filter-tab"
+      [class.active]="selectedPeriod === 'daily'"
+      (click)="filterByPeriod('daily')"
+    >
+      <i class="fas fa-calendar-day"></i>
+      <span>الجلسات اليومية</span>
+      <span class="badge">{{ dailyCount }}</span>
+    </button>
+
+    <button
+      class="filter-tab"
+      [class.active]="selectedPeriod === 'weekly'"
+      (click)="filterByPeriod('weekly')"
+    >
+      <i class="fas fa-calendar-week"></i>
+      <span>الجلسات الأسبوعية</span>
+
+      <span class="badge">{{ weeklyCount }}</span>
+    </button>
+  </div>
+
+  <section aria-label="جدول الجلسات">
+    <div class="section-label">
+      <span class="section-label__title">
+        <i class="ti ti-video"></i> الجلسات
+      </span>
+    </div>
+
+    <div *ngIf="selectedPeriod === 'daily'">
+      <div class="table-card">
+        <div class="table-card__header">
+          <div class="table-card__title-group">
+            <h2 class="table-card__title">
+              <span class="title-dot" aria-hidden="true"></span>
+              جلسات اليوم
+            </h2>
+            <p class="table-card__subtitle">قائمة بالجلسات المقررة اليوم</p>
+          </div>
+        </div>
+
+        <div
+          class="table-card__body"
+          role="region"
+          aria-label="بيانات الجلسات"
+          tabindex="0"
+        >
+          <table class="data-table" aria-describedby="table-desc">
+            <caption id="table-desc" class="u-sr-only">
+              جدول يعرض جلسات اليوم
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">المعلم</th>
+                <th scope="col">المسار</th>
+                <th scope="col">الحالة</th>
+                <th scope="col">الوقت</th>
+                <th scope="col">رابط اللقاء</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="isLoading">
+                <td colspan="7" class="text-center">جاري التحميل...</td>
+              </tr>
+              <tr *ngIf="!isLoading && errorMessage">
+                <td colspan="7" class="text-center" style="color: #dc2626">
+                  {{ errorMessage }}
+                </td>
+              </tr>
+              <tr
+                *ngIf="
+                  !isLoading && !errorMessage && dailySessionsData.length === 0
+                "
+              >
+                <td colspan="7" class="text-center">لا توجد جلسات اليوم</td>
+              </tr>
+              <tr *ngFor="let session of dailySessionsData">
+                <td>
+                  <div class="avatar-cell">
+                    <span class="name-col first-td">{{
+                      session.teacherName
+                    }}</span>
+                  </div>
+                </td>
+                <td>{{ session.trackName }}</td>
+                <td>
+                  <span
+                    class="status-badge"
+                    [ngClass]="getStatusClass(session.status)"
+                  >
+                    {{ getStatusText(session.status) }}
+                  </span>
+                </td>
+                <td dir="ltr">{{ session.timeString }}</td>
+                <td>
+                  <a
+                    *ngIf="session.meetingLink"
+                    [href]="session.meetingLink"
+                    target="_blank"
+                    class="meeting-btn meeting-btn--active"
+                  >
+                    <i class="fa-solid fa-video"></i>
+                    انضمام
+                  </a>
+                  <span
+                    *ngIf="!session.meetingLink"
+                    class="meeting-btn meeting-btn--disabled"
+                  >
+                    <i class="fa-solid fa-clock"></i>
+                    لم تبدأ بعد
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="selectedPeriod === 'weekly'">
+      <div class="table-card">
+        <div class="table-card__header">
+          <div class="table-card__title-group">
+            <h2 class="table-card__title">
+              <span class="title-dot" aria-hidden="true"></span>
+              جلسات الاسبوع
+            </h2>
+            <p class="table-card__subtitle">
+              قائمة بالجلسات المقررة هذا الاسبوع
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="table-card__body"
+          role="region"
+          aria-label="بيانات الجلسات"
+          tabindex="0"
+        >
+          <table class="data-table" aria-describedby="table-desc">
+            <caption id="table-desc" class="u-sr-only">
+              جدول يعرض جلسات الاسبوع
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">اليوم</th>
+                <th scope="col">الوقت</th>
+                <th scope="col">المسار</th>
+                <th scope="col">المعلم</th>
+                <th scope="col">الحالة</th>
+                <th scope="col">رابط اللقاء</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="isLoading">
+                <td colspan="7" class="text-center">جاري التحميل...</td>
+              </tr>
+              <tr *ngIf="!isLoading && errorMessage">
+                <td colspan="7" class="text-center" style="color: #dc2626">
+                  {{ errorMessage }}
+                </td>
+              </tr>
+              <tr
+                *ngIf="
+                  !isLoading && !errorMessage && weeklySessionData.length === 0
+                "
+              >
+                <td colspan="7" class="text-center">
+                  لا توجد جلسات هذا الاسبوع
+                </td>
+              </tr>
+
+              <ng-container *ngFor="let days of weeklySessionData">
+                <tr *ngFor="let session of days.sessions">
+                  <td>
+                    <div class="avatar-cell">
+                      <span class="name-col first-td">{{
+                        session.sessionDate | date: "EEEE d MMMM" : "" : "ar-EG"
+                      }}</span>
+                    </div>
+                  </td>
+                  <td dir="ltr">{{ session.timeString }}</td>
+                  <td>{{ session.trackName }}</td>
+                  <td>{{ session.teacherName }}</td>
+                  <td>
+                    <span
+                      class="status-badge"
+                      [ngClass]="getStatusClass(session.status)"
+                    >
+                      {{ getStatusText(session.status) }}
+                    </span>
+                  </td>
+                  <td>
+                    <a
+                      *ngIf="session.meetingLink"
+                      [href]="session.meetingLink"
+                      target="_blank"
+                      class="meeting-btn meeting-btn--active"
+                    >
+                      <i class="fa-solid fa-video"></i>
+                      انضمام
+                    </a>
+                    <span
+                      *ngIf="!session.meetingLink"
+                      class="meeting-btn meeting-btn--disabled"
+                    >
+                      <i class="fa-solid fa-clock"></i>
+                      لم تبدأ بعد
+                    </span>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
