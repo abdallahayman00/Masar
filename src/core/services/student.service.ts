@@ -56,7 +56,7 @@ export class StudentService {
   }
 
   // جلب جميع مسارات الطالب
-  getStudentTracks(studentId: number): Observable<any[]> {
+  getStudentTracks(studentId: number): Observable<any> {
     return this.http.get<any[]>(
       `${this.baseUrl}/GetStudentTracks/${studentId}`,
     );
@@ -83,7 +83,7 @@ export class StudentService {
   getStudentTrackSessionStatuses(
     studentId: number,
     trackId: number,
-  ): Observable<any[]> {
+  ): Observable<any> {
     return this.http.get<any[]>(
       `${this.baseUrl}/GetStudentTrackSessionStatuses/${studentId}/${trackId}`,
     );

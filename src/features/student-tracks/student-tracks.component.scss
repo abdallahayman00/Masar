@@ -1,0 +1,251 @@
+$color-primary:          #1a3a2a;
+$color-primary-mid:      #2d5a3d;
+$color-accent-gold:      #c9a84c;
+$color-badge-active-bg:  #f0c93a;
+$color-badge-active-text:#3a2800;
+$color-progress-track:   #e8e8e8;
+$color-progress-fill:    #2d5a3d;
+$color-surface:          #ffffff;
+$color-bg-stat:          #f8f8f5;
+$color-border:           #e0e0dc;
+$color-text-main:        #1a1a1a;
+$color-text-muted:       #666666;
+
+$radius-card:  16px;
+$radius-badge: 8px;
+$radius-btn:   10px;
+$radius-img:   12px;
+$radius-stat:  8px;
+
+$font-main: 'Cairo', sans-serif;
+
+.course-card {
+  font-family: $font-main;
+  background: $color-surface;
+  border-radius: $radius-card;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid $color-border;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s ease;
+  direction: rtl;
+
+  &:hover {
+    box-shadow: 0 6px 24px rgba(26, 58, 42, 0.12);
+  }
+
+  &__thumbnail {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    border-radius: $radius-img $radius-img 0 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 4px 12px;
+    border-radius: $radius-badge;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.4;
+
+    &--waiting {
+      background: #e0e0e0;
+      color: #555555;
+    }
+    &--active {
+      background: $color-badge-active-bg;
+      color: $color-badge-active-text;
+    }
+    &--completed {
+      background: #d4edda;
+      color: #1a5c2a;
+    }
+  }
+
+  &__body {
+    padding: 16px 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    flex: 1;
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__title {
+    font-size: 16px;
+    font-weight: 700;
+    color: $color-text-main;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  &__supervisor {
+    font-size: 13px;
+    color: $color-text-muted;
+    font-weight: 500;
+    margin: 0;
+
+    span {
+      color: $color-text-main;
+      font-weight: 600;
+    }
+  }
+
+  &__stats {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  &__stat {
+    flex: 1;
+    background: $color-bg-stat;
+    border: 1px solid $color-border;
+    border-radius: $radius-stat;
+    padding: 8px 6px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    &-label {
+      font-size: 11px;
+      color: $color-text-muted;
+      font-weight: 500;
+    }
+
+    &-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: $color-primary;
+      line-height: 1;
+    }
+
+    &--pending &-value {
+      color: $color-accent-gold;
+    }
+  }
+
+  &__progress {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    &-label {
+      font-size: 13px;
+      color: $color-text-muted;
+      font-weight: 500;
+    }
+
+    &-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: $color-primary;
+    }
+
+    &-track {
+      width: 100%;
+      height: 8px;
+      background: $color-progress-track;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    &-fill {
+      height: 100%;
+      background: $color-progress-fill;
+      border-radius: 99px;
+      transition: width 0.5s ease;
+    }
+  }
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    background: $color-primary;
+    color: #ffffff;
+    border: none;
+    border-radius: $radius-btn;
+    font-family: $font-main;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.18s ease, transform 0.1s ease;
+
+    &:hover { background: $color-primary-mid; }
+    &:active { transform: scale(0.98); }
+
+    svg {
+      transform: rotate(180deg);
+      flex-shrink: 0;
+    }
+
+    &:disabled,
+    &--disabled {
+      background: #cccccc;
+      color: #888888;
+      cursor: not-allowed;
+
+      &:hover { background: #cccccc; }
+    }
+  }
+
+  &--completed &__progress-fill {
+    background: #2d8a4e;
+  }
+}
+
+.state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 60px 20px;
+  text-align: center;
+
+  &__text {
+    font-family: $font-main;
+    font-size: 15px;
+    color: $color-text-muted;
+    margin: 0;
+  }
+
+  &__icon {
+    font-size: 40px;
+    color: $color-text-muted;
+
+    &--error {
+      color: #dc3545;
+    }
+  }
+}

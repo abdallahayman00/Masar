@@ -1,1 +1,162 @@
-<p>student-tracks works!</p>
+<main class="page-wrapper">
+  <header class="hero" role="banner">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <h1 class="hero__title">مساراتي الدراسية</h1>
+        <p class="hero__subtitle">
+          بوابة البرامج التعليمية المخصصة لرحلتك المعرفية
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <section aria-label="قائمة المسارات">
+    <div class="section-label">
+      <span class="section-label__title"
+        ><i class="ti ti-layout-grid"></i> قائمة المسارات</span
+      >
+    </div>
+
+    <div *ngIf="isLoading" class="state-container">
+      <div class="spinner-border text-success" role="status">
+        <span class="visually-hidden">جاري التحميل...</span>
+      </div>
+      <p class="state-container__text">جاري تحميل المسارات...</p>
+    </div>
+
+    <div *ngIf="!isLoading && hasError" class="state-container">
+      <i
+        class="fa-solid fa-circle-exclamation state-container__icon state-container__icon--error"
+      ></i>
+      <p class="state-container__text">حدث خطأ أثناء تحميل المسارات</p>
+      <button class="course-card__btn w-auto px-4" (click)="getStudentTracks()">
+        إعادة المحاولة
+      </button>
+    </div>
+
+    <div
+      *ngIf="!isLoading && !hasError && studentTracksData.length === 0"
+      class="state-container"
+    >
+      <i class="fa-solid fa-folder-open state-container__icon"></i>
+      <p class="state-container__text">لا توجد مسارات مسجلة بعد</p>
+    </div>
+
+    <div
+      *ngIf="!isLoading && !hasError && studentTracksData.length > 0"
+      class="container-fluid px-3 px-md-4"
+    >
+      <div class="row g-4 align-items-stretch">
+        <div
+          *ngFor="let track of studentTracksData"
+          class="col-12 col-md-6 col-lg-4 d-flex"
+        >
+          <div
+            class="course-card w-100"
+            [class.course-card--waiting]="track.bookingStatus === 'Waiting'"
+            [class.course-card--confirmed]="track.bookingStatus === 'Confirmed'"
+            [class.course-card--completed]="track.bookingStatus === 'Completed'"
+          >
+            <div class="course-card__thumbnail">
+              <img [src]="track.trackPhoto" [alt]="track.trackName" />
+              <span
+                class="course-card__badge"
+                [class.course-card__badge--waiting]="
+                  track.bookingStatus === 'Waiting'
+                "
+                [class.course-card__badge--active]="
+                  track.bookingStatus === 'Confirmed'
+                "
+                [class.course-card__badge--completed]="
+                  track.bookingStatus === 'Completed'
+                "
+              >
+                {{
+                  track.bookingStatus === "Waiting"
+                    ? "في الانتظار"
+                    : track.bookingStatus === "Confirmed"
+                      ? "نشط"
+                      : "مكتمل"
+                }}
+              </span>
+            </div>
+
+            <div class="course-card__body">
+              <div class="course-card__meta">
+                <h3 class="course-card__title">{{ track.trackName }}</h3>
+                <p class="course-card__supervisor">
+                  المعلم: <span>{{ track.teacherName }}</span>
+                </p>
+              </div>
+
+              <div class="course-card__stats">
+                <div class="course-card__stat">
+                  <span class="course-card__stat-label">الإجمالي</span>
+                  <span class="course-card__stat-value">{{
+                    track.totalSessions
+                  }}</span>
+                </div>
+                <div class="course-card__stat">
+                  <span class="course-card__stat-label">المنجز</span>
+                  <span class="course-card__stat-value">{{
+                    track.completedSessions
+                  }}</span>
+                </div>
+                <div class="course-card__stat course-card__stat--pending">
+                  <span class="course-card__stat-label">المتبقي</span>
+                  <span class="course-card__stat-value">{{
+                    track.remainingSessions
+                  }}</span>
+                </div>
+              </div>
+
+              <div class="course-card__progress">
+                <div class="course-card__progress-header">
+                  <span class="course-card__progress-label"
+                    >التقدم الإجمالي</span
+                  >
+                  <span class="course-card__progress-value">
+                    {{ getProgressPercent(track) }}%
+                  </span>
+                </div>
+                <div class="course-card__progress-track">
+                  <div
+                    class="course-card__progress-fill"
+                    [style.width.%]="getProgressPercent(track)"
+                  ></div>
+                </div>
+              </div>
+
+              <button
+                class="course-card__btn"
+                [disabled]="track.bookingStatus === 'Waiting'"
+                [class.course-card__btn--disabled]="
+                  track.bookingStatus === 'Waiting'
+                "
+                (click)="navigateToTrack(track)"
+              >
+                {{
+                  track.bookingStatus === "Completed"
+                    ? "عرض المسار"
+                    : "دخول المسار"
+                }}
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

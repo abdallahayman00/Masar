@@ -128,6 +128,24 @@ export const routes: Routes = [
   },
 
   {
+    path: 'student-tracks-details/:trackId',
+    canActivate: [authGuard, studentGuard],
+    loadComponent: () =>
+      import('../features/student-tracks-details/student-tracks-details.component').then(
+        (m) => m.StudentTracksDetailsComponent,
+      )
+  },
+
+  {
+    path: 'student-extra-track',
+    canActivate: [authGuard, studentGuard],
+    loadComponent: () =>
+      import('../features/student-extra-track/student-extra-track.component').then(
+        (m) => m.StudentExtraTrackComponent,
+      )
+  },
+
+  {
     path: 'weekly-schedule',
     canActivate: [authGuard, teacherGuard],
     loadComponent: () =>

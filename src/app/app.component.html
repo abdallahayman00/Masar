@@ -375,10 +375,23 @@
                     [routerLinkActiveOptions]="{ exact: true }"
                     (click)="onNavigate()"
                   >
-                    <i class="ti ti-route nav-icon"></i>
-                    <span class="nav-label"> المسارات</span>
+                    <i class="ti ti-book-2 nav-icon"></i>
+                    <span class="nav-label"> مساراتي</span>
                   </a>
-                  <div class="nav-tooltip">المسارات</div>
+                  <div class="nav-tooltip">مساراتي</div>
+                </div>
+                <div class="nav-item-wrap">
+                  <a
+                    class="nav-item"
+                    routerLink="/student-extra-track"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="onNavigate()"
+                  >
+                    <i class="ti ti-circle-plus nav-icon"></i>
+                    <span class="nav-label"> إضافة مسار</span>
+                  </a>
+                  <div class="nav-tooltip">إضافة مسار</div>
                 </div>
               </div>
             </nav>
