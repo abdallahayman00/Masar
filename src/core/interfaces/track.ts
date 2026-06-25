@@ -1,7 +1,7 @@
-// track.interface.ts
+// track.interface.ts - أضف هذه الخاصية
 export interface Track {
   id?: number;
-  trackId?: number; // الـ API يستخدم trackId
+  trackId?: number;
   name?: string;
   trackName?: string;
   description?: string;
@@ -13,32 +13,19 @@ export interface Track {
   price?: number;
   coverImagePath?: string;
   trackPhoto?: string;
+  trackFilePath?: string; // ✅ أضف هذا السطر
   attachments?: string[];
   createdAt?: Date | string;
   updatedAt?: Date | string;
   isActive?: boolean;
 }
 
-// دالة حساب السعر الإجمالي
-export function calculateTotalPrice(track: Track): number {
-  // إذا كان السعر الإجمالي موجوداً من الـ API
-  if (track.trackPrice) return track.trackPrice;
-  if (track.price) return track.price;
-
-  // حساب السعر الإجمالي = سعر الحصة × عدد الحصص
-  const sessionPrice = track.sessionPrice || 0;
-  const numberOfSessions = track.numberOfSessions || 0;
-  return sessionPrice * numberOfSessions;
-}
-
-// دالة مساعدة لتوحيد بيانات المسار من الـ API
+// تحديث دالة normalizeTrack
 export function normalizeTrack(apiTrack: any): Track {
-  // استخراج القيم الأساسية
   const sessionPrice = apiTrack.sessionPrice || 0;
   const numberOfSessions = apiTrack.numberOfSessions || 0;
-
-  // حساب السعر الإجمالي (إذا كان موجوداً من API استخدمه، وإلا احسبه)
-  const totalPrice = apiTrack.price || sessionPrice * numberOfSessions;
+  const totalPrice =
+    apiTrack.price || apiTrack.trackPrice || sessionPrice * numberOfSessions;
 
   return {
     id: apiTrack.trackId || apiTrack.id,
@@ -47,30 +34,17 @@ export function normalizeTrack(apiTrack: any): Track {
     trackName: apiTrack.trackName,
     description: apiTrack.description,
     numberOfSessions: numberOfSessions,
-    sessionDuration: apiTrack.sessionMinutes, // API uses sessionMinutes
+    sessionDuration: apiTrack.sessionMinutes,
     sessionMinutes: apiTrack.sessionMinutes,
     sessionPrice: sessionPrice,
-    trackPrice: totalPrice, // السعر الإجمالي المحسوب
-    price: totalPrice, // نفس القيمة للتأكد
+    trackPrice: totalPrice,
+    price: totalPrice,
     coverImagePath: apiTrack.trackPhoto || apiTrack.coverImagePath,
     trackPhoto: apiTrack.trackPhoto,
+    trackFilePath: apiTrack.trackFilePath, // ✅ أضف هذا السطر
     attachments: apiTrack.attachments,
     createdAt: apiTrack.createdAt,
     updatedAt: apiTrack.updatedAt,
     isActive: apiTrack.isActive,
   };
-}
-
-// دالة لتنسيق السعر
-export function formatPrice(price: number): string {
-  return price.toLocaleString('ar-EG') + ' ج.م';
-}
-
-// دالة للحصول على نص يوضح تفاصيل السعر
-export function getPriceDetails(track: Track): string {
-  const sessionPrice = track.sessionPrice || 0;
-  const numberOfSessions = track.numberOfSessions || 0;
-  const totalPrice = calculateTotalPrice(track);
-
-  return `${sessionPrice} ج.م × ${numberOfSessions} حصة = ${formatPrice(totalPrice)}`;
 }

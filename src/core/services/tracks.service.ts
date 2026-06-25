@@ -115,10 +115,26 @@ export class TracksService {
         catchError(this.handleError),
       );
   }
-  getTrackById(id: number): Observable<Track | undefined> {
-    return this.getAllTracks().pipe(
-      map((tracks) => tracks.find((track) => track.id === id)),
-    );
+  // tracks.service.ts - أضف هذه الدالة الجديدة
+  // tracks.service.ts
+  // tracks.service.ts - أضف هذه الدالة الجديدة
+  getTrackById(id: number): Observable<Track> {
+    const token = this.getToken();
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    headers = headers.set('Accept', 'application/json');
+
+    return this.http
+      .get<any>(`${this.apiUrl}/GetTrackById/${id}`, { headers })
+      .pipe(
+        map((response) => {
+          console.log('📥 Track details response:', response);
+          return normalizeTrack(response);
+        }),
+        catchError(this.handleError),
+      );
   }
   // ================ حذف المسار ================
   deleteTrack(trackId: number): Observable<any> {
