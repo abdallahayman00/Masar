@@ -1,0 +1,228 @@
+<main class="page-wrapper">
+  <header class="hero" role="banner">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <h1 class="hero__title">اختر معلمك</h1>
+        <p class="hero__subtitle">اختر المعلم المناسب لك للانضمام الي المسار</p>
+      </div>
+    </div>
+  </header>
+
+  <section aria-label="قائمة المسارات">
+    <div class="section-label">
+      <span class="section-label__title">
+        <i class="ti ti-user-search"></i> قائمة المعلمين
+      </span>
+    </div>
+
+    <!-- Loading -->
+    <div class="state-center" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>جاري التحميل...</p>
+    </div>
+
+    <!-- Error -->
+    <div class="state-center error-state" *ngIf="error && !isLoading">
+      <div class="error-icon-circle">
+        <i class="fas fa-exclamation"></i>
+      </div>
+      <p class="error-msg">حدث خطأ أثناء تحميل المعلمين</p>
+      <button class="btn-retry" (click)="getAllTeachers()">
+        إعادة المحاولة
+      </button>
+    </div>
+
+    <!-- Teachers List -->
+    <div class="teachers-list" *ngIf="!isLoading && !error">
+      <div class="teacher-row" *ngFor="let teacher of teachers">
+        <!-- Header -->
+        <div class="teacher-header" (click)="toggleTeacher(teacher)">
+          <div
+            class="avatar"
+            [ngClass]="
+              teacher.gender === 'Female' ? 'avatar-female' : 'avatar-male'
+            "
+          >
+            <img
+              *ngIf="teacher.profileImagePath"
+              [src]="teacher.profileImagePath"
+              [alt]="teacher.teacherName"
+              (error)="$any($event.target).style.display = 'none'"
+            />
+            <span *ngIf="!teacher.profileImagePath">{{
+              getInitial(teacher.teacherName)
+            }}</span>
+          </div>
+
+          <div class="teacher-info">
+            <p class="teacher-name">{{ teacher.teacherName }}</p>
+            <p class="teacher-meta">{{ teacher.summary }}</p>
+          </div>
+
+          <span
+            class="gender-badge"
+            [ngClass]="
+              teacher.gender === 'Female' ? 'badge-female' : 'badge-male'
+            "
+          >
+            {{ teacher.gender === "Female" ? "أنثى" : "ذكر" }}
+          </span>
+
+          <i
+            class="fas fa-chevron-down chevron"
+            [class.open]="isOpen(teacher.teacherId)"
+          ></i>
+        </div>
+
+        <!-- Body -->
+        <div class="teacher-body" *ngIf="isOpen(teacher.teacherId)">
+          <p class="summary-text">{{ teacher.summary }}</p>
+
+          <p class="slots-title">المواعيد المتاحة</p>
+
+          <!-- Slots Loading -->
+          <div class="state-center" *ngIf="slotsLoading[teacher.teacherId]">
+            <div class="spinner"></div>
+          </div>
+
+          <!-- Slots List -->
+          <div
+            class="slots-list"
+            *ngIf="
+              !slotsLoading[teacher.teacherId] &&
+              getSlots(teacher.teacherId).length > 0
+            "
+          >
+            <div
+              class="slot-row"
+              *ngFor="let slot of getSlots(teacher.teacherId)"
+            >
+              <span class="slot-days"
+                >{{ slot.firstDay }} — {{ slot.secondDay }}</span
+              >
+              <span class="slot-time">
+                <span dir="ltr">{{
+                  getTimeLabel(slot.timeFormatted).formatted
+                }}</span>
+                <span class="time-period">{{
+                  getTimeLabel(slot.timeFormatted).period
+                }}</span>
+              </span>
+              <span class="slot-booked" *ngIf="slot.isBooked">محجوز</span>
+              <button
+                class="slot-btn"
+                *ngIf="!slot.isBooked"
+                (click)="openDialog(teacher, slot)"
+              >
+                احجز
+              </button>
+            </div>
+          </div>
+
+          <!-- No Slots -->
+          <p
+            class="no-slots-msg"
+            *ngIf="
+              !slotsLoading[teacher.teacherId] &&
+              getSlots(teacher.teacherId).length === 0
+            "
+          >
+            لا توجد مواعيد متاحة
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dialog Overlay -->
+    <div class="dialog-overlay" *ngIf="showDialog" (click)="closeDialog()">
+      <div class="dialog" (click)="$event.stopPropagation()">
+        <!-- Confirm View -->
+        <ng-container *ngIf="!showPending && !showError">
+          <div class="dialog-header">
+            <span class="dialog-title">تأكيد الحجز</span>
+            <button class="close-btn" (click)="closeDialog()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="dialog-body">
+            <div class="info-row">
+              <span class="info-label">المعلم</span>
+              <span class="info-value">{{ selectedTeacher?.teacherName }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">الموعد</span>
+              <span class="info-value slot-value">
+                <span
+                  >{{ selectedSlot?.firstDay }} —
+                  {{ selectedSlot?.secondDay }}</span
+                >
+                <span class="divider-dot">|</span>
+                <span dir="ltr">{{
+                  getTimeLabel(selectedSlot?.timeFormatted ?? "").formatted
+                }}</span>
+                <span class="time-period">{{
+                  getTimeLabel(selectedSlot?.timeFormatted ?? "").period
+                }}</span>
+              </span>
+            </div>
+            <hr class="divider" />
+            <div class="transfer-box">
+              <span class="transfer-label">حوّل المبلغ على الرقم التالي</span>
+              <p class="transfer-number" dir="ltr">{{ TRANSFER_NUMBER }}</p>
+              <div class="amount-badge">المبلغ: {{ trackPrice }} جنيه</div>
+            </div>
+            <p class="dialog-note">
+              بعد التحويل اضغط تأكيد وسيتم مراجعة طلبك من قِبَل الإدارة
+            </p>
+          </div>
+          <div class="dialog-footer">
+            <button class="btn-cancel" (click)="closeDialog()">إلغاء</button>
+            <button
+              class="btn-confirm"
+              (click)="confirmBooking()"
+              [disabled]="isBooking"
+            >
+              {{ isBooking ? "جاري الإرسال..." : "تأكيد" }}
+            </button>
+          </div>
+        </ng-container>
+
+        <!-- Pending View -->
+        <ng-container *ngIf="showPending">
+          <div class="pending-body">
+            <div class="pending-icon-wrap">
+              <i class="fas fa-clock"></i>
+            </div>
+            <p class="pending-title">جاري مراجعة طلب التسجيل</p>
+            <p class="pending-msg">
+              تم استلام طلبك بنجاح، وسيتم مراجعته من قِبَل الإدارة والتواصل معك
+              في أقرب وقت
+            </p>
+            <div class="pending-note">
+              <i class="fas fa-info-circle"></i>
+              تأكد من إتمام عملية التحويل حتى يتم قبول طلبك
+            </div>
+            <button class="btn-tracks" (click)="goToTracks()">
+              <i class="fas fa-list"></i>
+              العودة إلى المسارات
+            </button>
+          </div>
+        </ng-container>
+
+        <!-- Error View -->
+        <ng-container *ngIf="showError">
+          <div class="pending-body">
+            <div class="pending-icon-wrap error-icon-wrap">
+              <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <p class="pending-title">فشل الحجز</p>
+            <p class="pending-msg">{{ bookingError }}</p>
+            <button class="btn-tracks error-btn" (click)="closeDialog()">
+              حسناً
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </section>
+</main>

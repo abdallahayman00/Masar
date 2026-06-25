@@ -103,7 +103,7 @@
                     {{ getStatusText(session.status) }}
                   </span>
                 </td>
-                <td dir="ltr">{{ session.timeString }}</td>
+                <td>{{ formatTimeArabic(session.timeString) }}</td>
                 <td>
                   <a
                     *ngIf="session.meetingLink"
@@ -119,7 +119,7 @@
                     class="meeting-btn meeting-btn--disabled"
                   >
                     <i class="fa-solid fa-clock"></i>
-                    لم تبدأ بعد
+                    رابط الجلسه
                   </span>
                 </td>
               </tr>
@@ -191,7 +191,7 @@
                       }}</span>
                     </div>
                   </td>
-                  <td dir="ltr">{{ session.timeString }}</td>
+                  <td>{{ formatTimeArabic(session.timeString) }}</td>
                   <td>{{ session.trackName }}</td>
                   <td>{{ session.teacherName }}</td>
                   <td>
@@ -217,7 +217,7 @@
                       class="meeting-btn meeting-btn--disabled"
                     >
                       <i class="fa-solid fa-clock"></i>
-                      لم تبدأ بعد
+                      رابط الجلسة
                     </span>
                   </td>
                 </tr>

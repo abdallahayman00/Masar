@@ -128,20 +128,29 @@ export const routes: Routes = [
   },
 
   {
-    path: 'student-tracks-details/:trackId',
+    path: 'track-details/:trackId',
     canActivate: [authGuard, studentGuard],
     loadComponent: () =>
-      import('../features/student-tracks-details/student-tracks-details.component').then(
-        (m) => m.StudentTracksDetailsComponent,
+      import('../features/track-details/track-details.component').then(
+        (m) => m.TrackDetailsComponent,
       )
   },
 
   {
-    path: 'student-extra-track',
+    path: 'available-tracks',
     canActivate: [authGuard, studentGuard],
     loadComponent: () =>
-      import('../features/student-extra-track/student-extra-track.component').then(
-        (m) => m.StudentExtraTrackComponent,
+      import('../features/available-tracks/available-tracks.component').then(
+        (m) => m.AvailableTracksComponent,
+      )
+  },
+
+  {
+    path: 'select-teacher/:trackId',
+    canActivate: [authGuard, studentGuard],
+    loadComponent: () =>
+      import('../features/select-teacher/select-teacher.component').then(
+        (m) => m.SelectTeacherComponent,
       )
   },
 

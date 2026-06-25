@@ -29,7 +29,7 @@
         class="fa-solid fa-circle-exclamation state-container__icon state-container__icon--error"
       ></i>
       <p class="state-container__text">حدث خطأ أثناء تحميل المسارات</p>
-      <button class="course-card__btn w-auto px-4" (click)="getStudentTracks()">
+      <button class="btn-retry" (click)="getStudentTracks()">
         إعادة المحاولة
       </button>
     </div>
@@ -44,7 +44,7 @@
 
     <div
       *ngIf="!isLoading && !hasError && studentTracksData.length > 0"
-      class="container-fluid px-3 px-md-4"
+      class=""
     >
       <div class="row g-4 align-items-stretch">
         <div
@@ -58,7 +58,34 @@
             [class.course-card--completed]="track.bookingStatus === 'Completed'"
           >
             <div class="course-card__thumbnail">
-              <img [src]="track.trackPhoto" [alt]="track.trackName" />
+              <img
+                *ngIf="track.trackPhoto"
+                [src]="track.trackPhoto"
+                [alt]="track.trackName"
+              />
+
+              <!-- شكل بديل عند عدم وجود صورة للمسار -->
+              <div
+                *ngIf="!track.trackPhoto"
+                class="course-card__thumbnail-placeholder"
+              >
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M12 5.5C10.5 4.2 8 3.5 5.5 3.5C4.3 3.5 3.1 3.65 2 4V17.5C3.1 17.15 4.3 17 5.5 17C8 17 10.5 17.7 12 19V5.5Z"
+                  />
+                  <path
+                    d="M12 5.5C13.5 4.2 16 3.5 18.5 3.5C19.7 3.5 20.9 3.65 22 4V17.5C20.9 17.15 19.7 17 18.5 17C16 17 13.5 17.7 12 19V5.5Z"
+                  />
+                  <rect
+                    x="11.4"
+                    y="5.3"
+                    width="1.2"
+                    height="13.7"
+                    fill="#e8f3ec"
+                  />
+                </svg>
+              </div>
+
               <span
                 class="course-card__badge"
                 [class.course-card__badge--waiting]="
@@ -93,19 +120,19 @@
                 <div class="course-card__stat">
                   <span class="course-card__stat-label">الإجمالي</span>
                   <span class="course-card__stat-value">{{
-                    track.totalSessions
+                    track.totalSessions | arabicNumber
                   }}</span>
                 </div>
                 <div class="course-card__stat">
                   <span class="course-card__stat-label">المنجز</span>
                   <span class="course-card__stat-value">{{
-                    track.completedSessions
+                    track.completedSessions | arabicNumber
                   }}</span>
                 </div>
                 <div class="course-card__stat course-card__stat--pending">
                   <span class="course-card__stat-label">المتبقي</span>
                   <span class="course-card__stat-value">{{
-                    track.remainingSessions
+                    track.remainingSessions | arabicNumber
                   }}</span>
                 </div>
               </div>

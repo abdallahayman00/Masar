@@ -185,4 +185,9 @@ export class TracksService {
       originalError: error,
     }));
   }
+
+  //  جلب جميع المسارات المتاحة للطالب
+  getAllTracksForStu(): Observable<any> {
+    return this.http.get<any[]> (`${this.apiUrl}/GetAllTracksForStu`)
+  }
 }

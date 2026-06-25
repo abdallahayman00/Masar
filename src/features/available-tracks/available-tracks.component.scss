@@ -1,0 +1,405 @@
+@use 'sass:color';
+
+// ── Variables ────────────────────────────────────────────
+$green-950: #0a2417;
+$green-900: #0f3320;
+$green-800: #17492e;
+$green-700: #1f6040;
+$green-600: #287a52;
+$green-500: #329665;
+$green-400: #4db87e;
+$green-300: #7dd4a4;
+$green-200: #b0e5cb;
+$green-100: #d4f0e3;
+$green-50:  #eef8f3;
+
+$gold-700: #7a6008;
+$gold-600: #9a7c0a;
+$gold-500: #c8a415;
+$gold-400: #d4b53a;
+$gold-300: #e2cd74;
+$gold-200: #eddb9a;
+$gold-100: #f5ebb3;
+$gold-50:  #fdf8e6;
+
+$cream-200: #e8e2cc;
+$cream-100: #f4f1e8;
+$cream-50:  #fafaf7;
+
+$color-primary:       $green-600;
+$color-primary-dark:  $green-800;
+$color-primary-light: $green-50;
+$color-accent:        $gold-500;
+$color-bg:            $cream-50;
+$color-surface:       #ffffff;
+$color-border:        rgba($green-200, 0.6);
+$color-text-primary:  $green-950;
+$color-text-muted:    $green-700;
+$color-text-light:    $green-400;
+
+$font-main: 'Cairo', sans-serif;
+$radius-btn: 10px;
+
+// ── Grid ─────────────────────────────────────────────────
+.tracks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+// ── Card ─────────────────────────────────────────────────
+.track-card {
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+
+  &:hover {
+    border-color: $green-300;
+    box-shadow: 0 4px 16px rgba($green-800, 0.08);
+    transform: translateY(-2px);
+  }
+}
+
+.card-image {
+  width: 100%;
+  height: 140px;
+  overflow: hidden;
+
+  .track-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s;
+  }
+
+  .img-placeholder {
+    width: 100%;
+    height: 100%;
+    background: $green-50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    i {
+      font-size: 36px;
+      color: $green-200;
+    }
+  }
+}
+
+.track-card:hover .track-img {
+  transform: scale(1.04);
+}
+
+.card-body {
+  padding: 14px 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.track-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: $color-text-primary;
+  margin: 0;
+}
+
+.track-desc {
+  font-size: 12px;
+  color: $color-text-muted;
+  line-height: 1.6;
+  margin: 0;
+  flex: 1;
+}
+
+.track-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.meta-badge {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  i { font-size: 10px; }
+
+  &.badge-green {
+    background: $green-50;
+    color: $green-700;
+    border: 1px solid rgba($green-200, 0.8);
+  }
+
+  &.badge-gold {
+    background: $gold-50;
+    color: $gold-700;
+    border: 1px solid rgba($gold-200, 0.8);
+  }
+}
+
+.card-footer {
+  padding: 10px 16px;
+  border-top: 1px solid $color-border;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: $cream-50;
+}
+
+.track-price {
+  font-size: 15px;
+  font-weight: 700;
+  color: $color-primary-dark;
+  direction: rtl;
+}
+
+.btn-details {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid $color-border;
+  background: $color-surface;
+  font-size: 12px;
+  color: $color-text-muted;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    border-color: $color-primary;
+    color: $color-primary;
+    background: $green-50;
+  }
+}
+
+// ── Dialog Overlay ────────────────────────────────────────
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba($green-950, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.18s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.dialog-box {
+  background: $color-surface;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 420px;
+  overflow: hidden;
+  border: 1px solid $color-border;
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// Dialog Image
+.dialog-image {
+  position: relative;
+  width: 100%;
+  height: 160px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .dialog-img-placeholder {
+    width: 100%;
+    height: 100%;
+    background: $green-50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    i { font-size: 48px; color: $green-200; }
+  }
+}
+
+.dialog-close {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: rgba($green-950, 0.45);
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+
+  &:hover { background: rgba($green-950, 0.7); }
+}
+
+// Dialog Content
+.dialog-content {
+  padding: 1.25rem 1.25rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dialog-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: $color-text-primary;
+  margin: 0;
+}
+
+.dialog-desc {
+  font-size: 13px;
+  color: $color-text-muted;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.dialog-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.dialog-price-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: $green-50;
+  border: 1px solid rgba($green-200, 0.7);
+  border-radius: 10px;
+  margin-top: 4px;
+
+  .price-label {
+    font-size: 13px;
+    color: $color-text-muted;
+  }
+
+  .price-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: $color-primary-dark;
+  }
+}
+
+// Dialog Actions
+.dialog-actions {
+  display: flex;
+  gap: 8px;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid $color-border;
+}
+
+.btn-confirm {
+  flex: 1;
+  padding: 10px 0;
+  background: $color-primary;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s;
+
+  i { font-size: 14px; }
+
+  &:hover { background: $color-primary-dark; }
+}
+
+.btn-cancel {
+  flex: 1;
+  padding: 10px 0;
+  background: transparent;
+  color: $color-text-muted;
+  border: 1px solid $color-border;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.2s, color 0.2s;
+
+  &:hover {
+    border-color: $green-300;
+    color: $color-text-primary;
+  }
+}
+
+// ── Loading / Error / Empty States ────────────────────────
+.state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 60px 20px;
+  text-align: center;
+
+  &__text {
+    font-family: $font-main;
+    font-size: 15px;
+    color: $color-text-muted;
+    margin: 0;
+  }
+
+  &__icon {
+    font-size: 40px;
+    color: $color-text-muted;
+
+    &--error {
+      color: #dc3545;
+    }
+  }
+}
+
+.btn-retry {
+  margin-top: 4px;
+  padding: 8px 20px;
+  border-radius: $radius-btn;
+  border: 1px solid $color-primary;
+  background: transparent;
+  color: $color-primary;
+  font-size: 13px;
+  font-family: $font-main;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    background: $color-primary;
+    color: #fff;
+  }
+}

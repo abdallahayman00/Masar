@@ -77,7 +77,7 @@ export class StudentSessionsComponent implements OnInit {
     })
   }
 
-getStatusClass(status: string): string {
+  getStatusClass(status: string): string {
     switch (status) {
       case SessionStatusEnum.Upcoming:
         return 'status-badge--upcoming';
@@ -105,6 +105,13 @@ getStatusClass(status: string): string {
       default:
         return status;
     }
+  }
+
+  formatTimeArabic(time: string): string {
+    if (!time) return '';
+    return time
+      .replace(/AM/i, 'صباحاً')
+      .replace(/PM/i, 'مساءً');
   }
 
 }

@@ -4,10 +4,12 @@ import { StudentService } from '../../core/services/student.service';
 import { StudentTracks } from '../../core/interfaces/student-tracks';
 import { CommonModule } from '@angular/common'
 import { NgFor, NgIf } from '@angular/common';
+import { ArabicNumberPipe } from '../../core/pipes/arabic-number.pipe';
+
 
 @Component({
   selector: 'app-student-tracks',
-  imports: [CommonModule, NgFor, NgIf],
+  imports: [CommonModule, NgFor, NgIf, ArabicNumberPipe],
   templateUrl: './student-tracks.component.html',
   styleUrl: './student-tracks.component.scss'
 })
@@ -57,6 +59,6 @@ export class StudentTracksComponent implements OnInit{
   }
 
   navigateToTrack(track: StudentTracks): void {
-    this.router.navigate(['student-tracks-details', track.trackId]);
+    this.router.navigate(['track-details', track.trackId]);
   }
 }

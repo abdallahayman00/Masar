@@ -21,4 +21,12 @@ export class TeacherService {
     formData.append('ProfileImage', file);
     return this.http.post(`${this.baseUrl}/upload-profile-image`, formData);
   }
+  // جلب جميع المعلمين المتاحين للطلاب
+  getAllTeachersForStu(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/GetAllTeachersForStudent`)
+  }
+  //جلب المواعيد لمعلم معين
+  getAvailableDate(teacherTd: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/${teacherTd}/available-dates`)
+  }
 }
