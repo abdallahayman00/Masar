@@ -530,3 +530,13 @@ $color-text-muted:    #1f6040;
 .divider-dot {
   color: $color-border;
 }
+
+@media (max-width: 576px) {
+  .hero__inner {
+    justify-content: center;
+  }
+
+  .hero__content {
+    text-align: center;
+  }
+}

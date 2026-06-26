@@ -403,3 +403,13 @@ $radius-btn: 10px;
     color: #fff;
   }
 }
+
+@media (max-width: 576px) {
+  .hero__inner {
+    justify-content: center;
+  }
+
+  .hero__content {
+    text-align: center;
+  }
+}

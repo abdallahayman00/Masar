@@ -330,12 +330,4 @@ export class TrackDetailsComponent implements OnInit {
   openLink(url: string): void {
     window.open(url, '_blank');
   }
-
-  // ============================================
-  // Navigation
-  // ============================================
-
-  navigateToTrack(track: StudentTracks): void {
-    this.router.navigate(['track-details', track.trackId]);
-  }
 }
