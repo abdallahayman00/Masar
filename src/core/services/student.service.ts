@@ -1,8 +1,9 @@
 // student.service.ts
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Student } from '../interfaces/student';
+import { StudentTrack } from '../interfaces/student-tracks';
 
 // واجهات البيانات المطلوبة
 export interface BookingRequest {
@@ -56,8 +57,8 @@ export class StudentService {
   }
 
   // جلب جميع مسارات الطالب
-  getStudentTracks(studentId: number): Observable<any> {
-    return this.http.get<any[]>(
+  getStudentTracks(studentId: number): Observable<StudentTrack> {
+    return this.http.get<StudentTrack>(
       `${this.baseUrl}/GetStudentTracks/${studentId}`,
     );
   }
@@ -73,17 +74,14 @@ export class StudentService {
   }
 
   // جلب الجلسات الشهرية
-  getMonthlySessions(studentId: number, trackId: number): Observable<any[]> {
+  getMonthlySessions(studentId: number, trackId: number): Observable<any> {
     return this.http.get<any[]>(
       `${this.baseUrl}/MonthlySessions/${studentId}/${trackId}`,
     );
   }
 
   // جلب حالات جلسات الطالب في مسار معين
-  getStudentTrackSessionStatuses(
-    studentId: number,
-    trackId: number,
-  ): Observable<any> {
+  getStudentTrackSessionStatuses(studentId: number, trackId: number): Observable<any> {
     return this.http.get<any[]>(
       `${this.baseUrl}/GetStudentTrackSessionStatuses/${studentId}/${trackId}`,
     );

@@ -4,8 +4,10 @@ export interface StudentTracks {
   trackName: string;
   teacherName: string;
   bookingStatus: string;
+  totalSessions: number;
   completedSessions: number;
   remainingSessions: number;
-  totalSessions: number;
   trackPhoto: string;
 }
+
+export type StudentTrack = StudentTracks[];
