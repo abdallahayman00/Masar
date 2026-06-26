@@ -416,32 +416,80 @@
       <button class="modal-close" (click)="closeViewModal()">✕</button>
     </div>
 
-    <div class="modal-body" *ngIf="selectedTrack">
+    <!-- عرض حالة التحميل -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>جاري تحميل التفاصيل...</p>
+    </div>
+
+    <div class="modal-body" *ngIf="selectedTrack && !isLoading">
       <!-- صورة المسار - قابلة للنقر -->
-      <div class="detail-row" *ngIf="selectedTrack.coverImagePath">
+      <div
+        class="detail-row"
+        *ngIf="selectedTrack.trackPhoto || selectedTrack.coverImagePath"
+      >
         <div class="detail-label">صورة المسار:</div>
         <div class="detail-value">
           <a
-            [href]="selectedTrack.coverImagePath"
+            [href]="selectedTrack.trackPhoto || selectedTrack.coverImagePath"
             target="_blank"
             rel="noopener noreferrer"
             class="image-link"
             title="اضغط لفتح الصورة في علامة تبويب جديدة"
           >
             <img
-              [src]="selectedTrack.coverImagePath"
+              [src]="selectedTrack.trackPhoto || selectedTrack.coverImagePath"
               alt="صورة المسار"
               class="profile-image clickable-image"
+              (error)="handleImageError($event)"
             />
             <span class="open-link-badge">🔗 افتح الصورة</span>
           </a>
         </div>
       </div>
 
+      <!-- عرض الملفات المرفقة (بما في ذلك trackFilePath) -->
+      <div
+        class="detail-row"
+        *ngIf="selectedTrack.trackFilePath || selectedTrack.attachments?.length"
+      >
+        <div class="detail-label">الملفات المرفقة:</div>
+        <div class="detail-value">
+          <ul class="attachments-list">
+            <!-- الملف الرئيسي -->
+            <li *ngIf="selectedTrack.trackFilePath">
+              <a
+                [href]="selectedTrack.trackFilePath"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="attachment-link"
+                download
+              >
+                📄 {{ getFileNameFromUrl(selectedTrack.trackFilePath) }}
+              </a>
+            </li>
+            <!-- الملفات الإضافية -->
+            <li *ngFor="let attachment of selectedTrack.attachments">
+              <a
+                [href]="attachment"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="attachment-link"
+                download
+              >
+                📎 {{ getFileNameFromUrl(attachment) }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
       <!-- باقي التفاصيل -->
       <div class="detail-row">
         <div class="detail-label">اسم المسار:</div>
-        <div class="detail-value">{{ selectedTrack.name || "غير مدخل" }}</div>
+        <div class="detail-value">
+          {{ selectedTrack.name || selectedTrack.trackName || "غير مدخل" }}
+        </div>
       </div>
 
       <div class="detail-row">
@@ -459,7 +507,10 @@
       <div class="detail-row">
         <div class="detail-label">مدة الحصة:</div>
         <div class="detail-value">
-          {{ selectedTrack.sessionDuration }} دقيقة
+          {{
+            selectedTrack.sessionDuration || selectedTrack.sessionMinutes
+          }}
+          دقيقة
         </div>
       </div>
 
@@ -473,38 +524,36 @@
       <div class="detail-row">
         <div class="detail-label">السعر الإجمالي:</div>
         <div class="detail-value price-total">
-          {{ formatPrice(selectedTrack.trackPrice) }}
+          {{ formatPrice(selectedTrack.trackPrice || selectedTrack.price) }}
         </div>
       </div>
 
-      <!-- الملفات المرفقة - قابلة للنقر -->
-      <div
-        class="detail-row"
-        *ngIf="
-          selectedTrack.attachments && selectedTrack.attachments.length > 0
-        "
-      >
-        <div class="detail-label">الملفات المرفقة:</div>
+      <!-- حالة النشاط -->
+      <div class="detail-row">
+        <div class="detail-label">الحالة:</div>
         <div class="detail-value">
-          <ul class="attachments-list">
-            <li *ngFor="let attachment of selectedTrack.attachments">
-              <a
-                [href]="attachment"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="attachment-link"
-              >
-                📎 {{ getFileNameFromUrl(attachment) }}
-              </a>
-            </li>
-          </ul>
+          <span
+            [class]="
+              selectedTrack.isActive ? 'status-active' : 'status-inactive'
+            "
+          >
+            {{ selectedTrack.isActive ? "✅ مفعل" : "❌ غير مفعل" }}
+          </span>
+        </div>
+      </div>
+
+      <!-- تاريخ الإنشاء -->
+      <div class="detail-row" *ngIf="selectedTrack.createdAt">
+        <div class="detail-label">تاريخ الإنشاء:</div>
+        <div class="detail-value">
+          {{ selectedTrack.createdAt | date: "dd/MM/yyyy HH:mm" }}
         </div>
       </div>
     </div>
 
-    <div class="modal-footer">
+    <div class="modal-footer" *ngIf="!isLoading">
       <button class="btn-secondary" (click)="closeViewModal()">إغلاق</button>
-      <button class="btn-primary" (click)="openEditModal()">
+      <button *ngIf="isAdmin" class="btn-primary" (click)="openEditModal()">
         ✏️ تعديل المسار
       </button>
     </div>

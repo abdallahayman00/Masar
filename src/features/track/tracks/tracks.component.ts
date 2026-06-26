@@ -390,10 +390,66 @@ export class TracksComponent implements OnInit {
   }
 
   // ================ عرض تفاصيل المسار ================
+  // tracks.component.ts - استبدال دالة viewTrackDetails
+  // tracks.component.ts - استبدال دالة viewTrackDetails
+
   viewTrackDetails(track: Track): void {
-    this.selectedTrack = track;
+    // استخدام trackId أو id
+    const trackId = track.trackId || track.id;
+
+    if (!trackId) {
+      this.toastService.error('معرف المسار غير موجود', 'خطأ');
+      return;
+    }
+
+    this.isLoading = true;
     this.showViewModal = true;
+
+    // جلب التفاصيل الكاملة من الـ API
+    this.tracksService.getTrackById(trackId).subscribe({
+      next: (detailedTrack) => {
+        this.selectedTrack = detailedTrack;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('❌ Error fetching track details:', error);
+        this.toastService.error('حدث خطأ أثناء تحميل تفاصيل المسار', 'خطأ');
+        this.isLoading = false;
+        // في حالة الخطأ، نعرض البيانات المتوفرة محلياً
+        this.selectedTrack = track;
+      },
+    });
   }
+
+  // تحديث دالة openEditModalFromTrack لاستخدام البيانات الكاملة
+  openEditModalFromTrack(track: Track): void {
+    const trackId = track.trackId || track.id;
+
+    if (!trackId) {
+      this.toastService.error('معرف المسار غير موجود', 'خطأ');
+      return;
+    }
+
+    this.isLoading = true;
+
+    // جلب التفاصيل الكاملة قبل التعديل
+    this.tracksService.getTrackById(trackId).subscribe({
+      next: (detailedTrack) => {
+        this.selectedTrack = detailedTrack;
+        this.openEditModal();
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('❌ Error fetching track for edit:', error);
+        // استخدام البيانات المتوفرة محلياً
+        this.selectedTrack = track;
+        this.openEditModal();
+        this.isLoading = false;
+      },
+    });
+  }
+
+  // تحديث دالة openEditModalFromTrack لاستخدام البيانات الكاملة
 
   // ================ فتح/إغلاق المودالات ================
   openAddModal(): void {
@@ -438,11 +494,13 @@ export class TracksComponent implements OnInit {
     this.showEditModal = true;
     this.closeViewModal();
   }
-  // ================ فتح مودال التعديل من الجدول مباشرة ================
-  openEditModalFromTrack(track: Track): void {
-    this.selectedTrack = track;
-    this.openEditModal();
+  // tracks.component.ts - أضف هذه الدالة
+  handleImageError(event: any): void {
+    event.target.style.display = 'none';
+    // يمكنك عرض أيقونة بديلة
   }
+  // ================ فتح مودال التعديل من الجدول مباشرة ================
+
   // ================ إغلاق مودال التعديل ================
   closeEditModal(): void {
     this.showEditModal = false;
