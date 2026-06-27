@@ -97,3 +97,17 @@ export interface UpcomingSession {
   durationMinutes: number;
   meetingLink: string | null;
 }
+
+// ── أضف الـ interfaces دي في student-sessions.ts ──
+export interface WeekDay {
+  dateStr: string;
+  dayName: string;
+  dayNumber: number;
+  isToday: boolean;
+}
+
+export interface TimeSlot {
+  label: string;
+  timeKey: string;
+}
+// ─────────────────────────────────────────────────

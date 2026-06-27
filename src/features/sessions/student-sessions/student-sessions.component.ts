@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { DailySessions, DaySessions, Session, SessionStatusEnum } from '../../../core/interfaces/student-sessions';
 import { StudentService } from '../../../core/services/student.service';
+import { ArabicNumberPipe } from '../../../core/pipes/arabic-number.pipe';
 
 @Component({
   selector: 'app-student-sessions',
-  imports: [CommonModule],
+  imports: [CommonModule, ArabicNumberPipe],
   templateUrl: './student-sessions.component.html',
   styleUrl: './student-sessions.component.scss'
 })

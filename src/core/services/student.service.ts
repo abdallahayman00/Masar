@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Student } from '../interfaces/student';
 import { StudentTrack } from '../interfaces/student-tracks';
+import { MonthlySession } from '../interfaces/student-sessions';
 
 // واجهات البيانات المطلوبة
 export interface BookingRequest {
@@ -74,8 +75,8 @@ export class StudentService {
   }
 
   // جلب الجلسات الشهرية
-  getMonthlySessions(studentId: number, trackId: number): Observable<any> {
-    return this.http.get<any[]>(
+  getMonthlySessions(studentId: number, trackId: number): Observable<MonthlySession[]> {
+    return this.http.get<MonthlySession[]>(
       `${this.baseUrl}/MonthlySessions/${studentId}/${trackId}`,
     );
   }

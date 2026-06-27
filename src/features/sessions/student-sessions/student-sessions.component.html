@@ -17,7 +17,7 @@
     >
       <i class="fas fa-calendar-day"></i>
       <span>الجلسات اليومية</span>
-      <span class="badge">{{ dailyCount }}</span>
+      <span class="badge">{{ dailyCount | arabicNumber }}</span>
     </button>
 
     <button
@@ -27,7 +27,7 @@
     >
       <i class="fas fa-calendar-week"></i>
       <span>الجلسات الأسبوعية</span>
-      <span class="badge">{{ weeklyCount }}</span>
+      <span class="badge">{{ weeklyCount | arabicNumber }}</span>
     </button>
   </div>
 
@@ -103,7 +103,9 @@
                     {{ getStatusText(session.status) }}
                   </span>
                 </td>
-                <td>{{ formatTimeArabic(session.timeString) }}</td>
+                <td>
+                  {{ formatTimeArabic(session.timeString | arabicNumber) }}
+                </td>
                 <td>
                   <a
                     *ngIf="session.meetingLink"
@@ -172,7 +174,7 @@
             </div>
             <div class="session-card__meta">
               <span class="session-card__pill">
-                {{ formatTimeArabic(session.timeString) }}
+                {{ formatTimeArabic(session.timeString | arabicNumber) }}
               </span>
             </div>
             <div class="session-card__footer">
@@ -263,7 +265,9 @@
                       </span>
                     </div>
                   </td>
-                  <td>{{ formatTimeArabic(session.timeString) }}</td>
+                  <td>
+                    {{ formatTimeArabic(session.timeString | arabicNumber) }}
+                  </td>
                   <td>{{ session.trackName }}</td>
                   <td>{{ session.teacherName }}</td>
                   <td>
@@ -347,7 +351,7 @@
                   {{ session.sessionDate | date: "EEEE d MMMM" : "" : "ar-EG" }}
                 </span>
                 <span class="session-card__pill">
-                  {{ formatTimeArabic(session.timeString) }}
+                  {{ formatTimeArabic(session.timeString | arabicNumber) }}
                 </span>
               </div>
               <div class="session-card__footer">

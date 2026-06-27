@@ -71,7 +71,8 @@
               <path d="M3.5 9.5h17M8 3v3.2M16 3v3.2" stroke-linecap="round" />
             </svg>
             <span class="td-track-meta__remaining"
-              >{{ currentTrack.remainingSessions }} جلسات متبقية</span
+              >{{ currentTrack.remainingSessions | arabicNumber }} جلسات
+              متبقية</span
             >
           </div>
         </div>
@@ -96,7 +97,9 @@
               />
             </svg>
             <div class="td-ring__label">
-              <span class="td-ring__value">{{ completionPercentage }}%</span>
+              <span class="td-ring__value"
+                >{{ completionPercentage | arabicNumber }}%</span
+              >
             </div>
           </div>
           <span class="td-ring__caption">نسبة الإنجاز الكلية</span>
@@ -121,7 +124,7 @@
           </svg>
         </div>
         <span class="td-stat-card__value">{{
-          currentTrack.totalSessions
+          currentTrack.totalSessions | arabicNumber
         }}</span>
         <span class="td-stat-card__label">إجمالي الجلسات</span>
       </div>
@@ -144,7 +147,7 @@
           </svg>
         </div>
         <span class="td-stat-card__value">{{
-          currentTrack.completedSessions
+          currentTrack.completedSessions | arabicNumber
         }}</span>
         <span class="td-stat-card__label">جلسات منجزة</span>
       </div>
@@ -162,7 +165,9 @@
             <path d="M9 9l6 6M15 9l-6 6" stroke-linecap="round" />
           </svg>
         </div>
-        <span class="td-stat-card__value">0</span>
+        <span class="td-stat-card__value">{{
+          missedSessionsCount | arabicNumber
+        }}</span>
         <span class="td-stat-card__label">جلسات فائتة</span>
       </div>
       <div class="td-stat-card">
@@ -183,7 +188,7 @@
           </svg>
         </div>
         <span class="td-stat-card__value">{{
-          currentTrack.remainingSessions
+          currentTrack.remainingSessions | arabicNumber
         }}</span>
         <span class="td-stat-card__label">جلسات متبقية</span>
       </div>
@@ -220,7 +225,7 @@
           "
         >
           <div class="td-pmap__dot"></div>
-          <span class="td-pmap__num">{{ marker.index }}</span>
+          <span class="td-pmap__num">{{ marker.index | arabicNumber }}</span>
         </div>
       </div>
     </div>
@@ -237,15 +242,30 @@
     </div>
   </ng-template>
 
-  <!-- ===== Calendar ===== -->
-  <ng-container *ngIf="!calendarError; else calendarErrorTpl">
-    <div class="td-cal">
-      <div class="td-cal__topbar">
-        <div class="td-cal__nav-row">
-          <button class="td-cal__nav-btn" (click)="goToPreviousMonth()">
+  <!-- ===== Weekly Calendar ===== -->
+  <ng-container *ngIf="!weeklyError; else weeklyCalErrorTpl">
+    <div class="td-wcal">
+      <!-- Topbar -->
+      <div class="td-wcal__topbar">
+        <div class="td-wcal__title-area">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#1c2622"
+            stroke-width="1.8"
+          >
+            <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" />
+            <path d="M3.5 9.5h17M8 3v3.2M16 3v3.2" stroke-linecap="round" />
+          </svg>
+          <span class="td-wcal__title">الجدول الأسبوعي</span>
+        </div>
+        <div class="td-wcal__nav-area">
+          <button class="td-wcal__nav-btn" (click)="goToPrevWeek()">
             <svg
-              width="16"
-              height="16"
+              width="14"
+              height="14"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -258,13 +278,11 @@
               />
             </svg>
           </button>
-          <span class="td-cal__month-title"
-            >جدول التعلم - {{ viewedMonthLabel }}</span
-          >
-          <button class="td-cal__nav-btn" (click)="goToNextMonth()">
+          <span class="td-wcal__month-pill">{{ weekMonthLabel }}</span>
+          <button class="td-wcal__nav-btn" (click)="goToNextWeek()">
             <svg
-              width="16"
-              height="16"
+              width="14"
+              height="14"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -278,62 +296,91 @@
             </svg>
           </button>
         </div>
-        <div class="td-cal__legend">
-          <span class="td-cal__legend-item">
-            <span class="td-cal__dot" style="background: #2e5b3e"></span>منجز
-          </span>
-          <span class="td-cal__legend-item">
-            <span class="td-cal__dot" style="background: #b08a2e"></span>قادم
-          </span>
-          <span class="td-cal__legend-item">
-            <span class="td-cal__dot" style="background: #b3372c"></span>غائب
-          </span>
+      </div>
+
+      <!-- Grid -->
+      <div class="td-wcal__grid">
+        <!-- Header: خلية فارغة + 7 أيام -->
+        <div class="td-wcal__time-hdr"></div>
+        <div
+          *ngFor="let day of weekDays"
+          class="td-wcal__day-hdr"
+          [class.td-wcal__day-hdr--today]="day.isToday"
+        >
+          <span class="td-wcal__day-name">{{ day.dayName }}</span>
+          <span class="td-wcal__day-num">{{
+            day.dayNumber | arabicNumber
+          }}</span>
         </div>
-      </div>
 
-      <div class="td-cal__days-header">
-        <span *ngFor="let d of weekDayHeaders">{{ d }}</span>
-      </div>
-
-      <div class="td-cal__grid">
-        <ng-container *ngFor="let week of calendarWeeks">
-          <div
-            *ngFor="let cell of week"
-            class="td-cal__cell"
-            [class.td-cal__cell--empty]="!cell.date"
-            [class.td-cal__cell--done]="cell.status === 'completed'"
-            [class.td-cal__cell--missed]="cell.status === 'missed'"
-            [class.td-cal__cell--upcoming]="cell.status === 'upcoming'"
-            [class.td-cal__cell--today]="cell.isToday"
-          >
-            <ng-container *ngIf="cell.date">
-              <span class="td-cal__cell-num">{{ cell.dayNumber }}</span>
-              <span
-                class="td-cal__cell-status"
-                *ngIf="cell.status === 'completed'"
-                >تم الحضور</span
+        <!-- صفوف الأوقات -->
+        <ng-container *ngFor="let slot of timeSlots">
+          <div class="td-wcal__time-cell">
+            {{ formatTimeArabic(slot.label) }}
+          </div>
+          <div *ngFor="let day of weekDays" class="td-wcal__slot">
+            <ng-container
+              *ngIf="getCellSession(day.dateStr, slot.timeKey) as session"
+            >
+              <div
+                class="td-wcal__session-card"
+                [class.td-wcal__session-card--done]="
+                  session.status === 'Completed'
+                "
+                [class.td-wcal__session-card--upcoming]="
+                  session.status === 'Upcoming'
+                "
+                [class.td-wcal__session-card--missed]="
+                  session.status === 'Missed'
+                "
               >
-              <span class="td-cal__cell-status" *ngIf="cell.status === 'missed'"
-                >فائتة</span
-              >
-              <span
-                class="td-cal__cell-status"
-                *ngIf="cell.status === 'upcoming'"
-                >قادمة</span
-              >
+                <span class="td-wcal__session-name"
+                  >جلسة -
+                  {{ getSessionNumber(session.sessionId) | arabicNumber }}</span
+                >
+                <span class="td-wcal__session-status">
+                  {{
+                    session.status === "Completed"
+                      ? "منجزة"
+                      : session.status === "Upcoming"
+                        ? "قادمة"
+                        : "فائتة"
+                  }}
+                </span>
+              </div>
             </ng-container>
           </div>
         </ng-container>
       </div>
+
+      <!-- Footer -->
+      <div class="td-wcal__footer">
+        <div class="td-wcal__legend">
+          <span class="td-wcal__leg-item">
+            <span class="td-wcal__leg-dot td-wcal__leg-dot--done"></span>منجزة
+          </span>
+          <span class="td-wcal__leg-item">
+            <span class="td-wcal__leg-dot td-wcal__leg-dot--upcoming"></span
+            >قادمة
+          </span>
+          <span class="td-wcal__leg-item">
+            <span class="td-wcal__leg-dot td-wcal__leg-dot--missed"></span>فائتة
+          </span>
+        </div>
+        <div class="td-wcal__today-indicator">
+          <span class="td-wcal__today-dot"></span>
+          <span>اليوم الحالي</span>
+        </div>
+      </div>
     </div>
   </ng-container>
 
-  <!-- Error: calendar -->
-  <ng-template #calendarErrorTpl>
+  <!-- Error: weekly calendar -->
+  <ng-template #weeklyCalErrorTpl>
     <div class="td-error-state">
       <div class="td-error-state__icon">!</div>
       <p class="td-error-state__msg">حدث خطأ أثناء تحميل جدول التعلم</p>
-      <button class="td-error-state__btn" (click)="getMonthlySessions()">
+      <button class="td-error-state__btn" (click)="getWeeklyStuSessions()">
         إعادة المحاولة
       </button>
     </div>
@@ -341,7 +388,7 @@
 
   <!-- ===== Next Session ===== -->
   <ng-container *ngIf="!weeklyError; else weeklyErrorTpl">
-    <div class="td-nsession" *ngIf="upcomingSession">
+    <div class="td-nsession" *ngIf="hasUpcomingSession">
       <div class="td-nsession__row">
         <span class="td-nsession__badge">الجلسة القادمة</span>
         <div class="td-nsession__left">
@@ -354,33 +401,33 @@
       <div class="td-nsession__row">
         <div class="td-nsession__datebox">
           <span class="td-nsession__daynum">{{
-            upcomingSession.dayNumber
+            upcomingSession?.dayNumber | arabicNumber
           }}</span>
           <span class="td-nsession__monthname">{{
-            upcomingSession.monthName
+            upcomingSession?.monthName | arabicNumber
           }}</span>
         </div>
         <div class="td-nsession__mid">
           <span class="td-nsession__dayname">{{
-            upcomingSession.dayName
+            upcomingSession?.dayName
           }}</span>
-          <span class="td-nsession__time"
-            >{{ upcomingSession.time }} ({{
-              upcomingSession.durationMinutes
+          <span class="td-nsession__time">
+            {{ formatTimeArabic(upcomingSession?.time ?? "") }} ({{
+              upcomingSession?.durationMinutes | arabicNumber
             }}
-            دقيقة)</span
-          >
+            دقيقة)
+          </span>
         </div>
       </div>
 
       <a
         class="td-nsession__btn"
-        [href]="upcomingSession.meetingLink || '#'"
-        [target]="upcomingSession.meetingLink ? '_blank' : '_self'"
-        [class.td-nsession__btn--disabled]="!upcomingSession.meetingLink"
+        [href]="upcomingSession?.meetingLink || '#'"
+        [target]="upcomingSession?.meetingLink ? '_blank' : '_self'"
+        [class.td-nsession__btn--disabled]="!upcomingSession?.meetingLink"
         (click)="
           $event.preventDefault();
-          upcomingSession.meetingLink && openLink(upcomingSession.meetingLink)
+          upcomingSession?.meetingLink && openLink(upcomingSession.meetingLink!)
         "
       >
         <svg
@@ -399,13 +446,12 @@
 
     <div
       class="td-nsession td-nsession--empty"
-      *ngIf="!upcomingSession && !isLoading"
+      *ngIf="upcomingSession === null && !isLoading"
     >
-      <span>لا توجد جلسات هذا الأسبوع</span>
+      <span>لا توجد جلسات قادمة</span>
     </div>
   </ng-container>
 
-  <!-- Error: weekly -->
   <ng-template #weeklyErrorTpl>
     <div class="td-error-state">
       <div class="td-error-state__icon">!</div>
