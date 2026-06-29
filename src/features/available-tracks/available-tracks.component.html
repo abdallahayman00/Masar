@@ -42,8 +42,8 @@
         *ngFor="let track of tracks"
         (click)="openDialog(track)"
       >
-        <!-- Card Image -->
-        <div class="card-image">
+        <!-- Background Image -->
+        <div class="card-bg">
           <img
             *ngIf="track.trackPhoto"
             [src]="track.trackPhoto"
@@ -53,32 +53,36 @@
           <div class="img-placeholder" *ngIf="!track.trackPhoto">
             <i class="fas fa-book-open"></i>
           </div>
+          <div class="card-overlay"></div>
         </div>
 
-        <!-- Card Body -->
-        <div class="card-body">
+        <!-- Sessions Badge (top corner) -->
+        <span class="sessions-chip">
+          <i class="fas fa-layer-group"></i>
+          {{ track.numberOfSessions | arabicNumber }}
+        </span>
+
+        <!-- Card Content (over image) -->
+        <div class="card-content">
           <h3 class="track-name">{{ track.trackName }}</h3>
-          <p class="track-desc">{{ truncateDesc(track.description) }}</p>
+
           <div class="track-meta">
-            <span class="meta-badge badge-green">
-              <i class="fas fa-layer-group"></i>
-              {{ track.numberOfSessions }} جلسة
-            </span>
             <span class="meta-badge badge-gold">
               <i class="fas fa-clock"></i>
-              {{ track.sessionMinutes }} دقيقة
+              {{ track.sessionMinutes | arabicNumber }} دقيقة
+            </span>
+            <span class="meta-badge badge-green">
+              <i class="fas fa-layer-group"></i>
+              {{ track.numberOfSessions | arabicNumber }} جلسة
             </span>
           </div>
-        </div>
 
-        <!-- Card Footer -->
-        <div class="card-footer">
-          <span class="track-price">{{ track.price | currencyFormat }}</span>
           <button
             class="btn-details"
             (click)="openDialog(track); $event.stopPropagation()"
           >
             عرض التفاصيل
+            <i class="fas fa-arrow-left"></i>
           </button>
         </div>
       </div>
@@ -87,46 +91,91 @@
     <!-- Dialog Overlay -->
     <div class="dialog-overlay" *ngIf="showDialog" (click)="closeDialog()">
       <div class="dialog-box" (click)="$event.stopPropagation()">
-        <!-- Dialog Image -->
-        <div class="dialog-image">
-          <img
-            *ngIf="selectedTrack?.trackPhoto"
-            [src]="selectedTrack.trackPhoto"
-            [alt]="selectedTrack.trackName"
-          />
-          <div
-            class="dialog-img-placeholder"
-            *ngIf="!selectedTrack?.trackPhoto"
-          >
-            <i class="fas fa-book-open"></i>
+        <!-- Decorative side accent -->
+
+        <!-- Dialog Header -->
+        <div class="dialog-header">
+          <div class="dialog-header__row">
+            <button class="dialog-close" (click)="closeDialog()">
+              <i class="fas fa-xmark"></i>
+            </button>
+            <h3 class="dialog-header__title">
+              <i class="fas fa-graduation-cap"></i>
+              تفاصيل المسار
+            </h3>
           </div>
-          <button class="dialog-close" (click)="closeDialog()">
-            <i class="fas fa-xmark"></i>
-          </button>
         </div>
 
-        <!-- Dialog Content -->
+        <!-- Dialog Body -->
         <div class="dialog-content">
-          <h3 class="dialog-title">{{ selectedTrack?.trackName }}</h3>
-          <p class="dialog-desc">{{ selectedTrack?.description }}</p>
-
-          <div class="dialog-meta">
-            <span class="meta-badge badge-green">
-              <i class="fas fa-layer-group"></i>
-              {{ selectedTrack?.numberOfSessions }} جلسة
-            </span>
-            <span class="meta-badge badge-gold">
-              <i class="fas fa-clock"></i>
-              {{ selectedTrack?.sessionMinutes }} دقيقة / جلسة
-            </span>
+          <!-- Track photo + name field -->
+          <div class="field-group">
+            <label class="field-label"
+              >اسم المسار <span class="req">*</span></label
+            >
+            <div class="field-box field-box--track">
+              <img
+                *ngIf="selectedTrack?.trackPhoto"
+                [src]="selectedTrack.trackPhoto"
+                [alt]="selectedTrack.trackName"
+                class="field-box__thumb"
+              />
+              <div
+                class="field-box__thumb field-box__thumb--placeholder"
+                *ngIf="!selectedTrack?.trackPhoto"
+              >
+                <i class="fas fa-book-open"></i>
+              </div>
+              <span class="field-box__value">{{
+                selectedTrack?.trackName
+              }}</span>
+            </div>
           </div>
 
-          <div class="dialog-price-box">
-            <span class="price-label">سعر المسار</span>
-            <span class="price-value">{{
-              selectedTrack?.price | currencyFormat
-            }}</span>
+          <!-- Description field -->
+          <div class="field-group">
+            <label class="field-label">الوصف</label>
+            <div class="field-box field-box--text">
+              {{ selectedTrack?.description }}
+            </div>
           </div>
+
+          <!-- Session details -->
+          <div class="field-group">
+            <label class="field-label"
+              >تفاصيل الجلسات <span class="req">*</span></label
+            >
+            <div class="field-box field-box--dark">
+              <div class="detail-cell">
+                <span class="detail-cell__label">عدد الجلسات</span>
+                <span class="detail-cell__value">{{
+                  selectedTrack?.numberOfSessions | arabicNumber
+                }}</span>
+              </div>
+              <span class="detail-sep">:</span>
+              <div class="detail-cell">
+                <span class="detail-cell__label">دقيقة / جلسة</span>
+                <span class="detail-cell__value">{{
+                  selectedTrack?.sessionMinutes | arabicNumber
+                }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Price -->
+          <div class="field-group">
+            <label class="field-label"
+              >سعر المسار <span class="req">*</span></label
+            >
+            <div class="field-box field-box--price">
+              <span class="price-value">{{
+                selectedTrack?.price | currencyFormat
+              }}</span>
+              <i class="fas fa-coins"></i>
+            </div>
+          </div>
+
+          <p class="dialog-hint">سيتم تحديد معلم المسار في الخطوة التالية</p>
         </div>
 
         <!-- Dialog Actions -->

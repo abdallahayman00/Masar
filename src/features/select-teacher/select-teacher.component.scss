@@ -1,16 +1,6 @@
 @use 'sass:color';
 
 // ── Variables ──────────────────────────────────────────
-$primary-dark: #1f3a2e;
-$primary-soft: #2f5241;
-$gold-soft: #bfa36a;
-$gold-light: #d8c7a0;
-$paper: #f7f4ec;
-$paper-dark: #ebe4d5;
-$text-dark: #2f2f2f;
-$text-soft: #666666;
-$border-soft: #e2dac9;
-
 $green-950: #0a2417;
 $green-800: #17492e;
 $green-600: #287a52;
@@ -18,8 +8,7 @@ $green-500: #329665;
 $green-100: #d4f0e3;
 $green-50:  #eef8f3;
 
-$gold-500: #c8a415;
-$gold-50:  #fdf8e6;
+$gold-500: #d4b53a;
 
 $cream-50: #fafaf7;
 
@@ -29,31 +18,15 @@ $color-primary-light: $green-50;
 $color-bg:            $cream-50;
 $color-surface:       #ffffff;
 $color-border:        rgba(#b0e5cb, 0.6);
+$color-border-solid:  #d6ede3;
 $color-text-primary:  $green-950;
 $color-text-muted:    #1f6040;
 
 // ── Page ───────────────────────────────────────────────
-.page {
-  padding: 1.5rem;
+.page-wrapper {
   background: $color-bg;
   min-height: 100vh;
-}
-
-.page-header {
-  margin-bottom: 1.5rem;
-}
-
-.page-title {
-  font-size: 1.4rem;
-  font-weight: 500;
-  color: $color-text-primary;
-  margin: 0 0 4px;
-}
-
-.page-subtitle {
-  font-size: 0.875rem;
-  color: $color-text-muted;
-  margin: 0;
+  direction: rtl;
 }
 
 // ── States ─────────────────────────────────────────────
@@ -64,6 +37,8 @@ $color-text-muted:    #1f6040;
   gap: 1rem;
   padding: 3rem 0;
   color: $color-text-muted;
+
+  &.small { padding: 1.5rem 0; }
 }
 
 .spinner {
@@ -90,10 +65,7 @@ $color-text-muted:    #1f6040;
   &:hover { background: $color-primary; color: #fff; }
 }
 
-// ── Error State ────────────────────────────────────────
-.error-state {
-  padding: 4rem 0;
-}
+.error-state { padding: 4rem 0; }
 
 .error-icon-circle {
   width: 56px;
@@ -104,119 +76,159 @@ $color-text-muted:    #1f6040;
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
+  i { color: #fff; font-size: 1.5rem; }
+}
 
-  i {
-    color: #fff;
-    font-size: 1.5rem;
-  }
+// ── Section Label ──────────────────────────────────────
+.section-label {
+  padding: 1rem 1.25rem 0.75rem;
+}
+
+.section-label__title {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: $color-text-primary;
+  i { vertical-align: -2px; margin-left: 6px; }
 }
 
 // ── Teachers List ──────────────────────────────────────
 .teachers-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+  padding: 0 1rem 2rem;
 }
 
-.teacher-row {
-  background: $color-surface;
-  border: 0.5px solid $color-border;
-  border-radius: 12px;
+// ── Teacher Card ───────────────────────────────────────
+.teacher-card {
+  border: 0.5px solid $color-border-solid;
+  border-radius: 14px;
   overflow: hidden;
 }
 
+// ── Teacher Header ─────────────────────────────────────
 .teacher-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
+  gap: 14px;
+  padding: 18px 20px;
   cursor: pointer;
   user-select: none;
+  direction: rtl;
+  background: #1f3a2e;
   transition: background 0.15s;
-  &:hover { background: $color-primary-light; }
+
+  &:hover { background: $color-primary-dark; }
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
 // ── Avatar ─────────────────────────────────────────────
 .avatar {
-  width: 44px;
-  height: 44px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
-  font-weight: 500;
+  font-size: 1.35rem;
+  font-weight: 600;
   overflow: hidden;
+  border: 2.5px solid rgba(#fff, 0.35);
+  background: rgba(#fff, 0.15);
+  color: #fff;
 
-  img { width: 100%; height: 100%; object-fit: cover; }
-
-  &.avatar-male   { background: $green-50;  color: $color-primary; }
-  &.avatar-female { background: #fbeaf0;    color: #993556; }
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
-// ── Teacher Info ───────────────────────────────────────
 .teacher-info {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: right;
   min-width: 0;
 }
 
 .teacher-name {
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: $color-text-primary;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
   margin: 0;
 }
 
-.teacher-meta {
-  font-size: 0.8125rem;
-  color: $color-text-muted;
-  margin: 2px 0 0;
+.teacher-specialty {
+  font-size: 0.875rem;
+  color: $gold-500;
+  font-weight: 500;
+  margin: 0;
+}
+
+// ── Slots Badge ────────────────────────────────────────
+.slots-badge {
+  font-size: 0.75rem;
+  background: $gold-500;
+  color: #1f3a2e;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+
+  &.slots-badge--empty {
+    background: rgba(#fff, 0.18);
+    color: rgba(#fff, 0.85);
+  }
 }
 
-// ── Gender Badge ───────────────────────────────────────
-.gender-badge {
-  font-size: 0.6875rem;
-  padding: 2px 10px;
-  border-radius: 6px;
+.chevron-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: rgba(#fff, 0.85);
   flex-shrink: 0;
-
-  &.badge-male   { background: $green-50;  color: $color-primary; }
-  &.badge-female { background: #fbeaf0;    color: #993556; }
+  line-height: 1;
 }
 
-// ── Chevron ────────────────────────────────────────────
-.chevron {
-  font-size: 1rem;
-  color: $color-text-muted;
-  transition: transform 0.2s;
-  flex-shrink: 0;
-  &.open { transform: rotate(180deg); }
-}
+.chevron { font-size: 0.9rem; }
 
 // ── Teacher Body ───────────────────────────────────────
 .teacher-body {
-  border-top: 0.5px solid $color-border;
-  padding: 16px;
+  padding: 20px 18px;
+  background: $color-surface;
 }
 
-.summary-text {
-  font-size: 0.875rem;
-  color: $color-text-muted;
-  line-height: 1.7;
-  margin: 0 0 16px;
-}
-
-.slots-title {
-  font-size: 0.8125rem;
-  font-weight: 500;
+.slots-section-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
   color: $color-text-primary;
-  margin: 0 0 10px;
+  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  direction: rtl;
+
+  i { font-size: 1rem; color: $color-primary; }
 }
 
+// ── Slots List ─────────────────────────────────────────
 .slots-list {
   display: flex;
   flex-direction: column;
@@ -226,51 +238,148 @@ $color-text-muted:    #1f6040;
 .slot-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  background: $color-primary-light;
-  border: 0.5px solid $color-border;
-  border-radius: 8px;
-  gap: 8px;
+  gap: 0;
+  padding: 11px 14px;
+  background: $cream-50;
+  border: 0.5px solid $color-border-solid;
+  border-radius: 10px;
+  direction: rtl;
 }
 
-.slot-days {
+.slot-divider {
+  width: 1px;
+  height: 34px;
+  border-right: 1.5px dashed #b0e5cb;
+  margin: 0 12px;
+  flex-shrink: 0;
+}
+
+.slot-action-col {
+  width: 110px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.btn-book {
   font-size: 0.875rem;
-  color: $color-text-primary;
-  flex: 1;
-}
-
-.slot-time {
-  font-size: 0.8125rem;
-  color: $color-text-muted;
-}
-
-.slot-booked {
-  font-size: 0.75rem;
-  color: $color-text-muted;
-  background: $color-surface;
-  border: 0.5px solid $color-border;
-  padding: 4px 12px;
-  border-radius: 6px;
-}
-
-.slot-btn {
-  font-size: 0.75rem;
-  padding: 5px 14px;
-  border-radius: 6px;
-  border: 0.5px solid $color-primary;
-  color: $color-primary;
-  background: transparent;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: none;
+  background: $color-primary;
+  color: #fff;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-  &:hover { background: $color-primary; color: #fff; }
+  white-space: nowrap;
+  width: 100%;
+  text-align: center;
+  transition: background 0.15s;
+
+  &:hover { background: $color-primary-dark; }
 }
 
-// ── Dialog Overlay ─────────────────────────────────────
+.booked-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #f0ece3;
+  color: #5a6e62;
+  padding: 9px 16px;
+  border-radius: 8px;
+  white-space: nowrap;
+  width: 100%;
+  text-align: center;
+  border: 0.5px solid $color-border-solid;
+}
+
+.slot-days-col {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  direction: rtl;
+}
+
+.slot-cal-icon {
+  width: 32px;
+  height: 32px;
+  background: $color-primary-light;
+  border: 0.5px solid $color-border-solid;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i { font-size: 0.95rem; color: $color-primary; }
+}
+
+.slot-days-text {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: $color-text-primary;
+}
+
+.slot-time-col {
+  width: 140px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  direction: ltr;
+  justify-content: flex-start;
+}
+
+.slot-clock-icon {
+  font-size: 0.875rem;
+  color: $color-text-muted;
+  flex-shrink: 0;
+}
+
+.slot-time-wrap {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.slot-time-val {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: $color-text-primary;
+}
+
+.slot-time-period {
+  font-size: 0.75rem;
+  color: $color-text-muted;
+}
+
+.slot-available-badge {
+  font-size: 0.72rem;
+  background: $green-100;
+  color: $color-primary-dark;
+  padding: 3px 9px;
+  border-radius: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.no-slots-msg {
+  font-size: 0.875rem;
+  color: $color-text-muted;
+  text-align: center;
+  padding: 12px 0;
+}
+
+// ══════════════════════════════════════════════════════
+// ── Dialog — ديزاين جديد ──────────────────────────────
+// ══════════════════════════════════════════════════════
+
 .dialog-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -280,148 +389,279 @@ $color-text-muted:    #1f6040;
 
 .dialog {
   background: $color-surface;
-  border-radius: 12px;
-  border: 0.5px solid $color-border;
+  border-radius: 16px;
+  border: 0.5px solid $color-border-solid;
   width: 100%;
-  max-width: 440px;
+  max-width: 420px;
   direction: rtl;
   overflow: hidden;
 }
 
-// ── Dialog Header ──────────────────────────────────────
+// ── Header — أخضر غامق ────────────────────────────────
 .dialog-header {
-  padding: 16px 20px;
-  border-bottom: 0.5px solid $color-border;
+  background: #1a3a2a;
+  padding: 18px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-bottom: none;
 }
 
 .dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 1rem;
-  font-weight: 500;
-  color: $color-text-primary;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.dialog-title-icon {
+  width: 34px;
+  height: 34px;
+  background: rgba(#fff, 0.15);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i { color: $gold-500; font-size: 1.05rem; }
 }
 
 .close-btn {
-  background: none;
+  background: rgba(#fff, 0.1);
   border: none;
+  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  color: $color-text-muted;
-  font-size: 1.1rem;
-  padding: 0;
+  color: rgba(#fff, 0.8);
+  font-size: 1rem;
   line-height: 1;
+  transition: background 0.15s;
+
+  &:hover { background: rgba(#fff, 0.22); }
 }
 
-// ── Dialog Body ────────────────────────────────────────
+// ── Body ───────────────────────────────────────────────
 .dialog-body {
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 14px;
+  background: $color-bg;
+}
+
+// كارد المعلم + الموعد
+.dialog-info-card {
+  background: $color-surface;
+  border-radius: 12px;
+  border: 0.5px solid $color-border-solid;
+  overflow: hidden;
 }
 
 .info-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 0.5px solid $color-border-solid;
+
+  &:last-child { border-bottom: none; }
+}
+
+// avatar دايري للمعلم داخل الـ dialog
+.info-row-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: $green-100;
+  border: 0.5px solid $color-border-solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: $green-800;
+  flex-shrink: 0;
+}
+
+// أيقونة مربعة للموعد
+.info-row-icon {
+  width: 38px;
+  height: 38px;
+  background: $color-primary-light;
+  border: 0.5px solid $color-border-solid;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i { font-size: 1rem; color: $color-primary; }
+}
+
+.info-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
 }
 
 .info-label {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: $color-text-muted;
+  margin: 0;
 }
 
 .info-value {
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   color: $color-text-primary;
-}
-
-.divider {
-  border: none;
-  border-top: 0.5px solid $color-border;
   margin: 0;
 }
 
+.available-pill {
+  font-size: 0.7rem;
+  background: $green-100;
+  color: $color-primary-dark;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+// ── Transfer Box ───────────────────────────────────────
 .transfer-box {
-  background: $color-primary-light;
-  border: 0.5px solid $color-border;
-  border-radius: 8px;
-  padding: 14px 16px;
+  background: $color-surface;
+  border: 0.5px solid $color-border-solid;
+  border-radius: 12px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.transfer-label {
+.transfer-box-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 0.8125rem;
+  font-weight: 500;
   color: $color-text-muted;
+
+  i { color: $color-primary; font-size: 0.95rem; }
+}
+
+.transfer-label {
+  font-size: 0.75rem;
+  color: $color-text-muted;
+  margin: 0;
 }
 
 .transfer-number {
-  font-size: 1.25rem;
-  font-weight: 500;
-  color: $color-text-primary;
-  letter-spacing: 1px;
+  background: $color-primary-light;
+  border: 0.5px solid $color-border-solid;
+  border-radius: 8px;
+  padding: 10px 14px;
   text-align: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: $color-text-primary;
+  letter-spacing: 1.5px;
   margin: 0;
 }
 
 .amount-badge {
-  background: $green-100;
-  color: $color-primary-dark;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  padding: 6px 16px;
-  border-radius: 6px;
-  text-align: center;
+  background: rgba($gold-500, 0.12);
+  border: 0.5px solid rgba($gold-500, 0.4);
+  border-radius: 8px;
+  padding: 9px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: color.adjust($gold-500, $lightness: -28%);
+
+  i { color: $gold-500; font-size: 0.95rem; }
 }
 
+// ── Dialog Note ────────────────────────────────────────
 .dialog-note {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  background: $color-primary-light;
+  border-radius: 10px;
+  padding: 10px 14px;
+  border: 0.5px solid $color-border-solid;
   font-size: 0.75rem;
   color: $color-text-muted;
-  line-height: 1.6;
-  text-align: center;
+  line-height: 1.7;
   margin: 0;
+
+  i {
+    color: $color-primary;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
 }
 
 // ── Dialog Footer ──────────────────────────────────────
 .dialog-footer {
   padding: 16px 20px;
-  border-top: 0.5px solid $color-border;
+  background: $color-surface;
+  border-top: 0.5px solid $color-border-solid;
   display: flex;
   gap: 10px;
 }
 
 .btn-cancel {
   flex: 1;
-  padding: 9px;
-  border-radius: 8px;
-  border: 0.5px solid $color-border;
+  padding: 10px;
+  border-radius: 10px;
+  border: 0.5px solid $color-border-solid;
   background: transparent;
   color: $color-text-muted;
   font-size: 0.875rem;
   cursor: pointer;
+  transition: background 0.15s;
+
   &:hover { background: $color-primary-light; }
 }
 
 .btn-confirm {
-  flex: 1;
-  padding: 9px;
-  border-radius: 8px;
+  flex: 2;
+  padding: 10px;
+  border-radius: 10px;
   border: none;
   background: $color-primary;
   color: #fff;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   transition: background 0.15s;
+
+  i { font-size: 0.95rem; }
+
   &:hover { background: $color-primary-dark; }
   &:disabled { opacity: 0.6; cursor: not-allowed; }
 }
 
-// ── Pending View ───────────────────────────────────────
+// ── Pending / Error Views ──────────────────────────────
 .pending-body {
   padding: 40px 24px;
   display: flex;
@@ -441,6 +681,11 @@ $color-text-muted:    #1f6040;
   justify-content: center;
 
   i { font-size: 2rem; color: $color-primary; }
+}
+
+.error-icon-wrap {
+  background: #fbeaf0;
+  i { color: #993556; }
 }
 
 .pending-title {
@@ -482,24 +727,9 @@ $color-text-muted:    #1f6040;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.15s;
+
   &:hover { background: $color-primary-dark; }
-
   i { vertical-align: -2px; margin-left: 6px; }
-}
-
-// ── Responsive ─────────────────────────────────────────
-@media (max-width: 480px) {
-  .slot-row {
-    flex-direction: column;
-    align-items: flex-start;
-
-    .slot-btn, .slot-booked { width: 100%; text-align: center; }
-  }
-}
-
-.error-icon-wrap {
-  background: #fbeaf0;
-  i { color: #993556; }
 }
 
 .error-btn {
@@ -507,36 +737,157 @@ $color-text-muted:    #1f6040;
   &:hover { background: #7a2944; }
 }
 
-.no-slots-msg {
-  font-size: 0.875rem;
-  color: $color-text-muted;
-  text-align: center;
-  padding: 12px 0;
+// ══════════════════════════════════════════════════════
+// ── Responsive ────────────────────────────────────────
+// ══════════════════════════════════════════════════════
+
+.teacher-name,
+.teacher-specialty {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.time-period {
-  font-size: 0.75rem;
-  color: $color-text-muted;
-  margin-right: 4px;
+.teacher-specialty {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
 }
 
-.slot-value {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  direction: rtl;
-}
-
-.divider-dot {
-  color: $color-border;
-}
-
-@media (max-width: 576px) {
-  .hero__inner {
-    justify-content: center;
+// ── Tablet ─────────────────────────────────────────────
+@media (max-width: 768px) {
+  .teacher-header {
+    padding: 16px 18px;
+    gap: 12px;
   }
 
-  .hero__content {
-    text-align: center;
+  .avatar {
+    width: 56px;
+    height: 56px;
+    font-size: 1.2rem;
+  }
+
+  .teacher-name { font-size: 1.05rem; }
+  .teacher-specialty { font-size: 0.8125rem; }
+
+  .slots-badge {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+  }
+
+  .teacher-body { padding: 16px 14px; }
+}
+
+// ── Mobile ─────────────────────────────────────────────
+@media (max-width: 576px) {
+  .teacher-header {
+    padding: 14px 14px;
+    gap: 10px;
+  }
+
+  .header-right {
+    gap: 10px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 1.05rem;
+    border-width: 2px;
+  }
+
+  .teacher-info {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .teacher-name {
+    font-size: 0.95rem;
+    white-space: nowrap;
+  }
+
+  .teacher-specialty {
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .header-left { gap: 6px; flex-shrink: 0; }
+
+  .slots-badge {
+    font-size: 0.65rem;
+    padding: 3px 8px;
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .chevron-btn { padding: 2px; }
+  .chevron { font-size: 0.8rem; }
+
+  // Slots
+  .slot-row {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .slot-divider { display: none; }
+
+  .slot-days-col {
+    order: 1;
+    justify-content: flex-end;
+    flex: unset;
+    width: 100%;
+    font-size: 0.875rem;
+  }
+
+  .slot-time-col {
+    order: 2;
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .slot-action-col {
+    order: 3;
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .slot-action-col .btn-book,
+  .slot-action-col .booked-badge {
+    width: 100%;
+  }
+
+  // Dialog على الموبايل
+  .dialog {
+    max-width: 100%;
+    border-radius: 12px;
+  }
+
+  .dialog-body { padding: 16px; }
+
+  .transfer-number { font-size: 1rem; }
+
+  .info-value { font-size: 0.8125rem; }
+}
+
+// ── Extra small ─────────────────────────────────────────
+@media (max-width: 360px) {
+  .avatar {
+    width: 42px;
+    height: 42px;
+    font-size: 0.95rem;
+  }
+
+  .teacher-name { font-size: 0.875rem; }
+  .teacher-specialty { font-size: 0.7rem; }
+
+  .slots-badge {
+    max-width: 70px;
+    font-size: 0.6rem;
   }
 }

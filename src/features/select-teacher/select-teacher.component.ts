@@ -6,11 +6,12 @@ import { StudentService } from '../../core/services/student.service';
 import { Teacher, Slot } from '../../core/interfaces/select-teacher';
 import { TracksService } from '../../core/services/tracks.service';
 import { AvailableTracks } from '../../core/interfaces/available-tracks';
+import { ArabicNumberPipe } from '../../core/pipes/arabic-number.pipe';
 
 @Component({
   selector: 'app-select-teacher',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ArabicNumberPipe],
   templateUrl: './select-teacher.component.html',
   styleUrl: './select-teacher.component.scss'
 })
@@ -65,10 +66,27 @@ export class SelectTeacherComponent implements OnInit {
       next: (res) => {
         this.teachers = res;
         this.isLoading = false;
+        // نحمّل مواعيد كل المعلمين على طول عشان يظهر العدد الحقيقي
+        // جمب كل كارد من غير الحاجة لفتحه الأول
+        this.teachers.forEach((teacher) => this.loadSlotsForTeacher(teacher.teacherId));
       },
       error: () => {
         this.error = true;
         this.isLoading = false;
+      }
+    });
+  }
+
+  private loadSlotsForTeacher(teacherId: number): void {
+    if (this.slots[teacherId] || this.slotsLoading[teacherId]) return;
+    this.slotsLoading[teacherId] = true;
+    this.teacherService.getAvailableDate(teacherId).subscribe({
+      next: (res) => {
+        this.slots[teacherId] = res;
+        this.slotsLoading[teacherId] = false;
+      },
+      error: () => {
+        this.slotsLoading[teacherId] = false;
       }
     });
   }
@@ -79,18 +97,9 @@ export class SelectTeacherComponent implements OnInit {
       return;
     }
     this.openTeacherId = teacher.teacherId;
-    if (!this.slots[teacher.teacherId]) {
-      this.slotsLoading[teacher.teacherId] = true;
-      this.teacherService.getAvailableDate(teacher.teacherId).subscribe({
-        next: (res) => {
-          this.slots[teacher.teacherId] = res;
-          this.slotsLoading[teacher.teacherId] = false;
-        },
-        error: () => {
-          this.slotsLoading[teacher.teacherId] = false;
-        }
-      });
-    }
+    // المواعيد بقت متحمّلة مسبقاً من getAllTeachers، بس بنسيب الـ fallback
+    // ده لو لأي سبب لسه مش محمّلة (مثلاً فشل الطلب الأول)
+    this.loadSlotsForTeacher(teacher.teacherId);
   }
 
   isOpen(teacherId: number): boolean {
@@ -99,6 +108,11 @@ export class SelectTeacherComponent implements OnInit {
 
   getSlots(teacherId: number): Slot[] {
     return this.slots[teacherId] || [];
+  }
+
+  // عدد المواعيد المتاحة فعلياً (مش المحجوزة) لمعلم معيّن
+  getAvailableSlotsCount(teacherId: number): number {
+    return this.getSlots(teacherId).filter((slot) => !slot.isBooked).length;
   }
 
   getInitial(name: string): string {

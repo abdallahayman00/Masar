@@ -34,92 +34,138 @@
 
     <!-- Teachers List -->
     <div class="teachers-list" *ngIf="!isLoading && !error">
-      <div class="teacher-row" *ngFor="let teacher of teachers">
+      <div class="teacher-card" *ngFor="let teacher of teachers">
         <!-- Header -->
         <div class="teacher-header" (click)="toggleTeacher(teacher)">
-          <div
-            class="avatar"
-            [ngClass]="
-              teacher.gender === 'Female' ? 'avatar-female' : 'avatar-male'
-            "
-          >
-            <img
-              *ngIf="teacher.profileImagePath"
-              [src]="teacher.profileImagePath"
-              [alt]="teacher.teacherName"
-              (error)="$any($event.target).style.display = 'none'"
-            />
-            <span *ngIf="!teacher.profileImagePath">{{
-              getInitial(teacher.teacherName)
-            }}</span>
+          <div class="header-right">
+            <div
+              class="avatar"
+              [ngClass]="
+                teacher.gender === 'Female' ? 'avatar-female' : 'avatar-male'
+              "
+            >
+              <img
+                *ngIf="teacher.profileImagePath"
+                [src]="teacher.profileImagePath"
+                [alt]="teacher.teacherName"
+                (error)="$any($event.target).style.display = 'none'"
+              />
+              <span *ngIf="!teacher.profileImagePath">
+                {{ getInitial(teacher.teacherName) }}
+              </span>
+            </div>
+
+            <div class="teacher-info">
+              <p class="teacher-name">{{ teacher.teacherName }}</p>
+              <p class="teacher-specialty">{{ teacher.summary }}</p>
+            </div>
           </div>
 
-          <div class="teacher-info">
-            <p class="teacher-name">{{ teacher.teacherName }}</p>
-            <p class="teacher-meta">{{ teacher.summary }}</p>
+          <div class="header-left">
+            <span
+              class="slots-badge"
+              [class.slots-badge--empty]="
+                !slotsLoading[teacher.teacherId] &&
+                getAvailableSlotsCount(teacher.teacherId) === 0
+              "
+            >
+              {{
+                slotsLoading[teacher.teacherId]
+                  ? "جاري التحميل..."
+                  : getAvailableSlotsCount(teacher.teacherId) === 0
+                    ? "لا توجد مواعيد متاحة"
+                    : (getAvailableSlotsCount(teacher.teacherId) +
+                        " مواعيد متاحة" | arabicNumber)
+              }}
+            </span>
+            <button
+              class="chevron-btn"
+              [attr.aria-expanded]="isOpen(teacher.teacherId)"
+            >
+              <i
+                class="fas chevron"
+                [class.fa-chevron-up]="isOpen(teacher.teacherId)"
+                [class.fa-chevron-down]="!isOpen(teacher.teacherId)"
+              ></i>
+            </button>
           </div>
-
-          <span
-            class="gender-badge"
-            [ngClass]="
-              teacher.gender === 'Female' ? 'badge-female' : 'badge-male'
-            "
-          >
-            {{ teacher.gender === "Female" ? "أنثى" : "ذكر" }}
-          </span>
-
-          <i
-            class="fas fa-chevron-down chevron"
-            [class.open]="isOpen(teacher.teacherId)"
-          ></i>
         </div>
 
-        <!-- Body -->
+        <!-- Expanded Body -->
         <div class="teacher-body" *ngIf="isOpen(teacher.teacherId)">
-          <p class="summary-text">{{ teacher.summary }}</p>
-
-          <p class="slots-title">المواعيد المتاحة</p>
-
-          <!-- Slots Loading -->
-          <div class="state-center" *ngIf="slotsLoading[teacher.teacherId]">
+          <div
+            class="state-center small"
+            *ngIf="slotsLoading[teacher.teacherId]"
+          >
             <div class="spinner"></div>
           </div>
 
-          <!-- Slots List -->
           <div
-            class="slots-list"
             *ngIf="
               !slotsLoading[teacher.teacherId] &&
               getSlots(teacher.teacherId).length > 0
             "
           >
-            <div
-              class="slot-row"
-              *ngFor="let slot of getSlots(teacher.teacherId)"
-            >
-              <span class="slot-days"
-                >{{ slot.firstDay }} — {{ slot.secondDay }}</span
+            <p class="slots-section-title">
+              <i class="fas fa-calendar-alt"></i> المواعيد المتاحة
+            </p>
+
+            <div class="slots-list">
+              <div
+                class="slot-row"
+                *ngFor="let slot of getSlots(teacher.teacherId)"
               >
-              <span class="slot-time">
-                <span dir="ltr">{{
-                  getTimeLabel(slot.timeFormatted).formatted
-                }}</span>
-                <span class="time-period">{{
-                  getTimeLabel(slot.timeFormatted).period
-                }}</span>
-              </span>
-              <span class="slot-booked" *ngIf="slot.isBooked">محجوز</span>
-              <button
-                class="slot-btn"
-                *ngIf="!slot.isBooked"
-                (click)="openDialog(teacher, slot)"
-              >
-                احجز
-              </button>
+                <div class="slot-action-col">
+                  <button
+                    class="btn-book"
+                    *ngIf="!slot.isBooked"
+                    (click)="
+                      openDialog(teacher, slot); $event.stopPropagation()
+                    "
+                  >
+                    احجز الآن
+                  </button>
+                  <span class="booked-badge" *ngIf="slot.isBooked">
+                    محجوز
+                  </span>
+                </div>
+
+                <div class="slot-divider"></div>
+
+                <div class="slot-days-col">
+                  <div class="slot-cal-icon">
+                    <i class="fas fa-calendar"></i>
+                  </div>
+                  <span class="slot-days-text">
+                    {{ slot.firstDay }} - {{ slot.secondDay }}
+                  </span>
+                </div>
+
+                <div class="slot-divider"></div>
+
+                <div class="slot-time-col">
+                  <i class="fas fa-clock slot-clock-icon"></i>
+                  <div class="slot-time-wrap" dir="ltr">
+                    <span class="slot-time-val">
+                      {{
+                        getTimeLabel(slot.timeFormatted).formatted
+                          | arabicNumber
+                      }}
+                    </span>
+                    <span class="slot-time-period">
+                      {{
+                        getTimeLabel(slot.timeFormatted).period | arabicNumber
+                      }}
+                    </span>
+                  </div>
+                  <span class="slot-available-badge" *ngIf="!slot.isBooked">
+                    متاح
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- No Slots -->
           <p
             class="no-slots-msg"
             *ngIf="
@@ -133,48 +179,91 @@
       </div>
     </div>
 
-    <!-- Dialog Overlay -->
+    <!-- ═══════════════════════════════════════════════════════════
+         Dialog Overlay — ديزاين جديد
+    ════════════════════════════════════════════════════════════ -->
     <div class="dialog-overlay" *ngIf="showDialog" (click)="closeDialog()">
       <div class="dialog" (click)="$event.stopPropagation()">
-        <!-- Confirm View -->
+        <!-- ── Confirm View ── -->
         <ng-container *ngIf="!showPending && !showError">
+          <!-- Header -->
           <div class="dialog-header">
-            <span class="dialog-title">تأكيد الحجز</span>
+            <span class="dialog-title">
+              <span class="dialog-title-icon">
+                <i class="fas fa-calendar-check"></i>
+              </span>
+              تأكيد الحجز
+            </span>
             <button class="close-btn" (click)="closeDialog()">
               <i class="fas fa-times"></i>
             </button>
           </div>
+
+          <!-- Body -->
           <div class="dialog-body">
-            <div class="info-row">
-              <span class="info-label">المعلم</span>
-              <span class="info-value">{{ selectedTeacher?.teacherName }}</span>
+            <!-- كارد المعلم والموعد -->
+            <div class="dialog-info-card">
+              <!-- صف المعلم -->
+              <div class="info-row">
+                <div class="info-row-avatar">
+                  {{ getInitial(selectedTeacher?.teacherName ?? "") }}
+                </div>
+                <div class="info-row-text">
+                  <p class="info-label">المعلم</p>
+                  <p class="info-value">{{ selectedTeacher?.teacherName }}</p>
+                </div>
+                <span class="available-pill">متاح</span>
+              </div>
+
+              <!-- صف الموعد -->
+              <div class="info-row">
+                <div class="info-row-icon">
+                  <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="info-row-text">
+                  <p class="info-label">الموعد</p>
+                  <p class="info-value">
+                    {{ selectedSlot?.firstDay }} — {{ selectedSlot?.secondDay }}
+                    &nbsp;|&nbsp;
+                    <span dir="ltr">
+                      {{
+                        getTimeLabel(selectedSlot?.timeFormatted ?? "")
+                          .formatted | arabicNumber
+                      }}
+                      {{
+                        getTimeLabel(selectedSlot?.timeFormatted ?? "").period
+                          | arabicNumber
+                      }}
+                    </span>
+                  </p>
+                </div>
+              </div>
             </div>
-            <div class="info-row">
-              <span class="info-label">الموعد</span>
-              <span class="info-value slot-value">
-                <span
-                  >{{ selectedSlot?.firstDay }} —
-                  {{ selectedSlot?.secondDay }}</span
-                >
-                <span class="divider-dot">|</span>
-                <span dir="ltr">{{
-                  getTimeLabel(selectedSlot?.timeFormatted ?? "").formatted
-                }}</span>
-                <span class="time-period">{{
-                  getTimeLabel(selectedSlot?.timeFormatted ?? "").period
-                }}</span>
-              </span>
-            </div>
-            <hr class="divider" />
+
+            <!-- كارد التحويل -->
             <div class="transfer-box">
-              <span class="transfer-label">حوّل المبلغ على الرقم التالي</span>
-              <p class="transfer-number" dir="ltr">{{ TRANSFER_NUMBER }}</p>
-              <div class="amount-badge">المبلغ: {{ trackPrice }} جنيه</div>
+              <div class="transfer-box-title">
+                <i class="fas fa-exchange-alt"></i>
+                بيانات التحويل
+              </div>
+              <p class="transfer-label">حوّل المبلغ على الرقم التالي</p>
+              <p class="transfer-number" dir="ltr">
+                {{ TRANSFER_NUMBER | arabicNumber }}
+              </p>
+              <div class="amount-badge">
+                <i class="fas fa-coins"></i>
+                المبلغ: {{ trackPrice | arabicNumber }} جنيه
+              </div>
             </div>
-            <p class="dialog-note">
+
+            <!-- ملاحظة -->
+            <div class="dialog-note">
+              <i class="fas fa-info-circle"></i>
               بعد التحويل اضغط تأكيد وسيتم مراجعة طلبك من قِبَل الإدارة
-            </p>
+            </div>
           </div>
+
+          <!-- Footer -->
           <div class="dialog-footer">
             <button class="btn-cancel" (click)="closeDialog()">إلغاء</button>
             <button
@@ -182,12 +271,13 @@
               (click)="confirmBooking()"
               [disabled]="isBooking"
             >
-              {{ isBooking ? "جاري الإرسال..." : "تأكيد" }}
+              <i class="fas fa-check" *ngIf="!isBooking"></i>
+              {{ isBooking ? "جاري الإرسال..." : "تأكيد الحجز" }}
             </button>
           </div>
         </ng-container>
 
-        <!-- Pending View -->
+        <!-- ── Pending View ── -->
         <ng-container *ngIf="showPending">
           <div class="pending-body">
             <div class="pending-icon-wrap">
@@ -209,7 +299,7 @@
           </div>
         </ng-container>
 
-        <!-- Error View -->
+        <!-- ── Error View ── -->
         <ng-container *ngIf="showError">
           <div class="pending-body">
             <div class="pending-icon-wrap error-icon-wrap">

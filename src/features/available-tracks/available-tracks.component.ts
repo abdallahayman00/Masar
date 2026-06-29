@@ -4,11 +4,12 @@ import { Router } from '@angular/router';
 import { TracksService } from '../../core/services/tracks.service';
 import { AvailableTracks } from '../../core/interfaces/available-tracks';
 import { CurrencyFormatPipe } from '../../core/pipes/currency-format.pipe';
+import { ArabicNumberPipe } from '../../core/pipes/arabic-number.pipe';
 
 
 @Component({
   selector: 'app-available-tracks',
-  imports: [CommonModule, CurrencyFormatPipe],
+  imports: [CommonModule, CurrencyFormatPipe, ArabicNumberPipe],
   templateUrl: './available-tracks.component.html',
   styleUrl: './available-tracks.component.scss'
 })

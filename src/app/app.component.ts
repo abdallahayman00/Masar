@@ -16,6 +16,7 @@ import { TeacherService } from '../core/services/teacher.service'; // المسا
 import { ToastService } from '../core/services/toast.service';
 import { ToastComponent } from '../features/toast/toast/toast.component'; // أضف هذا
 import { SpinnerComponent } from '../shared/components/spinner/spinner.component';
+import { ArabicNumberPipe } from '../core/pipes/arabic-number.pipe';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +27,8 @@ import { SpinnerComponent } from '../shared/components/spinner/spinner.component
     RouterLinkActive,
     CommonModule,
     SpinnerComponent,
-    ToastComponent, // <-- أضف هنا
+    ToastComponent, 
+    ArabicNumberPipe
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],

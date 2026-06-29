@@ -1,86 +1,102 @@
-$color-primary:          #1a3a2a;
-$color-primary-mid:      #2d5a3d;
-$color-accent-gold:      #c9a84c;
-$color-badge-active-bg:  #f0c93a;
-$color-badge-active-text:#3a2800;
-$color-progress-track:   #e8e8e8;
-$color-progress-fill:    #2d5a3d;
+$color-primary:          #0f2e23; // أخضر غامق (الهيدر والكارت)
+$color-primary-mid:      #1f4d3d; // أخضر متوسط للتدرج
+$color-accent-gold:      #d4b13a; // ذهبي محدد من المستخدم (الشارة والزرار)
+$color-accent-gold-text: #3f3105; // نص فوق الذهبي
+$color-badge-waiting-bg: rgba(255, 255, 255, 0.16);
+$color-badge-waiting-text: #ffffff;
+$color-badge-completed-bg: rgba(255, 255, 255, 0.16);
+$color-badge-completed-text: #ffffff;
+$color-progress-track:   rgba(255, 255, 255, 0.15);
+$color-progress-fill:    $color-accent-gold;
 $color-surface:          #ffffff;
-$color-bg-stat:          #f8f8f5;
+$color-bg-stat:          rgba(255, 255, 255, 0.08);
 $color-border:           #e0e0dc;
 $color-text-main:        #1a1a1a;
 $color-text-muted:       #666666;
-$color-hover-border:     #8fd4a8; // بوردر أخضر فاتح عند الـ hover
+$color-text-on-dark:     #ffffff;
+$color-text-on-dark-muted: #9fc2ad;
+$color-hover-border:     #d4b13a; // بوردر ذهبي عند الـ hover
 
 $radius-card:  16px;
-$radius-badge: 8px;
+$radius-badge: 20px;
 $radius-btn:   10px;
 $radius-img:   12px;
-$radius-stat:  8px;
+$radius-stat:  10px;
 
 $font-main: 'Cairo', sans-serif;
 
 .course-card {
   font-family: $font-main;
-  background: $color-surface;
+  background: $color-primary;
   border-radius: $radius-card;
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  border: 1px solid $color-border;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  overflow: hidden; // يقص أي زيادة عند حواف الكارت بما فيها زوايا الصورة
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
   display: flex;
   flex-direction: column;
   direction: rtl;
 
-  // الترانزيشن الخاص بالكارت نفسه (الحركة لفوق + البوردر + الشادو)
   transition:
-    box-shadow 0.25s ease,
-    transform 0.25s ease,
-    border-color 0.25s ease;
+    border-color 0.25s ease,
+    transform 0.35s ease;
 
   &:hover {
-    box-shadow: 0 10px 28px rgba(26, 58, 42, 0.16);
-    transform: translateY(-6px);
     border-color: $color-hover-border;
-
-    // زوم خفيف على الصورة عند الهوفر على الكارت كله
-    .course-card__thumbnail img {
-      transform: scale(1.08);
-    }
+    transform: translateY(-4px);
   }
 
   &__thumbnail {
     position: relative;
     width: 100%;
-    height: 180px;
+    height: 130px;
     overflow: hidden;
-    border-radius: $radius-img $radius-img 0 0;
-    background: $color-bg-stat;
+    border-radius: $radius-card $radius-card 0 0; // نفس راديوس الكارت بالضبط، لا فراغ بين الزوايا
+    background: $color-primary-mid;
 
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: transform 0.35s ease;
+      border-radius: inherit; // يورث نفس راديوس الكونتينر بدل ما يبقى مستطيل حاد
     }
   }
 
-  // شكل بديل لما مفيش صورة للمسار (نفس أيقونة الكتاب في الصورة المرفقة)
+  // عنصر التدرج منفصل عمداً عن الصورة، لكن بقياسات صريحة (top/left/right/bottom)
+  // بدل inset: 0 — وده اللي كان يحصل فيه تقريب بكسل مختلف عن حدود الكونتينر الأب
+  &__thumbnail-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      to top,
+      $color-primary 0%,
+      rgba(15, 46, 35, 0.85) 30%,
+      rgba(15, 46, 35, 0.35) 65%,
+      rgba(15, 46, 35, 0) 100%
+    );
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  // شكل بديل لما مفيش صورة للمسار
   &__thumbnail-placeholder {
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #e8f3ec; // نفس خلفية الكارت الفاتحة في الصورة
+    background: $color-primary-mid;
     transition: transform 0.35s ease;
 
     svg {
-      width: 72px;
-      height: 72px;
-      fill: #8fc9a8; // نفس لون أيقونة الكتاب (filled) في الصورة
+      width: 60px;
+      height: 60px;
+      fill: rgba(255, 255, 255, 0.35);
     }
   }
 
@@ -92,28 +108,31 @@ $font-main: 'Cairo', sans-serif;
     position: absolute;
     top: 12px;
     left: 12px;
-    padding: 4px 12px;
+    padding: 4px 14px;
     border-radius: $radius-badge;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     line-height: 1.4;
+    z-index: 1;
 
     &--waiting {
-      background: #e0e0e0;
-      color: #555555;
+      background: $color-badge-waiting-bg;
+      color: $color-badge-waiting-text;
     }
     &--active {
-      background: $color-badge-active-bg;
-      color: $color-badge-active-text;
+      background: $color-accent-gold;
+      color: $color-accent-gold-text;
     }
     &--completed {
-      background: #d4edda;
-      color: #1a5c2a;
+      background: $color-badge-completed-bg;
+      color: $color-badge-completed-text;
     }
   }
 
   &__body {
-    padding: 16px 16px 20px;
+    padding: 14px 18px 20px;
+    margin-top: -26px;
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -127,96 +146,96 @@ $font-main: 'Cairo', sans-serif;
   }
 
   &__title {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
-    color: $color-text-main;
+    color: $color-text-on-dark;
     line-height: 1.4;
     margin: 0;
   }
 
   &__supervisor {
     font-size: 13px;
-    color: $color-text-muted;
+    color: $color-text-on-dark-muted;
     font-weight: 500;
     margin: 0;
 
     span {
-      color: $color-text-main;
+      color: $color-text-on-dark;
       font-weight: 600;
     }
   }
 
+  // صف يجمع دائرة التقدم والإحصائيات في صندوق واحد
+  &__progress-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: $color-bg-stat;
+    border-radius: $radius-stat;
+    padding: 12px 14px;
+  }
+
+  &__progress-circle {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+
+    svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    &-track {
+      fill: none;
+      stroke: $color-progress-track;
+      stroke-width: 5;
+    }
+
+    &-fill {
+      fill: none;
+      stroke: $color-progress-fill;
+      stroke-width: 5;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.5s ease;
+    }
+
+    &-value {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: $color-text-on-dark;
+    }
+  }
+
   &__stats {
+    flex: 1;
     display: flex;
     justify-content: space-between;
-    gap: 6px;
+    text-align: center;
   }
 
   &__stat {
-    flex: 1;
-    background: $color-bg-stat;
-    border: 1px solid $color-border;
-    border-radius: $radius-stat;
-    padding: 8px 6px;
-    text-align: center;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
 
     &-label {
       font-size: 11px;
-      color: $color-text-muted;
+      color: $color-text-on-dark-muted;
       font-weight: 500;
     }
 
     &-value {
       font-size: 18px;
       font-weight: 700;
-      color: $color-primary;
+      color: $color-text-on-dark;
       line-height: 1;
-    }
-
-    &--pending &-value {
-      color: $color-accent-gold;
-    }
-  }
-
-  &__progress {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-
-    &-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    &-label {
-      font-size: 13px;
-      color: $color-text-muted;
-      font-weight: 500;
-    }
-
-    &-value {
-      font-size: 14px;
-      font-weight: 700;
-      color: $color-primary;
-    }
-
-    &-track {
-      width: 100%;
-      height: 8px;
-      background: $color-progress-track;
-      border-radius: 99px;
-      overflow: hidden;
-    }
-
-    &-fill {
-      height: 100%;
-      background: $color-progress-fill;
-      border-radius: 99px;
-      transition: width 0.5s ease;
     }
   }
 
@@ -227,8 +246,8 @@ $font-main: 'Cairo', sans-serif;
     gap: 8px;
     width: 100%;
     padding: 12px;
-    background: $color-primary;
-    color: #ffffff;
+    background: $color-accent-gold;
+    color: $color-accent-gold-text;
     border: none;
     border-radius: $radius-btn;
     font-family: $font-main;
@@ -237,7 +256,7 @@ $font-main: 'Cairo', sans-serif;
     cursor: pointer;
     transition: background 0.18s ease, transform 0.1s ease;
 
-    &:hover { background: $color-primary-mid; }
+    &:hover { background: darken($color-accent-gold, 6%); }
     &:active { transform: scale(0.98); }
 
     svg {
@@ -247,16 +266,19 @@ $font-main: 'Cairo', sans-serif;
 
     &:disabled,
     &--disabled {
-      background: #cccccc;
-      color: #888888;
+      background: rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.4);
       cursor: not-allowed;
 
-      &:hover { background: #cccccc; }
+      &:hover { background: rgba(255, 255, 255, 0.12); }
     }
   }
 
-  &--completed &__progress-fill {
-    background: #2d8a4e;
+  // المسارات المكتملة: لون الدائرة يتحول لأخضر فاتح بدل الذهبي
+  &--completed {
+    .course-card__progress-circle-fill {
+      stroke: #5dcaa5;
+    }
   }
 }
 
