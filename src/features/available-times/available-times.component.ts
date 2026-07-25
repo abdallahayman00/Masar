@@ -1,4 +1,3 @@
-// available-times.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -9,6 +8,7 @@ import {
   CreateSlotRequest,
   CreateSlotResponse,
 } from '../../core/services/available-slots.service';
+import { AuthService } from '../../core/services/auth.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -25,7 +25,7 @@ export class AvailableTimesComponent implements OnInit {
   errorMessage: string | null = null;
   isDeleting: boolean = false;
   isCreating: boolean = false;
-  submitted: boolean = false; // للتحقق من الـ Form Submit
+  submitted: boolean = false;
 
   // Stats
   availableCount: number = 0;
@@ -44,8 +44,10 @@ export class AvailableTimesComponent implements OnInit {
 
   // Create Modal
   showCreateModal: boolean = false;
+  createError: string | null = null; // 👈 تخزين رسالة الخطأ داخل المودال
+
   newSlot: CreateSlotRequest = {
-    teacherId: 36,
+    teacherId: 0,
     firstDay: '',
     secondDay: '',
     sessionTime: '',
@@ -58,7 +60,6 @@ export class AvailableTimesComponent implements OnInit {
   selectedSecond: string = '00';
   selectedPeriod: string = 'ص';
 
-  // Time options (1-12)
   hours: string[] = Array.from({ length: 12 }, (_, i) =>
     (i + 1).toString().padStart(2, '0'),
   );
@@ -70,7 +71,7 @@ export class AvailableTimesComponent implements OnInit {
   );
   periods: string[] = ['ص', 'م'];
 
-  // أيام الأسبوع
+  // أيام الأسبوع بالعربية (للعرض والإرسال)
   daysOfWeek: string[] = [
     'الأحد',
     'الإثنين',
@@ -81,7 +82,6 @@ export class AvailableTimesComponent implements OnInit {
     'السبت',
   ];
 
-  // ألوان مقترحة (ألوان هادية)
   presetColors: string[] = [
     '#e8d5c4',
     '#d4c5b5',
@@ -95,15 +95,30 @@ export class AvailableTimesComponent implements OnInit {
     '#e8ddd0',
   ];
 
-  teacherId: number = 36;
+  teacherId: number | null = null;
 
-  constructor(private availableSlotsService: AvailableSlotsService) {}
+  constructor(
+    private availableSlotsService: AvailableSlotsService,
+    private authService: AuthService,
+  ) {}
 
   ngOnInit(): void {
-    this.loadAvailableSlots();
+    this.teacherId = this.authService.getUserIdFromToken();
+
+    if (this.teacherId) {
+      if (!this.authService.getToken()) {
+        this.errorMessage =
+          '⚠️ لم يتم العثور على توكن المصادقة. يرجى تسجيل الدخول مرة أخرى.';
+        return;
+      }
+      this.loadAvailableSlots();
+    } else {
+      this.errorMessage = '⚠️ يجب تسجيل الدخول كمعلم لعرض المواعيد';
+    }
   }
 
   loadAvailableSlots(): void {
+    if (!this.teacherId) return;
     this.isLoading = true;
     this.errorMessage = null;
 
@@ -114,13 +129,13 @@ export class AvailableTimesComponent implements OnInit {
         this.calculateStats();
         this.updatePagination();
         this.isLoading = false;
-        console.log('Available slots loaded:', data);
+        console.log('✅ Available slots loaded:', data);
       },
       error: (err) => {
         this.errorMessage =
           'فشل في تحميل المواعيد المتاحة. يرجى المحاولة مرة أخرى.';
         this.isLoading = false;
-        console.error('Error loading available slots:', err);
+        console.error('❌ Error loading available slots:', err);
       },
     });
   }
@@ -172,11 +187,10 @@ export class AvailableTimesComponent implements OnInit {
   }
 
   // ============================================================
-  // TIME PICKER CONTROLS (12-hour format with AM/PM)
+  // TIME PICKER CONTROLS
   // ============================================================
   updateTime(): void {
-    // Convert 12-hour to 24-hour format
-    let hour = parseInt(this.selectedHour);
+    let hour = parseInt(this.selectedHour, 10);
     if (this.selectedPeriod === 'م' && hour !== 12) {
       hour += 12;
     } else if (this.selectedPeriod === 'ص' && hour === 12) {
@@ -195,42 +209,42 @@ export class AvailableTimesComponent implements OnInit {
   }
 
   incrementHour(): void {
-    let hour = parseInt(this.selectedHour);
+    let hour = parseInt(this.selectedHour, 10);
     hour = (hour % 12) + 1;
     this.selectedHour = hour.toString().padStart(2, '0');
     this.updateTime();
   }
 
   decrementHour(): void {
-    let hour = parseInt(this.selectedHour);
+    let hour = parseInt(this.selectedHour, 10);
     hour = hour === 1 ? 12 : hour - 1;
     this.selectedHour = hour.toString().padStart(2, '0');
     this.updateTime();
   }
 
   incrementMinute(): void {
-    let minute = parseInt(this.selectedMinute);
+    let minute = parseInt(this.selectedMinute, 10);
     minute = (minute + 1) % 60;
     this.selectedMinute = minute.toString().padStart(2, '0');
     this.updateTime();
   }
 
   decrementMinute(): void {
-    let minute = parseInt(this.selectedMinute);
+    let minute = parseInt(this.selectedMinute, 10);
     minute = (minute - 1 + 60) % 60;
     this.selectedMinute = minute.toString().padStart(2, '0');
     this.updateTime();
   }
 
   incrementSecond(): void {
-    let second = parseInt(this.selectedSecond);
+    let second = parseInt(this.selectedSecond, 10);
     second = (second + 1) % 60;
     this.selectedSecond = second.toString().padStart(2, '0');
     this.updateTime();
   }
 
   decrementSecond(): void {
-    let second = parseInt(this.selectedSecond);
+    let second = parseInt(this.selectedSecond, 10);
     second = (second - 1 + 60) % 60;
     this.selectedSecond = second.toString().padStart(2, '0');
     this.updateTime();
@@ -245,8 +259,15 @@ export class AvailableTimesComponent implements OnInit {
   // CREATE SLOT
   // ============================================================
   openCreateModal(): void {
+    if (!this.teacherId) {
+      this.createError = 'يجب تسجيل الدخول كمعلم لإضافة موعد';
+      this.showCreateModal = true;
+      return;
+    }
+
     this.showCreateModal = true;
     this.submitted = false;
+    this.createError = null; // تصفير الخطأ
     this.newSlot = {
       teacherId: this.teacherId,
       firstDay: '',
@@ -254,7 +275,6 @@ export class AvailableTimesComponent implements OnInit {
       sessionTime: '',
       color: '#e8d5c4',
     };
-    // Reset time picker
     this.selectedHour = '12';
     this.selectedMinute = '00';
     this.selectedSecond = '00';
@@ -268,47 +288,40 @@ export class AvailableTimesComponent implements OnInit {
 
   createSlot(): void {
     this.submitted = true;
+    this.createError = null; // إعادة تعيين الخطأ
 
-    // Validation - اليوم الأول
+    // التحقق من الحقول
     if (!this.newSlot.firstDay) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'بيانات ناقصة',
-        text: 'يرجى اختيار اليوم الأول',
-        confirmButtonColor: '#f59e0b',
-        confirmButtonText: 'حسناً',
-      });
+      this.createError = 'يرجى اختيار اليوم الأول';
       return;
     }
 
-    // Validation - اليوم الثاني
     if (!this.newSlot.secondDay) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'بيانات ناقصة',
-        text: 'يرجى اختيار اليوم الثاني',
-        confirmButtonColor: '#f59e0b',
-        confirmButtonText: 'حسناً',
-      });
+      this.createError = 'يرجى اختيار اليوم الثاني';
       return;
     }
 
-    // Validation - الوقت
     if (this.isTimeInvalid()) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'بيانات ناقصة',
-        text: 'يرجى اختيار الوقت',
-        confirmButtonColor: '#f59e0b',
-        confirmButtonText: 'حسناً',
-      });
+      this.createError = 'يرجى اختيار الوقت';
       return;
     }
+
+    // إرسال البيانات بالعربية مباشرة
+    const payload: CreateSlotRequest = {
+      teacherId: this.newSlot.teacherId,
+      firstDay: this.newSlot.firstDay,
+      secondDay: this.newSlot.secondDay,
+      sessionTime: this.newSlot.sessionTime,
+      color: this.newSlot.color,
+    };
+
+    console.log('📤 Sending payload:', payload);
 
     this.isCreating = true;
 
-    this.availableSlotsService.createAvailableSlot(this.newSlot).subscribe({
+    this.availableSlotsService.createAvailableSlot(payload).subscribe({
       next: (response: CreateSlotResponse) => {
+        // نجاح – نغلق المودال ونعرض SweetAlert للنجاح
         Swal.fire({
           icon: 'success',
           title: 'تم الإضافة بنجاح',
@@ -324,24 +337,38 @@ export class AvailableTimesComponent implements OnInit {
         this.isCreating = false;
       },
       error: (err) => {
+        // فشل – نستخرج الرسالة ونعرضها داخل المودال
         let errorMessage = 'حدث خطأ أثناء إضافة الموعد';
 
-        if (err.error && typeof err.error === 'string') {
-          errorMessage = err.error;
-        } else if (err.error?.message) {
-          errorMessage = err.error.message;
+        // محاولة استخراج رسالة الخطأ من عدة مصادر
+        if (err.error) {
+          if (typeof err.error === 'string') {
+            errorMessage = err.error;
+          } else if (err.error.message) {
+            errorMessage = err.error.message;
+          } else if (err.error.title) {
+            errorMessage = err.error.title;
+          } else if (err.error.errors) {
+            // ModelState errors (ASP.NET)
+            const messages = Object.values(err.error.errors).flat();
+            errorMessage = messages.join(' ') || errorMessage;
+          } else {
+            try {
+              errorMessage = JSON.stringify(err.error);
+            } catch (e) {
+              /* ignore */
+            }
+          }
+        } else if (err.message) {
+          // استخدام رسالة الخطأ العامة من HttpErrorResponse
+          errorMessage = err.message;
         }
 
-        Swal.fire({
-          icon: 'error',
-          title: 'فشل الإضافة',
-          text: errorMessage,
-          confirmButtonColor: '#dc2626',
-          confirmButtonText: 'حسناً',
-        });
+        // عرض الخطأ داخل المودال
+        this.createError = errorMessage;
 
+        console.error('❌ Full error:', err);
         this.isCreating = false;
-        console.error('Error creating slot:', err);
       },
     });
   }
@@ -350,6 +377,7 @@ export class AvailableTimesComponent implements OnInit {
     this.showCreateModal = false;
     this.isCreating = false;
     this.submitted = false;
+    this.createError = null;
   }
 
   // ============================================================

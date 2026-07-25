@@ -1,7 +1,7 @@
-// services/available-slots.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
 export interface AvailableSlot {
   id: number;
@@ -33,25 +33,49 @@ export interface CreateSlotResponse {
   providedIn: 'root',
 })
 export class AvailableSlotsService {
-  private baseUrl = 'https://masaar.runasp.net/api/Teacher/AvailableSlots';
-  private deleteUrl = 'https://masaar.runasp.net/api/Teacher/available-dates';
-  private createUrl = 'https://masaar.runasp.net/api/Teacher/CreateSchedule';
+  private baseUrl =
+    'http://massarlearning.runasp.net/api/Teacher/AvailableSlots';
+  private deleteUrl =
+    'http://massarlearning.runasp.net/api/Teacher/available-dates';
+  private createUrl =
+    'http://massarlearning.runasp.net/api/Teacher/CreateSchedule';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+  ) {}
+
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken();
+    console.log(
+      '🔑 Token used:',
+      token ? token.substring(0, 20) + '...' : 'No token',
+    );
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : '',
+    });
+  }
 
   getAvailableSlots(teacherId: number): Observable<AvailableSlot[]> {
     const url = `${this.baseUrl}?teacherId=${teacherId}`;
-    return this.http.get<AvailableSlot[]>(url);
+    return this.http.get<AvailableSlot[]>(url, { headers: this.getHeaders() });
   }
 
   deleteAvailableSlot(slotId: number): Observable<DeleteResponse> {
     const url = `${this.deleteUrl}/${slotId}`;
-    return this.http.delete<DeleteResponse>(url);
+    return this.http.delete<DeleteResponse>(url, {
+      headers: this.getHeaders(),
+    });
   }
 
   createAvailableSlot(
     request: CreateSlotRequest,
   ): Observable<CreateSlotResponse> {
-    return this.http.post<CreateSlotResponse>(this.createUrl, request);
+    console.log('📤 Sending to createUrl:', this.createUrl);
+    console.log('📦 Request body:', request);
+    return this.http.post<CreateSlotResponse>(this.createUrl, request, {
+      headers: this.getHeaders(),
+    });
   }
 }

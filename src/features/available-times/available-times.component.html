@@ -342,7 +342,9 @@
   </section>
 </main>
 
-<!-- Modal - عرض تفاصيل الموعد -->
+<!-- ============================================================
+     MODAL - VIEW SLOT DETAILS
+     ============================================================ -->
 <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
@@ -413,8 +415,9 @@
     </div>
   </div>
 </div>
+
 <!-- ============================================================
-     MODAL - CREATE NEW SLOT
+     MODAL - CREATE NEW SLOT (متقدم مع validation)
      ============================================================ -->
 <div class="modal-overlay" *ngIf="showCreateModal" (click)="closeCreateModal()">
   <div
@@ -427,107 +430,12 @@
     </div>
 
     <div class="modal-body">
-      <!-- اليوم الأول -->
-      <div class="form-group">
-        <label for="firstDay">اليوم الأول *</label>
-        <select
-          id="firstDay"
-          [(ngModel)]="newSlot.firstDay"
-          class="form-control"
-        >
-          <option value="" disabled>اختر اليوم الأول</option>
-          <option *ngFor="let day of daysOfWeek" [value]="day">
-            {{ day }}
-          </option>
-        </select>
+      <!-- عرض رسالة الخطأ داخل المودال -->
+      <div class="create-error" *ngIf="createError">
+        <span class="error-icon">⚠️</span>
+        {{ createError }}
       </div>
 
-      <!-- اليوم الثاني -->
-      <div class="form-group">
-        <label for="secondDay">اليوم الثاني *</label>
-        <select
-          id="secondDay"
-          [(ngModel)]="newSlot.secondDay"
-          class="form-control"
-        >
-          <option value="" disabled>اختر اليوم الثاني</option>
-          <option *ngFor="let day of daysOfWeek" [value]="day">
-            {{ day }}
-          </option>
-        </select>
-      </div>
-
-      <!-- الوقت -->
-      <div class="form-group">
-        <label for="sessionTime">الوقت *</label>
-        <input
-          type="text"
-          id="sessionTime"
-          [(ngModel)]="newSlot.sessionTime"
-          class="form-control"
-          placeholder="مثال: 15:30:00"
-          dir="ltr"
-        />
-        <small class="form-hint">صيغة الوقت: HH:mm:ss (مثال: 15:30:00)</small>
-      </div>
-
-      <!-- اختيار اللون -->
-      <div class="form-group">
-        <label>اختر اللون</label>
-        <div class="color-picker">
-          <div
-            *ngFor="let color of presetColors"
-            class="color-option"
-            [style.background]="color"
-            [class.active]="newSlot.color === color"
-            (click)="selectColor(color)"
-          ></div>
-          <div class="color-option color-option--custom">
-            <input
-              type="color"
-              [(ngModel)]="newSlot.color"
-              class="color-input"
-              title="اختر لون مخصص"
-            />
-          </div>
-        </div>
-        <div class="selected-color-preview">
-          <span>اللون المختار: </span>
-          <span class="color-badge" [style.background]="newSlot.color"></span>
-          <span class="color-hex">{{ newSlot.color }}</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal-footer">
-      <button
-        class="btn-secondary"
-        (click)="closeCreateModal()"
-        [disabled]="isCreating"
-      >
-        إلغاء
-      </button>
-      <button
-        class="btn-primary"
-        (click)="createSlot()"
-        [disabled]="isCreating"
-      >
-        {{ isCreating ? "جاري الإضافة..." : "إضافة" }}
-      </button>
-    </div>
-  </div>
-</div>
-<div class="modal-overlay" *ngIf="showCreateModal" (click)="closeCreateModal()">
-  <div
-    class="modal-content modal-content--create"
-    (click)="$event.stopPropagation()"
-  >
-    <div class="modal-header">
-      <h3>➕ إضافة ميعاد جديد</h3>
-      <button class="modal-close" (click)="closeCreateModal()">✕</button>
-    </div>
-
-    <div class="modal-body">
       <!-- اليوم الأول - Required -->
       <div
         class="form-group"
@@ -620,7 +528,7 @@
 
             <span class="time-separator">:</span>
 
-            <!-- صباحي/مسائي -->
+            <!-- الفترة (صباحي/مسائي) -->
             <div class="time-period-wrapper">
               <span class="time-select-label">الفترة</span>
               <select

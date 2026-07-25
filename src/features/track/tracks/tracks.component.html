@@ -134,9 +134,6 @@
             <tr *ngIf="!isLoading && !errorMessage && tracks.length === 0">
               <td colspan="8" class="text-center">
                 لا توجد مسارات تعليمية حالياً
-                <button class="retry-btn" (click)="openAddModal()">
-                  أضف أول مسار
-                </button>
               </td>
             </tr>
 
@@ -507,9 +504,7 @@
       <div class="detail-row">
         <div class="detail-label">مدة الحصة:</div>
         <div class="detail-value">
-          {{
-            selectedTrack.sessionDuration || selectedTrack.sessionMinutes
-          }}
+          {{ selectedTrack.sessionDuration || selectedTrack.sessionMinutes }}
           دقيقة
         </div>
       </div>

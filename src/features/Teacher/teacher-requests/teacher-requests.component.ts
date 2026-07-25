@@ -41,7 +41,7 @@ export class TeacherRequestsComponent implements OnInit {
   totalCount: number = 0;
   totalPages: number = 0;
   searchTerm: string = '';
-  private apiUrl = 'https://masaar.runasp.net/api/Teacher/not-approved';
+  private apiUrl = 'http://massarlearning.runasp.net/api/Teacher/not-approved';
 
   // متغيرات المودال
   showModal: boolean = false;
@@ -115,7 +115,7 @@ export class TeacherRequestsComponent implements OnInit {
         // 2. إرسال طلب الموافقة إلى الـ API الصحيح
         this.http
           .post(
-            `https://masaar.runasp.net/api/Teacher/TeacherApproved/${teacherId}`,
+            `http://massarlearning.runasp.net/api/Teacher/TeacherApproved/${teacherId}`,
             {},
             {
               responseType: 'text', // لأن الـ API يرجع نص عادي
@@ -160,7 +160,10 @@ export class TeacherRequestsComponent implements OnInit {
 
   rejectRequest(teacherId: number): void {
     this.http
-      .post(`https://masaar.runasp.net/api/Teacher/${teacherId}/reject`, {})
+      .post(
+        `http://massarlearning.runasp.net/api/Teacher/${teacherId}/reject`,
+        {},
+      )
       .subscribe({
         next: () => {
           this.pendingTeachers = this.pendingTeachers.filter(

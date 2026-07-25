@@ -1432,3 +1432,21 @@ $border-soft: #e2dac9;
     }
   }
 }
+/* إضافة في نهاية الملف أو في أي مكان */
+.create-error {
+  background-color: #fee2e2;
+  color: #dc2626;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  border: 1px solid #fecaca;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  direction: rtl;
+
+  .error-icon {
+    font-size: 1.2rem;
+  }
+}

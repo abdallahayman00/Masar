@@ -41,7 +41,7 @@ export interface SubmitExamRequest {
   providedIn: 'root',
 })
 export class StudentService {
-  private baseUrl = 'https://masaar.runasp.net/api/Student';
+  private baseUrl = 'http://massarlearning.runasp.net/api/Student';
 
   constructor(private http: HttpClient) {}
 
@@ -66,23 +66,33 @@ export class StudentService {
 
   // جلب الجلسات اليومية للطالب
   getDailySessions(studentId: number, todayDate: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/DailySessions/${studentId}?date=${todayDate}`);
+    return this.http.get<any[]>(
+      `${this.baseUrl}/DailySessions/${studentId}?date=${todayDate}`,
+    );
   }
 
   // جلب الجلسات الأسبوعية
   getWeeklySessions(studentId: number, startDate: string): Observable<any> {
-    return this.http.get<any[]>(`${this.baseUrl}/WeeklySessions?studentId=${studentId}&startDate=${startDate}`);
+    return this.http.get<any[]>(
+      `${this.baseUrl}/WeeklySessions?studentId=${studentId}&startDate=${startDate}`,
+    );
   }
 
   // جلب الجلسات الشهرية
-  getMonthlySessions(studentId: number, trackId: number): Observable<MonthlySession[]> {
+  getMonthlySessions(
+    studentId: number,
+    trackId: number,
+  ): Observable<MonthlySession[]> {
     return this.http.get<MonthlySession[]>(
       `${this.baseUrl}/MonthlySessions/${studentId}/${trackId}`,
     );
   }
 
   // جلب حالات جلسات الطالب في مسار معين
-  getStudentTrackSessionStatuses(studentId: number, trackId: number): Observable<any> {
+  getStudentTrackSessionStatuses(
+    studentId: number,
+    trackId: number,
+  ): Observable<any> {
     return this.http.get<any[]>(
       `${this.baseUrl}/GetStudentTrackSessionStatuses/${studentId}/${trackId}`,
     );

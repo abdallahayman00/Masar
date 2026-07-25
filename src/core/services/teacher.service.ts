@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class TeacherService {
-  private baseUrl = 'https://masaar.runasp.net/api/Teacher';
+  private baseUrl = 'http://massarlearning.runasp.net/api/Teacher';
 
   constructor(private http: HttpClient) {}
 
@@ -23,10 +23,10 @@ export class TeacherService {
   }
   // جلب جميع المعلمين المتاحين للطلاب
   getAllTeachersForStu(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/GetAllTeachersForStudent`)
+    return this.http.get(`${this.baseUrl}/GetAllTeachersForStudent`);
   }
   //جلب المواعيد لمعلم معين
   getAvailableDate(teacherTd: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/${teacherTd}/available-dates`)
+    return this.http.get(`${this.baseUrl}/${teacherTd}/available-dates`);
   }
 }

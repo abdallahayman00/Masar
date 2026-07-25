@@ -8,8 +8,7 @@ import { PagedResponse, PendingBatch } from '../interfaces/pending-batches';
   providedIn: 'root',
 })
 export class PendingBatchesService {
-  private baseUrl = 'https://masaar.runasp.net/api/Student';
-
+  private baseUrl = 'http://massarlearning.runasp.net/api/Student';
   constructor(private http: HttpClient) {}
 
   getWaitingBookings(

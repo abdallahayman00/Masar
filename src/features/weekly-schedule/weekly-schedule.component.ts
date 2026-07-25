@@ -7,6 +7,7 @@ import {
   DaySchedule,
   Session,
 } from '../../core/services/weekly-schedule.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-weekly-schedule',
@@ -20,7 +21,8 @@ export class WeeklyScheduleComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  teacherId = 36;
+  // 🔥 لم نعد نستخدم قيمة ثابتة 36، بل نأخذها من AuthService
+  teacherId: number | null = null;
   selectedDate = new Date().toISOString().split('T')[0];
 
   // ── Arabic month names ─────────────────────────────────────
@@ -111,15 +113,32 @@ export class WeeklyScheduleComponent implements OnInit {
     return this.MONTHS[d.getMonth()];
   }
 
-  constructor(private scheduleService: WeeklyScheduleService) {}
+  constructor(
+    private scheduleService: WeeklyScheduleService,
+    private authService: AuthService, // حقن AuthService
+  ) {}
 
   ngOnInit(): void {
+    // الحصول على رقم المعلم من AuthService
+    this.teacherId = this.authService.getTeacherId();
+
+    if (!this.teacherId) {
+      this.error =
+        '⚠️ لم يتم العثور على رقم المعلم. يرجى تسجيل الدخول مرة أخرى.';
+      return;
+    }
+
     this.loadSchedule();
   }
 
   // ── Data loading ───────────────────────────────────────────
 
   loadSchedule(): void {
+    if (!this.teacherId) {
+      this.error = 'رقم المعلم غير موجود.';
+      return;
+    }
+
     this.loading = true;
     this.error = null;
 
@@ -137,6 +156,7 @@ export class WeeklyScheduleComponent implements OnInit {
         },
       });
   }
+
   /** أيام مرتبة: السبت أول، الأحد، الاثنين... الجمعة */
   get orderedDays() {
     if (!this.scheduleData) return [];
@@ -147,6 +167,7 @@ export class WeeklyScheduleComponent implements OnInit {
       return order.indexOf(da) - order.indexOf(db);
     });
   }
+
   // ── Week navigation ────────────────────────────────────────
 
   prevWeek(): void {

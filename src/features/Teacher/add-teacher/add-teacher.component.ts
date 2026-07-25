@@ -41,7 +41,8 @@ export class AddTeacherComponent {
 
   showPassword: boolean = false;
   isSubmitting: boolean = false;
-  private apiUrl = 'https://masaar.runasp.net/api/Teacher/admin-create-teacher';
+  private apiUrl =
+    'http://massarlearning.runasp.net/api/Teacher/admin-create-teacher';
 
   constructor(private http: HttpClient) {}
 

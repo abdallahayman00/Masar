@@ -9,7 +9,7 @@ import { Track, normalizeTrack } from '../interfaces/track';
   providedIn: 'root',
 })
 export class TracksService {
-  private apiUrl = 'https://masaar.runasp.net/api/Track';
+  private apiUrl = 'http://massarlearning.runasp.net/api/Track';
 
   constructor(private http: HttpClient) {}
 
@@ -204,6 +204,6 @@ export class TracksService {
 
   //  جلب جميع المسارات المتاحة للطالب
   getAllTracksForStu(): Observable<any> {
-    return this.http.get<any[]> (`${this.apiUrl}/GetAllTracksForStu`)
+    return this.http.get<any[]>(`${this.apiUrl}/GetAllTracksForStu`);
   }
 }

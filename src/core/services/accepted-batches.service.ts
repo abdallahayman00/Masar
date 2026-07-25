@@ -8,8 +8,7 @@ import { AcceptedBatch } from '../../core/interfaces/accepted-batch';
 })
 export class AcceptedBatchesService {
   private readonly apiUrl =
-    'https://masaar.runasp.net/api/Student/GetAllBookings';
-
+    'http://massarlearning.runasp.net/api/Student/GetAllBookings';
   constructor(private http: HttpClient) {}
 
   getAcceptedBatches(): Observable<AcceptedBatch[]> {

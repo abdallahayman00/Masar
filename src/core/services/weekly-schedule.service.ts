@@ -30,7 +30,7 @@ export interface WeeklyScheduleResponse {
 })
 export class WeeklyScheduleService {
   private baseUrl =
-    'https://masaar.runasp.net/api/Teacher/WeeklyScheduleMatrix';
+    'http://massarlearning.runasp.net/api/Teacher/WeeklyScheduleMatrix';
 
   constructor(private http: HttpClient) {}
 

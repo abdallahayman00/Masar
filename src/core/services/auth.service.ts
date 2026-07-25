@@ -39,12 +39,11 @@ export interface ChangePasswordRequest {
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'https://masaar.runasp.net';
+  private baseUrl = 'http://massarlearning.runasp.net';
 
   constructor(private http: HttpClient) {}
 
-  // ---------------- LOGIN ----------------
-  // دالة مساعدة لفك تشفير الـ JWT
+  // ------------------- JWT DECODING ---------------------------
   private decodeToken(token: string): any {
     try {
       const payload = token.split('.')[1];
@@ -54,6 +53,42 @@ export class AuthService {
     }
   }
 
+  // الحصول على التوكن المخزن
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  // استخراج UserId من التوكن (هو نفسه TeacherId للمعلم)
+  getUserIdFromToken(): number | null {
+    const token = this.getToken();
+    if (!token) return null;
+    const decoded = this.decodeToken(token);
+    if (!decoded) return null;
+    const userId =
+      decoded[
+        'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
+      ];
+    return userId ? parseInt(userId, 10) : null;
+  }
+
+  // الحصول على دور المستخدم من التوكن
+  getRoleFromToken(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+    const decoded = this.decodeToken(token);
+    if (!decoded) return null;
+    const role =
+      decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+    return role || null;
+  }
+
+  // (احتفظ بالدالة القديمة للتخزين المؤقت)
+  getTeacherId(): number | null {
+    const id = localStorage.getItem('teacherId');
+    return id ? parseInt(id, 10) : null;
+  }
+
+  // ------------------- LOGIN ---------------------------
   login(data: LoginRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}/Login`, data).pipe(
       tap((response: any) => {
@@ -80,17 +115,17 @@ export class AuthService {
       }),
     );
   }
-  // ---------------- REGISTER STUDENT ----------------
+
+  // ------------------- REGISTER ---------------------------
   registerStudent(data: StudentRegisterRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}/StudentRegister`, data);
   }
 
-  // ---------------- REGISTER TEACHER ----------------
   registerTeacher(formData: FormData): Observable<any> {
     return this.http.post(`${this.baseUrl}/TeacherRegister`, formData);
   }
 
-  // ---------------- LOGOUT ----------------
+  // ------------------- LOGOUT ---------------------------
   logout(): Observable<any> {
     return this.http.post(`${this.baseUrl}/api/Account/Logout`, {}).pipe(
       finalize(() => {
@@ -101,14 +136,13 @@ export class AuthService {
       }),
     );
   }
-  // ---------------- CHANGE PASSWORD ----------------
+
+  // ------------------- CHANGE PASSWORD --------------------
   changePassword(data: ChangePasswordRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}/api/Account/ChangePassword`, data);
   }
 
-  // ======================================================
-  // 🔥 APP BOOTSTRAP INITIALIZATION (IMPORTANT)
-  // ======================================================
+  // ------------------- APP INIT ---------------------------
   async initializeApp(): Promise<boolean> {
     const token =
       localStorage.getItem('token') || sessionStorage.getItem('token');
