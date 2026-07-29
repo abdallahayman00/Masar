@@ -1,0 +1,179 @@
+<main class="page-wrapper">
+  <!-- ===== HERO ===== -->
+  <header class="hero" role="banner">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <h1 class="hero__title">
+          <i class="ti ti-calendar-event"></i> الأماكن المتاحة
+        </h1>
+        <p class="hero__subtitle">إدارة الأماكن المتاحة للمعلمين</p>
+      </div>
+      <aside class="hero__stat-card" aria-label="إحصائية سريعة">
+        <span class="stat-number">{{ totalCount }}</span>
+        <span class="stat-label">مقعد</span>
+      </aside>
+    </div>
+  </header>
+
+  <app-filter-section
+    (filterApply)="onFilterApplied($event)"
+    [config]="{
+      showTeacherId: true,
+      showIsBooked: true,
+      showIsCompleted: true,
+      showSearchTeacher: true,
+      showSearchTrack: true,
+      showSearchName: false,
+      showEmail: false,
+      showWhatsApp: false,
+      showGender: false,
+      showAgeRange: false,
+      showSortOrder: false,
+      showTeacherName: false,
+      showStudentName: false,
+      showTrackName: false,
+      showDateRange: false,
+      title: 'فلترة الأماكن',
+    }"
+  >
+  </app-filter-section>
+
+  <!-- ===== TABLE ===== -->
+  <section aria-label="جدول الأماكن المتاحة">
+    <div class="table-card">
+      <div class="table-card__header">
+        <div class="table-card__title-group">
+          <h2 class="table-card__title">
+            <span class="title-dot" aria-hidden="true"></span>
+            قائمة الأماكن
+          </h2>
+          <p class="table-card__subtitle">جميع الأماكن المتاحة للمعلمين</p>
+        </div>
+      </div>
+
+      <div
+        class="table-card__body"
+        role="region"
+        aria-label="بيانات الأماكن"
+        tabindex="0"
+      >
+        <table class="data-table" aria-describedby="table-desc">
+          <caption id="table-desc" class="u-sr-only">
+            جدول يعرض الأماكن المتاحة
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">المعلم</th>
+              <th scope="col">المسار</th>
+              <th scope="col">اليوم الأول</th>
+              <th scope="col">اليوم الثاني</th>
+              <th scope="col">الوقت</th>
+              <th scope="col">الحجز</th>
+              <th scope="col">مكتمل</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Loading -->
+            <tr *ngIf="isLoading">
+              <td colspan="8" class="text-center">جاري التحميل...</td>
+            </tr>
+            <!-- Error -->
+            <tr *ngIf="!isLoading && errorMessage">
+              <td colspan="8" class="text-center" style="color: #dc2626">
+                {{ errorMessage }}
+              </td>
+            </tr>
+            <!-- No Data -->
+            <tr *ngIf="!isLoading && !errorMessage && slots.length === 0">
+              <td colspan="8" class="text-center">لا توجد مقاعد لعرضها</td>
+            </tr>
+            <!-- Data Rows -->
+            <tr *ngFor="let slot of slots; let i = index">
+              <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+              <td>{{ slot.teacherName }}</td>
+              <td>{{ slot.trackName || "—" }}</td>
+              <td>{{ slot.firstDay }}</td>
+              <td>{{ slot.secondDay }}</td>
+              <td>{{ slot.time }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [class.badge-booked]="slot.isBooked"
+                  [class.badge-available]="!slot.isBooked"
+                >
+                  {{ getBookedText(slot.isBooked) }}
+                </span>
+              </td>
+              <td>
+                <span
+                  class="badge"
+                  [class.badge-completed]="slot.isCompleted"
+                  [class.badge-pending]="!slot.isCompleted"
+                >
+                  {{ getCompletedText(slot.isCompleted) }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ===== PAGINATION ===== -->
+      <nav class="pagination" aria-label="تصفح صفحات الجدول">
+        <p class="pagination__info">
+          عرض {{ (currentPage - 1) * pageSize + 1 }} –
+          {{
+            currentPage * pageSize > totalCount
+              ? totalCount
+              : currentPage * pageSize
+          }}
+          من إجمالي {{ totalCount }} مقعد
+        </p>
+        <div class="pagination__controls">
+          <button
+            class="pagination__btn"
+            type="button"
+            (click)="changePage(currentPage - 1)"
+            [disabled]="currentPage === 1"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+          <button
+            class="pagination__btn pagination__btn--active"
+            type="button"
+            aria-current="page"
+          >
+            {{ currentPage }}
+          </button>
+          <button
+            class="pagination__btn"
+            type="button"
+            (click)="changePage(currentPage + 1)"
+            [disabled]="currentPage >= totalPages"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </section>
+</main>

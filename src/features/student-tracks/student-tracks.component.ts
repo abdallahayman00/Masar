@@ -2,38 +2,36 @@ import { Component, inject, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { StudentService } from '../../core/services/student.service';
 import { StudentTracks } from '../../core/interfaces/student-tracks';
-import { CommonModule } from '@angular/common'
+import { CommonModule } from '@angular/common';
 import { NgFor, NgIf } from '@angular/common';
 import { ArabicNumberPipe } from '../../core/pipes/arabic-number.pipe';
-
 
 @Component({
   selector: 'app-student-tracks',
   imports: [CommonModule, NgFor, NgIf, ArabicNumberPipe],
   templateUrl: './student-tracks.component.html',
-  styleUrl: './student-tracks.component.scss'
+  styleUrl: './student-tracks.component.scss',
 })
-export class StudentTracksComponent implements OnInit{
+export class StudentTracksComponent implements OnInit {
+  studentTracksData!: StudentTracks[];
+  isLoading: boolean = false;
+  hasError: boolean = false;
 
-  studentTracksData!: StudentTracks[]
-  isLoading: boolean = false
-  hasError: boolean = false
-
-  private readonly studentService = inject(StudentService)
-  private readonly router = inject(Router)
+  private readonly studentService = inject(StudentService);
+  private readonly router = inject(Router);
 
   ngOnInit(): void {
-    this.getStudentTracks()
+    this.getStudentTracks();
   }
 
   getStudentTracks() {
     const studentId =
-    localStorage.getItem('studentId') || sessionStorage.getItem('studentId');
+      localStorage.getItem('studentId') || sessionStorage.getItem('studentId');
 
     if (!studentId) {
-    console.warn('لا يوجد studentId مخزن');
-    this.hasError = true;
-    return;
+      console.warn('لا يوجد studentId مخزن');
+      this.hasError = true;
+      return;
     }
 
     this.isLoading = true;
@@ -41,7 +39,7 @@ export class StudentTracksComponent implements OnInit{
 
     this.studentService.getStudentTracks(+studentId).subscribe({
       next: (res) => {
-        console.log(res)
+        console.log(res);
         this.studentTracksData = res;
         this.isLoading = false;
       },
@@ -49,7 +47,7 @@ export class StudentTracksComponent implements OnInit{
         console.error('خطأ في تحميل المسارات:', err);
         this.isLoading = false;
         this.hasError = true;
-      }
+      },
     });
   }
 

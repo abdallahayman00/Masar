@@ -188,6 +188,42 @@
                   </a>
                   <div class="nav-tooltip">الدفعات المقبولة</div>
                 </div>
+
+                <div class="section-header">
+                  <span class="section-label"> الجلسات </span>
+                  <div class="section-header-line"></div>
+                </div>
+                <div class="nav-item-wrap">
+                  <a
+                    class="nav-item"
+                    routerLink="/admin-sessions"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="onNavigate()"
+                  >
+                    <i class="ti ti-calendar-event nav-icon"></i>
+                    <span class="nav-label">الجلسات</span>
+                  </a>
+                  <div class="nav-tooltip">الجلسات</div>
+                </div>
+
+                <div class="section-header">
+                  <span class="section-label">الاماكن المتاحة</span>
+                  <div class="section-header-line"></div>
+                </div>
+                <div class="nav-item-wrap">
+                  <a
+                    class="nav-item"
+                    routerLink="/available-seats"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="onNavigate()"
+                  >
+                    <i class="ti ti-building-community nav-icon"></i>
+                    <span class="nav-label">الاماكن المتاحة</span>
+                  </a>
+                  <div class="nav-tooltip">الاماكن المتاحة</div>
+                </div>
               </div>
             </nav>
           }

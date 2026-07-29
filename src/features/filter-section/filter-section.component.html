@@ -223,6 +223,281 @@
           <option value="age_desc">العمر (تنازلي)</option>
         </select>
       </div>
+
+      <!-- ====== الفلاتر الجديدة للجلسات ====== -->
+      <!-- فلتر اسم المعلم -->
+      <div class="filter-group" *ngIf="config.showTeacherName">
+        <label class="filter-label">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M12 2a5 5 0 0 1 5 5c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5z"
+            />
+            <path d="M21 22v-2a5 5 0 0 0-5-5H8a5 5 0 0 0-5 5v2" />
+          </svg>
+          اسم المعلم
+        </label>
+        <input
+          type="text"
+          class="filter-input"
+          [(ngModel)]="filters.teacherName"
+          (input)="onFilterInputChange()"
+          placeholder="اسم المعلم..."
+          [class.active]="filters.teacherName"
+        />
+      </div>
+
+      <!-- فلتر اسم الطالب -->
+      <div class="filter-group" *ngIf="config.showStudentName">
+        <label class="filter-label">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M12 2a5 5 0 0 1 5 5c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5z"
+            />
+            <path d="M21 22v-2a5 5 0 0 0-5-5H8a5 5 0 0 0-5 5v2" />
+          </svg>
+          اسم الطالب
+        </label>
+        <input
+          type="text"
+          class="filter-input"
+          [(ngModel)]="filters.studentName"
+          (input)="onFilterInputChange()"
+          placeholder="اسم الطالب..."
+          [class.active]="filters.studentName"
+        />
+      </div>
+
+      <!-- فلتر اسم المسار -->
+      <div class="filter-group" *ngIf="config.showTrackName">
+        <label class="filter-label">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+          </svg>
+          المسار
+        </label>
+        <input
+          type="text"
+          class="filter-input"
+          [(ngModel)]="filters.trackName"
+          (input)="onFilterInputChange()"
+          placeholder="اسم المسار..."
+          [class.active]="filters.trackName"
+        />
+      </div>
+
+      <!-- فلتر نطاق التاريخ - من -->
+      <div class="filter-group" *ngIf="config.showDateRange">
+        <label class="filter-label">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          من تاريخ
+        </label>
+        <input
+          type="date"
+          class="filter-input"
+          [(ngModel)]="filters.from"
+          (change)="applyFilters()"
+        />
+      </div>
+
+      <!-- فلتر نطاق التاريخ - إلى -->
+      <div class="filter-group" *ngIf="config.showDateRange">
+        <label class="filter-label">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          إلى تاريخ
+        </label>
+        <input
+          type="date"
+          class="filter-input"
+          [(ngModel)]="filters.to"
+          (change)="applyFilters()"
+        />
+      </div>
+      <!-- ... الفلاتر الموجودة ... -->
+
+      <!-- فلتر معرف المعلم -->
+      <div class="filter-group" *ngIf="config.showTeacherId">
+        <label class="filter-label">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          رقم المعلم
+        </label>
+        <input
+          type="number"
+          class="filter-input"
+          [(ngModel)]="filters.teacherId"
+          (input)="onFilterInputChange()"
+          placeholder="أدخل رقم المعلم..."
+          [class.active]="filters.teacherId"
+        />
+      </div>
+
+      <!-- فلتر حالة الحجز -->
+      <div class="filter-group" *ngIf="config.showIsBooked">
+        <label class="filter-label">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+          حالة الحجز
+        </label>
+        <select
+          class="filter-select"
+          [(ngModel)]="filters.isBooked"
+          (change)="applyFilters()"
+        >
+          <option [ngValue]="null">الكل</option>
+          <option [ngValue]="true">محجوز</option>
+          <option [ngValue]="false">غير محجوز</option>
+        </select>
+      </div>
+
+      <!-- فلتر مكتمل -->
+      <div class="filter-group" *ngIf="config.showIsCompleted">
+        <label class="filter-label">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          مكتمل
+        </label>
+        <select
+          class="filter-select"
+          [(ngModel)]="filters.isCompleted"
+          (change)="applyFilters()"
+        >
+          <option [ngValue]="null">الكل</option>
+          <option [ngValue]="true">مكتمل</option>
+          <option [ngValue]="false">غير مكتمل</option>
+        </select>
+      </div>
+
+      <!-- فلتر البحث باسم المعلم -->
+      <div class="filter-group" *ngIf="config.showSearchTeacher">
+        <label class="filter-label">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          اسم المعلم
+        </label>
+        <input
+          type="text"
+          class="filter-input"
+          [(ngModel)]="filters.searchTeacher"
+          (input)="onFilterInputChange()"
+          placeholder="اسم المعلم..."
+          [class.active]="filters.searchTeacher"
+        />
+      </div>
+
+      <!-- فلتر البحث بالمسار -->
+      <div class="filter-group" *ngIf="config.showSearchTrack">
+        <label class="filter-label">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+          </svg>
+          المسار
+        </label>
+        <input
+          type="text"
+          class="filter-input"
+          [(ngModel)]="filters.searchTrack"
+          (input)="onFilterInputChange()"
+          placeholder="اسم المسار..."
+          [class.active]="filters.searchTrack"
+        />
+      </div>
+
+      <!-- استمرار باقي المكون (أزرار الإجراءات، علامات الفلاتر النشطة) ... -->
+      <!-- تأكد من إضافة علامات الفلاتر الجديدة في قسم active-filters -->
     </div>
 
     <!-- أزرار الإجراءات -->
@@ -311,6 +586,43 @@
         <span class="filter-tag" *ngIf="filters.sortOrder">
           الترتيب: {{ getSortOrderText() }}
           <button class="filter-tag-remove" (click)="removeFilter('sortOrder')">
+            ×
+          </button>
+        </span>
+        <!-- علامات الفلاتر الجديدة -->
+        <span class="filter-tag" *ngIf="filters.teacherName">
+          المعلم: {{ filters.teacherName }}
+          <button
+            class="filter-tag-remove"
+            (click)="removeFilter('teacherName')"
+          >
+            ×
+          </button>
+        </span>
+        <span class="filter-tag" *ngIf="filters.studentName">
+          الطالب: {{ filters.studentName }}
+          <button
+            class="filter-tag-remove"
+            (click)="removeFilter('studentName')"
+          >
+            ×
+          </button>
+        </span>
+        <span class="filter-tag" *ngIf="filters.trackName">
+          المسار: {{ filters.trackName }}
+          <button class="filter-tag-remove" (click)="removeFilter('trackName')">
+            ×
+          </button>
+        </span>
+        <span class="filter-tag" *ngIf="filters.from">
+          من تاريخ: {{ filters.from }}
+          <button class="filter-tag-remove" (click)="removeFilter('from')">
+            ×
+          </button>
+        </span>
+        <span class="filter-tag" *ngIf="filters.to">
+          إلى تاريخ: {{ filters.to }}
+          <button class="filter-tag-remove" (click)="removeFilter('to')">
             ×
           </button>
         </span>

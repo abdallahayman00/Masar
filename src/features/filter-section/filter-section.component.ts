@@ -18,7 +18,7 @@ import {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './filter-section.component.html',
-  styleUrl: './filter-section.component.scss',
+  styleUrls: ['./filter-section.component.scss'],
 })
 export class FilterSectionComponent implements OnInit, OnDestroy {
   @Input() config: FilterConfig = {
@@ -35,7 +35,7 @@ export class FilterSectionComponent implements OnInit, OnDestroy {
   @Output() filterChange = new EventEmitter<FilterParams>();
   @Output() filterApply = new EventEmitter<FilterParams>();
 
-  isExpanded: boolean = false;
+  isExpanded = false;
   private filterDebounceTimer: any;
 
   filters: FilterParams = {
@@ -46,6 +46,17 @@ export class FilterSectionComponent implements OnInit, OnDestroy {
     minAge: null,
     maxAge: null,
     sortOrder: '',
+    teacherName: '',
+    studentName: '',
+    trackName: '',
+    from: '',
+    to: '',
+    // جدد
+    teacherId: null,
+    isBooked: null,
+    isCompleted: null,
+    searchTeacher: '',
+    searchTrack: '',
   };
 
   get hasActiveFilters(): boolean {
@@ -56,7 +67,17 @@ export class FilterSectionComponent implements OnInit, OnDestroy {
       this.filters.gender ||
       this.filters.minAge ||
       this.filters.maxAge ||
-      this.filters.sortOrder
+      this.filters.sortOrder ||
+      this.filters.teacherName ||
+      this.filters.studentName ||
+      this.filters.trackName ||
+      this.filters.from ||
+      this.filters.to ||
+      this.filters.teacherId !== null ||
+      this.filters.isBooked !== null ||
+      this.filters.isCompleted !== null ||
+      this.filters.searchTeacher ||
+      this.filters.searchTrack
     );
   }
 
@@ -69,6 +90,16 @@ export class FilterSectionComponent implements OnInit, OnDestroy {
     if (this.filters.minAge) count++;
     if (this.filters.maxAge) count++;
     if (this.filters.sortOrder) count++;
+    if (this.filters.teacherName) count++;
+    if (this.filters.studentName) count++;
+    if (this.filters.trackName) count++;
+    if (this.filters.from) count++;
+    if (this.filters.to) count++;
+    if (this.filters.teacherId !== null) count++;
+    if (this.filters.isBooked !== null) count++;
+    if (this.filters.isCompleted !== null) count++;
+    if (this.filters.searchTeacher) count++;
+    if (this.filters.searchTrack) count++;
     return count;
   }
 
@@ -85,7 +116,6 @@ export class FilterSectionComponent implements OnInit, OnDestroy {
   }
 
   onFilterInputChange(): void {
-    // Debounce for text inputs
     if (this.filterDebounceTimer) {
       clearTimeout(this.filterDebounceTimer);
     }
@@ -107,6 +137,16 @@ export class FilterSectionComponent implements OnInit, OnDestroy {
       minAge: null,
       maxAge: null,
       sortOrder: '',
+      teacherName: '',
+      studentName: '',
+      trackName: '',
+      from: '',
+      to: '',
+      teacherId: null,
+      isBooked: null,
+      isCompleted: null,
+      searchTeacher: '',
+      searchTrack: '',
     };
     this.applyFilters();
   }
@@ -134,25 +174,47 @@ export class FilterSectionComponent implements OnInit, OnDestroy {
       case 'sortOrder':
         this.filters.sortOrder = '';
         break;
+      case 'teacherName':
+        this.filters.teacherName = '';
+        break;
+      case 'studentName':
+        this.filters.studentName = '';
+        break;
+      case 'trackName':
+        this.filters.trackName = '';
+        break;
+      case 'from':
+        this.filters.from = '';
+        break;
+      case 'to':
+        this.filters.to = '';
+        break;
+      case 'teacherId':
+        this.filters.teacherId = null;
+        break;
+      case 'isBooked':
+        this.filters.isBooked = null;
+        break;
+      case 'isCompleted':
+        this.filters.isCompleted = null;
+        break;
+      case 'searchTeacher':
+        this.filters.searchTeacher = '';
+        break;
+      case 'searchTrack':
+        this.filters.searchTrack = '';
+        break;
     }
     this.applyFilters();
   }
 
   getSortOrderText(): string {
-    const sortMap: { [key: string]: string } = {
+    const map: Record<string, string> = {
       name_asc: 'الاسم (أ-ي)',
       name_desc: 'الاسم (ي-أ)',
       age_asc: 'العمر (تصاعدي)',
       age_desc: 'العمر (تنازلي)',
     };
-    return sortMap[this.filters.sortOrder || ''] || 'الافتراضي';
-  }
-
-  getApiSortOrder(): string {
-    return this.filters.sortOrder || '';
-  }
-
-  resetFilters(): void {
-    this.clearAllFilters();
+    return map[this.filters.sortOrder || ''] || 'الافتراضي';
   }
 }

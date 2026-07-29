@@ -236,7 +236,7 @@
                   [class.status-badge--approved]="slot.isBooked"
                   role="status"
                 >
-                  {{ slot.isBooked ? "محجوز" : "متاح" }}
+                  {{ slot.isBooked ? "محجوز ❌" : "متاح" }}
                 </span>
               </td>
               <td>
@@ -404,7 +404,7 @@
             [class.status-approved]="selectedSlot.isBooked"
             [class.status-pending]="!selectedSlot.isBooked"
           >
-            {{ selectedSlot.isBooked ? "محجوز" : "متاح" }}
+            {{ selectedSlot.isBooked ? "محجوز ❌" : "متاح" }}
           </span>
         </div>
       </div>

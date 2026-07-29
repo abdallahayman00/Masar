@@ -1,0 +1,203 @@
+<main class="page-wrapper">
+  <header class="hero" role="banner">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <h1 class="hero__title">
+          <i class="ti ti-calendar-event"></i> الجلسات
+        </h1>
+        <p class="hero__subtitle">إدارة جميع جلسات المنصة</p>
+      </div>
+      <aside class="hero__stat-card" aria-label="إحصائية سريعة">
+        <span class="stat-number">{{ totalCount }}</span>
+        <span class="stat-label">جلسة</span>
+      </aside>
+    </div>
+  </header>
+
+  <app-filter-section
+    (filterApply)="onFilterApplied($event)"
+    [config]="{
+      showTeacherName: true,
+      showStudentName: true,
+      showTrackName: true,
+      showDateRange: true,
+      showSearchName: false,
+      showEmail: false,
+      showWhatsApp: false,
+      showGender: false,
+      showAgeRange: false,
+      showSortOrder: false,
+      title: 'فلترة الجلسات',
+    }"
+  >
+  </app-filter-section>
+
+  <section aria-label="جدول الجلسات">
+    <div class="table-card">
+      <div class="table-card__header">
+        <div class="table-card__title-group">
+          <h2 class="table-card__title">
+            <span class="title-dot" aria-hidden="true"></span>
+            قائمة الجلسات
+          </h2>
+          <p class="table-card__subtitle">جميع جلسات المنصة</p>
+        </div>
+      </div>
+
+      <div
+        class="table-card__body"
+        role="region"
+        aria-label="بيانات الجلسات"
+        tabindex="0"
+      >
+        <table class="data-table" aria-describedby="table-desc">
+          <caption id="table-desc" class="u-sr-only">
+            جدول يعرض الجلسات
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">الطالب</th>
+              <th scope="col">المعلم</th>
+              <th scope="col">المسار</th>
+              <th scope="col">التاريخ</th>
+              <th scope="col">الوقت</th>
+              <th scope="col">اليوم</th>
+              <th scope="col">حضور الطالب</th>
+              <th scope="col">حضور المعلم</th>
+              <th scope="col">مكتمل</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="isLoading">
+              <td colspan="10" class="text-center">جاري التحميل...</td>
+            </tr>
+            <tr *ngIf="!isLoading && errorMessage">
+              <td colspan="10" class="text-center" style="color: #dc2626">
+                {{ errorMessage }}
+              </td>
+            </tr>
+            <tr *ngIf="!isLoading && !errorMessage && sessions.length === 0">
+              <td colspan="10" class="text-center">لا توجد جلسات لعرضها</td>
+            </tr>
+            <tr *ngFor="let session of sessions; let i = index">
+              <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+              <td>{{ session.studentName }}</td>
+              <td>{{ session.teacherName }}</td>
+              <td>{{ session.trackName }}</td>
+              <td>{{ session.sessionDate | date: "dd/MM/yyyy" }}</td>
+              <td>{{ session.sessionTime }}</td>
+              <td>{{ getArabicDay(session.day) }}</td>
+
+              <!-- حضور الطالب -->
+              <td>
+                <ng-container
+                  *ngIf="isSessionCompleted(session); else pendingAttendance"
+                >
+                  <span
+                    class="attendance-badge"
+                    [class.present]="session.isStudentAttended"
+                    [class.absent]="!session.isStudentAttended"
+                  >
+                    {{ session.isStudentAttended ? "✅ حاضر" : "❌ غائب" }}
+                  </span>
+                </ng-container>
+                <ng-template #pendingAttendance>
+                  <span class="attendance-badge waiting"> ⏳ لم تُعقد </span>
+                </ng-template>
+              </td>
+
+              <!-- حضور المعلم -->
+              <td>
+                <ng-container
+                  *ngIf="isSessionCompleted(session); else pendingAttendance"
+                >
+                  <span
+                    class="attendance-badge"
+                    [class.present]="session.isTeachertAttended"
+                    [class.absent]="!session.isTeachertAttended"
+                  >
+                    {{ session.isTeachertAttended ? "✅ حاضر" : "❌ غائب" }}
+                  </span>
+                </ng-container>
+                <ng-template #pendingAttendance>
+                  <span class="attendance-badge waiting"> ⏳ لم تُعقد </span>
+                </ng-template>
+              </td>
+
+              <!-- مكتمل -->
+              <td>
+                <span
+                  class="attendance-badge"
+                  [class.completed]="isSessionCompleted(session)"
+                  [class.waiting]="!isSessionCompleted(session)"
+                >
+                  {{
+                    isSessionCompleted(session)
+                      ? "✅ مكتملة"
+                      : "⏳ قيد الانتظار"
+                  }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <nav class="pagination" aria-label="تصفح صفحات الجدول">
+        <p class="pagination__info">
+          عرض {{ (currentPage - 1) * pageSize + 1 }} –
+          {{
+            currentPage * pageSize > totalCount
+              ? totalCount
+              : currentPage * pageSize
+          }}
+          من إجمالي {{ totalCount }} جلسة
+        </p>
+        <div class="pagination__controls">
+          <button
+            class="pagination__btn"
+            type="button"
+            (click)="changePage(currentPage - 1)"
+            [disabled]="currentPage === 1"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+          <button
+            class="pagination__btn pagination__btn--active"
+            type="button"
+            aria-current="page"
+          >
+            {{ currentPage }}
+          </button>
+          <button
+            class="pagination__btn"
+            type="button"
+            (click)="changePage(currentPage + 1)"
+            [disabled]="currentPage >= totalPages"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </section>
+</main>

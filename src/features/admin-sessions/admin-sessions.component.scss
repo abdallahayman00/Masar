@@ -1,0 +1,284 @@
+.attendance-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  min-width: 65px;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+
+  &:hover {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: 50px;
+    padding: 1px;
+    background: transparent;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  // حاضر
+  &.present {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #065f46;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+
+    &::before {
+      background: linear-gradient(135deg, #34d399, #10b981);
+    }
+
+    .badge-icon {
+      animation: pulse-check 2s ease-in-out infinite;
+    }
+  }
+
+  // غائب
+  &.absent {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    color: #991b1b;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+
+    &::before {
+      background: linear-gradient(135deg, #f87171, #ef4444);
+    }
+  }
+
+  // مكتمل
+  &.completed {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    color: #1e3a8a;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+
+    &::before {
+      background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    }
+
+    .badge-icon {
+      animation: pulse-complete 2.5s ease-in-out infinite;
+    }
+  }
+
+  // قيد الانتظار / لم تُعقد
+  &.waiting {
+    background: linear-gradient(135deg, #fef9e7 0%, #fdebd0 100%);
+    color: #935e38;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+
+    &::before {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    }
+  }
+
+  // حجم صغير
+  &.badge-sm {
+    padding: 0.25rem 0.625rem;
+    font-size: 0.65rem;
+    min-width: 50px;
+  }
+
+  // حجم كبير
+  &.badge-lg {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.875rem;
+    min-width: 85px;
+  }
+
+  .badge-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9em;
+    line-height: 1;
+  }
+
+  .badge-text {
+    display: inline-block;
+  }
+}
+
+// ====== الأنيماشن ======
+@keyframes pulse-check {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes pulse-complete {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+// ====== حالة خاصة للجدول ======
+.data-table {
+  td .attendance-badge {
+    margin: 0 auto;
+  }
+}
+
+// ====== تصميم بديل - كروت مع خلفيات متدرجة ======
+.attendance-badge-alt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem 0.4rem 0.7rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  background: #f1f5f9;
+  color: #1e293b;
+  border-left: 4px solid #94a3b8;
+  transition: all 0.25s ease;
+
+  &.present-alt {
+    background: #ecfdf5;
+    color: #065f46;
+    border-left-color: #10b981;
+
+    .status-dot {
+      background: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    }
+  }
+
+  &.absent-alt {
+    background: #fef2f2;
+    color: #991b1b;
+    border-left-color: #ef4444;
+
+    .status-dot {
+      background: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+    }
+  }
+
+  &.completed-alt {
+    background: #eff6ff;
+    color: #1e40af;
+    border-left-color: #3b82f6;
+
+    .status-dot {
+      background: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+  }
+
+  &.waiting-alt {
+    background: #fffbeb;
+    color: #92400e;
+    border-left-color: #f59e0b;
+
+    .status-dot {
+      background: #f59e0b;
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+    }
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    transition: all 0.3s;
+  }
+
+  &:hover {
+    transform: translateX(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+}
+
+// ====== تصميم Modern Glass ======
+.attendance-badge-glass {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 0.35rem 0.9rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  &.present-glass {
+    background: rgba(16, 185, 129, 0.15);
+    color: #065f46;
+    border-color: rgba(16, 185, 129, 0.25);
+  }
+
+  &.absent-glass {
+    background: rgba(239, 68, 68, 0.12);
+    color: #991b1b;
+    border-color: rgba(239, 68, 68, 0.2);
+  }
+
+  &.completed-glass {
+    background: rgba(59, 130, 246, 0.12);
+    color: #1e3a8a;
+    border-color: rgba(59, 130, 246, 0.2);
+  }
+
+  &.waiting-glass {
+    background: rgba(245, 158, 11, 0.12);
+    color: #92400e;
+    border-color: rgba(245, 158, 11, 0.2);
+  }
+
+  &:hover {
+    transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+// ====== Responsive ======
+@media (max-width: 768px) {
+  .attendance-badge {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.5rem;
+    min-width: 45px;
+    gap: 0.2rem;
+
+    .badge-icon {
+      font-size: 0.7em;
+    }
+  }
+
+  .attendance-badge-alt {
+    font-size: 0.6rem;
+    padding: 0.25rem 0.6rem;
+  }
+
+  .attendance-badge-glass {
+    font-size: 0.55rem;
+    padding: 0.2rem 0.6rem;
+  }
+}

@@ -1,4 +1,3 @@
-// app.routes.ts
 import { Routes } from '@angular/router';
 import { authGuard } from '../core/guards/auth.guard';
 import { adminGuard } from '../core/guards/admin.guard';
@@ -59,6 +58,26 @@ export const routes: Routes = [
       ),
   },
 
+  // ✅ Admin Sessions (جلسات الإدارة)
+  {
+    path: 'admin-sessions',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () =>
+      import('../features/admin-sessions/admin-sessions.component').then(
+        (m) => m.AdminSessionsComponent,
+      ),
+  },
+
+  // ✅ Available Seats (المقاعد المتاحة) - NEW
+  {
+    path: 'available-seats',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () =>
+      import('../features/available-seats/available-seats.component').then(
+        (m) => m.AvailableSeatsComponent,
+      ),
+  },
+
   // ✅ Approved Teachers (المعلمون المعتمدون)
   {
     path: 'approved-teachers',
@@ -99,7 +118,7 @@ export const routes: Routes = [
       ),
   },
 
-  // ✅ Pending Batches Routes (الدفعات المعلقة) - جديد
+  // ✅ Pending Batches Routes (الدفعات المعلقة)
   {
     path: 'pending-batches',
     canActivate: [authGuard, adminGuard],
@@ -108,6 +127,7 @@ export const routes: Routes = [
         (m) => m.PendingBatchesComponent,
       ),
   },
+
   // ✅ Accepted Batches Routes (الدفعات المقبولة)
   {
     path: 'accepted-batches',
@@ -133,7 +153,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('../features/track-details/track-details.component').then(
         (m) => m.TrackDetailsComponent,
-      )
+      ),
   },
 
   {
@@ -142,7 +162,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('../features/available-tracks/available-tracks.component').then(
         (m) => m.AvailableTracksComponent,
-      )
+      ),
   },
 
   {
@@ -151,7 +171,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('../features/select-teacher/select-teacher.component').then(
         (m) => m.SelectTeacherComponent,
-      )
+      ),
   },
 
   {
@@ -162,6 +182,7 @@ export const routes: Routes = [
         (m) => m.WeeklyScheduleComponent,
       ),
   },
+
   {
     path: 'available-times',
     canActivate: [authGuard, teacherGuard],
@@ -170,6 +191,7 @@ export const routes: Routes = [
         (m) => m.AvailableTimesComponent,
       ),
   },
+
   {
     path: '**',
     redirectTo: 'auth/login',

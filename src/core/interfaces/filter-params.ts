@@ -1,4 +1,3 @@
-// shared/interfaces/filter-params.interface.ts
 export interface FilterParams {
   page?: number;
   sortOrder?: string;
@@ -8,6 +7,20 @@ export interface FilterParams {
   gender?: string;
   minAge?: number | null;
   maxAge?: number | null;
+
+  // خصائص الجلسات
+  teacherName?: string;
+  studentName?: string;
+  trackName?: string;
+  from?: string; // YYYY-MM-DD
+  to?: string; // YYYY-MM-DD
+
+  // خصائص المقاعد المتاحة (جديدة)
+  teacherId?: number | null;
+  isBooked?: boolean | null;
+  isCompleted?: boolean | null;
+  searchTeacher?: string;
+  searchTrack?: string;
 }
 
 export interface FilterConfig {
@@ -19,4 +32,17 @@ export interface FilterConfig {
   showSearchName?: boolean;
   placeholderText?: string;
   title?: string;
+
+  // خصائص الجلسات
+  showTeacherName?: boolean;
+  showStudentName?: boolean;
+  showTrackName?: boolean;
+  showDateRange?: boolean;
+
+  // خصائص المقاعد (جديدة)
+  showTeacherId?: boolean;
+  showIsBooked?: boolean;
+  showIsCompleted?: boolean;
+  showSearchTeacher?: boolean;
+  showSearchTrack?: boolean;
 }
