@@ -9,7 +9,7 @@ import { Track, normalizeTrack } from '../interfaces/track';
   providedIn: 'root',
 })
 export class TracksService {
-  private apiUrl = 'http://massarlearning.runasp.net/api/Track';
+  private apiUrl = 'https://massarlearning.runasp.net/api/Track';
 
   constructor(private http: HttpClient) {}
 

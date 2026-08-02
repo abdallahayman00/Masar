@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class TeacherService {
-  private baseUrl = 'http://massarlearning.runasp.net/api/Teacher';
+  private baseUrl = 'https://massarlearning.runasp.net/api/Teacher';
 
   constructor(private http: HttpClient) {}
 

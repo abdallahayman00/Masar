@@ -34,11 +34,11 @@ export interface CreateSlotResponse {
 })
 export class AvailableSlotsService {
   private baseUrl =
-    'http://massarlearning.runasp.net/api/Teacher/AvailableSlots';
+    'https://massarlearning.runasp.net/api/Teacher/AvailableSlots';
   private deleteUrl =
-    'http://massarlearning.runasp.net/api/Teacher/available-dates';
+    'https://massarlearning.runasp.net/api/Teacher/available-dates';
   private createUrl =
-    'http://massarlearning.runasp.net/api/Teacher/CreateSchedule';
+    'https://massarlearning.runasp.net/api/Teacher/CreateSchedule';
 
   constructor(
     private http: HttpClient,

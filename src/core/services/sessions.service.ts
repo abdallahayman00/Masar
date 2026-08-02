@@ -11,7 +11,7 @@ import {
   providedIn: 'root',
 })
 export class SessionsService {
-  private baseUrl = 'http://massarlearning.runasp.net/api/Sessions';
+  private baseUrl = 'https://massarlearning.runasp.net/api/Sessions';
 
   constructor(private http: HttpClient) {}
 

@@ -8,7 +8,7 @@ import { FilterParams } from '../interfaces/filter-params';
   providedIn: 'root',
 })
 export class AvailableSeatsService {
-  private baseUrl = 'http://massarlearning.runasp.net/api/Teacher';
+  private baseUrl = 'https://massarlearning.runasp.net/api/Teacher';
 
   constructor(private http: HttpClient) {}
 

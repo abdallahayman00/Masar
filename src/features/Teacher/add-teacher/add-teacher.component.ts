@@ -42,7 +42,7 @@ export class AddTeacherComponent {
   showPassword: boolean = false;
   isSubmitting: boolean = false;
   private apiUrl =
-    'http://massarlearning.runasp.net/api/Teacher/admin-create-teacher';
+    'https://massarlearning.runasp.net/api/Teacher/admin-create-teacher';
 
   constructor(private http: HttpClient) {}
 

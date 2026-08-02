@@ -41,7 +41,7 @@ export interface SubmitExamRequest {
   providedIn: 'root',
 })
 export class StudentService {
-  private baseUrl = 'http://massarlearning.runasp.net/api/Student';
+  private baseUrl = 'https://massarlearning.runasp.net/api/Student';
 
   constructor(private http: HttpClient) {}
 

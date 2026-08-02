@@ -98,7 +98,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // ---------- API (Direct URL without proxy) ----------
   private readonly API_BASE =
-    'http://massarlearning.runasp.net/api/Account/GetMonthlyStats';
+    'https://massarlearning.runasp.net/api/Account/GetMonthlyStats';
 
   constructor(
     private http: HttpClient,

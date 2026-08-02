@@ -48,7 +48,7 @@ export class ApprovedTeachersComponent implements OnInit {
   currentPage: number = 1;
   totalCount: number = 0;
   totalPages: number = 0;
-  private apiUrl = 'http://massarlearning.runasp.net/api/Teacher/approved';
+  private apiUrl = 'https://massarlearning.runasp.net/api/Teacher/approved';
 
   // ✅ متغيرات الفلترة
   currentFilters: FilterParams = {};

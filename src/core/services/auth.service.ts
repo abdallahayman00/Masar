@@ -39,7 +39,7 @@ export interface ChangePasswordRequest {
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'http://massarlearning.runasp.net';
+  private baseUrl = 'https://massarlearning.runasp.net';
 
   constructor(private http: HttpClient) {}
 

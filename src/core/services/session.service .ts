@@ -9,8 +9,8 @@ import { Session } from '../interfaces/session.interface';
   providedIn: 'root',
 })
 export class SessionService {
-  private baseUrl = 'http://massarlearning.runasp.net/api/Sessions';
-  private teacherApiUrl = 'http://massarlearning.runasp.net/api/Teacher';
+  private baseUrl = 'https://massarlearning.runasp.net/api/Sessions';
+  private teacherApiUrl = 'https://massarlearning.runasp.net/api/Teacher';
   constructor(private http: HttpClient) {}
 
   /**
