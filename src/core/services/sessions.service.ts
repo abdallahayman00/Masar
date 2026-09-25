@@ -6,12 +6,13 @@ import {
   SessionAdminResponse,
   SessionAdminFilterParams,
 } from '../interfaces/session-admin';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SessionsService {
-  private baseUrl = 'https://massarlearning.runasp.net/api/Sessions';
+  private baseUrl = `${environment.apiUrl}/api/Sessions`;
 
   constructor(private http: HttpClient) {}
 

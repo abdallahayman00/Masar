@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Student } from '../interfaces/student';
 import { StudentTrack } from '../interfaces/student-tracks';
 import { MonthlySession } from '../interfaces/student-sessions';
+import { environment } from '../../environments/environment';
 
 // واجهات البيانات المطلوبة
 export interface BookingRequest {
@@ -41,7 +42,7 @@ export interface SubmitExamRequest {
   providedIn: 'root',
 })
 export class StudentService {
-  private baseUrl = 'https://massarlearning.runasp.net/api/Student';
+  private baseUrl = `${environment.apiUrl}/api/Student`;
 
   constructor(private http: HttpClient) {}
 

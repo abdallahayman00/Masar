@@ -1,3 +1,103 @@
+<!-- Brand panel: right third -->
+<aside class="brand-panel">
+  <div class="brand-inner">
+    <!-- Header -->
+    <div class="brand-header">
+      <div class="brand-logo">
+        <svg
+          viewBox="0 0 60 60"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M32 10 C20 10 12 18 12 30 C12 42 20 50 32 50 C38 50 43.5 47.2 47 42.4
+               C44 43.4 40.6 43.5 37.2 42.2 C29.2 39.2 25 30.6 27.8 22.6
+               C28.8 19.6 31 17.4 33.8 16.2 C33.2 15.8 32.6 10 32 10Z"
+            fill="rgba(255,255,255,0.95)"
+          />
+          <polygon
+            points="40,8 42,14 48,14 43.5,17.5 45.5,23.5 40,20 34.5,23.5 36.5,17.5 32,14 38,14"
+            fill="rgba(255,255,255,0.9)"
+          />
+        </svg>
+      </div>
+      <div class="brand-titles">
+        <span class="brand-name">رتَّل</span>
+        <span class="brand-sub">نظام تحفيظ القرآن الكريم</span>
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <div class="brand-hero">
+      <p class="brand-ayah">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا ﴾</p>
+      <h2 class="brand-title">منصة رتَّل<br />لتحفيظ القرآن الكريم</h2>
+      <div class="brand-divider">
+        <span class="line"></span>
+        <svg viewBox="0 0 24 24" class="star">
+          <polygon
+            points="12,2 14.5,9.5 22,9.5 16,14 18.5,21.5 12,17 5.5,21.5 8,14 2,9.5 9.5,9.5"
+          />
+        </svg>
+        <span class="line"></span>
+      </div>
+      <p class="brand-desc">
+        منصة رقمية متكاملة لإدارة حلقات التحفيظ ومتابعة الحفظ والمراجعة
+        بين الطلاب والمعلمين في مكان واحد.
+      </p>
+    </div>
+
+    <!-- Features -->
+    <ul class="brand-features">
+      <li>
+        <span class="feat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </span>
+        متابعة الحفظ والمراجعة
+      </li>
+      <li>
+        <span class="feat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </span>
+        إدارة المسارات التعليمية
+      </li>
+      <li>
+        <span class="feat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </span>
+        معلمون ومشرفون مؤهلون
+      </li>
+      <li>
+        <span class="feat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </span>
+        تقارير وتقييمات دورية
+      </li>
+    </ul>
+
+    <!-- Footer -->
+    <div class="brand-footer">
+      <span class="brand-hadith">« خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ »</span>
+      <div class="brand-footer-row">
+        <span class="status-pill">
+          <span class="status-dot"></span>
+          المنصة تعمل بصورة طبيعية
+        </span>
+        <span class="version">v 1.0</span>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- Form side: left two-thirds -->
+<section class="form-side">
 <div class="login-container">
   <div class="card">
     <!-- Top accent bar is via ::before in SCSS -->
@@ -17,7 +117,7 @@
           />
         </svg>
       </div>
-      <h1>مسار</h1>
+      <h1>رتَّل</h1>
     </div>
 
     <div class="ornament">
@@ -181,25 +281,6 @@
           إنشاء حساب جديد
         </button>
       </div>
-      <!-- Global Error -->
-      <div class="global-error" *ngIf="errorMessage" role="alert">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          width="16"
-          height="16"
-        >
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="8" x2="12" y2="12" />
-          <line x1="12" y1="16" x2="12.01" y2="16" />
-        </svg>
-        {{ errorMessage }}
-      </div>
-
-      <!-- Global Success -->
-
       <!-- Submit -->
       <button
         type="submit"
@@ -244,3 +325,4 @@
     </form>
   </div>
 </div>
+</section>

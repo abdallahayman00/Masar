@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 export interface AvailableSlot {
   id: number;
@@ -33,12 +34,9 @@ export interface CreateSlotResponse {
   providedIn: 'root',
 })
 export class AvailableSlotsService {
-  private baseUrl =
-    'https://massarlearning.runasp.net/api/Teacher/AvailableSlots';
-  private deleteUrl =
-    'https://massarlearning.runasp.net/api/Teacher/available-dates';
-  private createUrl =
-    'https://massarlearning.runasp.net/api/Teacher/CreateSchedule';
+  private baseUrl = `${environment.apiUrl}/api/Teacher/AvailableSlots`;
+  private deleteUrl = `${environment.apiUrl}/api/Teacher/available-dates`;
+  private createUrl = `${environment.apiUrl}/api/Teacher/CreateSchedule`;
 
   constructor(
     private http: HttpClient,

@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PagedResponse, PendingBatch } from '../interfaces/pending-batches';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PendingBatchesService {
-  private baseUrl = 'https://massarlearning.runasp.net/api/Student';
+  private baseUrl = `${environment.apiUrl}/api/Student`;
   constructor(private http: HttpClient) {}
 
   getWaitingBookings(

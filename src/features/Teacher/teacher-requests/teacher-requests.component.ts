@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import Swal from 'sweetalert2'; // <-- أضف هذا السطر لاستيراد SweetAlert
+import { environment } from '../../../environments/environment';
 
 export interface Teacher {
   teacherId: number;
@@ -41,7 +42,7 @@ export class TeacherRequestsComponent implements OnInit {
   totalCount: number = 0;
   totalPages: number = 0;
   searchTerm: string = '';
-  private apiUrl = 'https://massarlearning.runasp.net/api/Teacher/not-approved';
+  private apiUrl = `${environment.apiUrl}/api/Teacher/not-approved`;
 
   // متغيرات المودال
   showModal: boolean = false;
@@ -115,7 +116,7 @@ export class TeacherRequestsComponent implements OnInit {
         // 2. إرسال طلب الموافقة إلى الـ API الصحيح
         this.http
           .post(
-            `https://massarlearning.runasp.net/api/Teacher/TeacherApproved/${teacherId}`,
+            `${environment.apiUrl}/api/Teacher/TeacherApproved/${teacherId}`,
             {},
             {
               responseType: 'text', // لأن الـ API يرجع نص عادي
@@ -161,7 +162,7 @@ export class TeacherRequestsComponent implements OnInit {
   rejectRequest(teacherId: number): void {
     this.http
       .post(
-        `https://massarlearning.runasp.net/api/Teacher/${teacherId}/reject`,
+        `${environment.apiUrl}/api/Teacher/${teacherId}/reject`,
         {},
       )
       .subscribe({

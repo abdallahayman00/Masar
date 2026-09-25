@@ -4,12 +4,13 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Track, normalizeTrack } from '../interfaces/track';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TracksService {
-  private apiUrl = 'https://massarlearning.runasp.net/api/Track';
+  private apiUrl = `${environment.apiUrl}/api/Track`;
 
   constructor(private http: HttpClient) {}
 

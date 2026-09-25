@@ -12,6 +12,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Subject, takeUntil, catchError, of } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import Chart from 'chart.js/auto';
 
 // ------------------------- Interfaces -------------------------
 export interface MonthlyStats {
@@ -35,8 +37,6 @@ export interface TimelineEvent {
   icon: string;
   time: string;
 }
-
-declare const Chart: any;
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -97,8 +97,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   private animationFrames: number[] = [];
 
   // ---------- API (Direct URL without proxy) ----------
-  private readonly API_BASE =
-    'https://massarlearning.runasp.net/api/Account/GetMonthlyStats';
+  private readonly API_BASE = `${environment.apiUrl}/api/Account/GetMonthlyStats`;
 
   constructor(
     private http: HttpClient,
@@ -374,7 +373,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
               backdropColor: 'transparent',
             },
             pointLabels: {
-              font: { family: 'Cairo', size: 12, weight: '600' },
+              font: { family: 'Cairo', size: 12, weight: 600 },
               color: '#1f6040',
             },
           },
@@ -525,7 +524,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           y: {
             grid: { display: false },
             ticks: {
-              font: { family: 'Cairo', size: 12, weight: '600' },
+              font: { family: 'Cairo', size: 12, weight: 600 },
               color: '#1f6040',
             },
           },

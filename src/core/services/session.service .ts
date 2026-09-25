@@ -4,13 +4,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Session } from '../interfaces/session.interface';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SessionService {
-  private baseUrl = 'https://massarlearning.runasp.net/api/Sessions';
-  private teacherApiUrl = 'https://massarlearning.runasp.net/api/Teacher';
+  private baseUrl = `${environment.apiUrl}/api/Sessions`;
+  private teacherApiUrl = `${environment.apiUrl}/api/Teacher`;
   constructor(private http: HttpClient) {}
 
   /**

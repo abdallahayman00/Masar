@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -15,14 +16,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   loading = false;
-  errorMessage = '';
-  successMessage = '';
   showPassword = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private toastService: ToastService,
   ) {}
 
   ngOnInit(): void {
@@ -54,8 +54,6 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    this.errorMessage = '';
-    this.successMessage = '';
 
     const { email, password, rememberMe } = this.loginForm.value;
 
@@ -83,7 +81,7 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('role', role);
         }
 
-        this.successMessage = '✓ تم تسجيل الدخول بنجاح...';
+        this.toastService.success('تم تسجيل الدخول بنجاح');
 
         setTimeout(() => {
           this.router.navigate(['/dashboard']);
@@ -91,7 +89,7 @@ export class LoginComponent implements OnInit {
       },
       error: () => {
         this.loading = false;
-        this.errorMessage = '⚠️ البريد الإلكتروني أو كلمة المرور غير صحيحة';
+        this.toastService.error('البريد الإلكتروني أو كلمة المرور غير صحيحة');
       },
     });
   }

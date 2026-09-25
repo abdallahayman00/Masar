@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { environment } from '../../../environments/environment';
 
 export interface NewTeacherData {
   userName: string;
@@ -41,8 +42,7 @@ export class AddTeacherComponent {
 
   showPassword: boolean = false;
   isSubmitting: boolean = false;
-  private apiUrl =
-    'https://massarlearning.runasp.net/api/Teacher/admin-create-teacher';
+  private apiUrl = `${environment.apiUrl}/api/Teacher/admin-create-teacher`;
 
   constructor(private http: HttpClient) {}
 

@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class TeacherService {
-  private baseUrl = 'https://massarlearning.runasp.net/api/Teacher';
+  private baseUrl = `${environment.apiUrl}/api/Teacher`;
 
   constructor(private http: HttpClient) {}
 

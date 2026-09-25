@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Session {
   sessionId: number;
@@ -29,8 +30,7 @@ export interface WeeklyScheduleResponse {
   providedIn: 'root',
 })
 export class WeeklyScheduleService {
-  private baseUrl =
-    'https://massarlearning.runasp.net/api/Teacher/WeeklyScheduleMatrix';
+  private baseUrl = `${environment.apiUrl}/api/Teacher/WeeklyScheduleMatrix`;
 
   constructor(private http: HttpClient) {}
 

@@ -1,6 +1,6 @@
 .toast-container {
   position: fixed;
-  bottom: 24px;
+  top: 24px;
   left: 24px;
   right: 24px;
   z-index: 10000;
@@ -12,7 +12,7 @@
   @media (min-width: 768px) {
     left: auto;
     right: 24px;
-    bottom: 24px;
+    top: 24px;
     max-width: 380px;
   }
 }

@@ -8,6 +8,7 @@ import {
   of,
   tap,
 } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface LoginRequest {
   email: string;
@@ -39,7 +40,7 @@ export interface ChangePasswordRequest {
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'https://massarlearning.runasp.net';
+  private baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 

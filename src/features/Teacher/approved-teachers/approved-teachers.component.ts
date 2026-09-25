@@ -11,6 +11,7 @@ import {
 } from '../../../core/services/auth.service';
 import { FilterParams } from '../../../core/interfaces/filter-params';
 import { FilterSectionComponent } from '../../filter-section/filter-section.component';
+import { environment } from '../../../environments/environment';
 
 export interface Teacher {
   teacherId: number;
@@ -48,7 +49,7 @@ export class ApprovedTeachersComponent implements OnInit {
   currentPage: number = 1;
   totalCount: number = 0;
   totalPages: number = 0;
-  private apiUrl = 'https://massarlearning.runasp.net/api/Teacher/approved';
+  private apiUrl = `${environment.apiUrl}/api/Teacher/approved`;
 
   // ✅ متغيرات الفلترة
   currentFilters: FilterParams = {};

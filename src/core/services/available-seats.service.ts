@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AvailableSeatsResponse } from '../interfaces/available-seats';
 import { FilterParams } from '../interfaces/filter-params';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AvailableSeatsService {
-  private baseUrl = 'https://massarlearning.runasp.net/api/Teacher';
+  private baseUrl = `${environment.apiUrl}/api/Teacher`;
 
   constructor(private http: HttpClient) {}
 
