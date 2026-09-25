@@ -1,15 +1,19 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
+import { AuthService } from '../services/auth.service';
 
 export const teacherGuard: CanActivateFn = () => {
   const router = inject(Router);
+  const authService = inject(AuthService);
 
-  const token = localStorage.getItem('token');
-  const role = localStorage.getItem('role');
+  if (!authService.isLoggedIn()) {
+    authService.clearAuthData();
+    return router.createUrlTree(['/auth/login']);
+  }
 
-  if (token && role === 'Teacher') {
+  if (authService.getStoredRole().toLowerCase() === 'teacher') {
     return true;
   }
 
-  return router.createUrlTree(['/auth/login']);
+  return router.createUrlTree(['/dashboard']);
 };

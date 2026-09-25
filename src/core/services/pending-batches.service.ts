@@ -30,6 +30,18 @@ export class PendingBatchesService {
     );
   }
 
+  // جلب عدد الدفعات المعلقة فقط (pageSize=1 لتخفيف الحمل)
+  getWaitingCount(): Observable<PagedResponse> {
+    const params = new HttpParams()
+      .set('pageNumber', '1')
+      .set('pageSize', '1');
+
+    return this.http.get<PagedResponse>(
+      `${this.baseUrl}/WaitingBookingsDetailsPaged`,
+      { params },
+    );
+  }
+
   confirmPayment(bookingId: number): Observable<string> {
     // ✅ إضافة responseType: 'text' للتعامل مع الرد النصي
     return this.http.post(

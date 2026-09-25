@@ -6,7 +6,6 @@ import {
   finalize,
   firstValueFrom,
   of,
-  tap,
 } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -36,6 +35,14 @@ export interface ChangePasswordRequest {
   confirmPassword: string;
 }
 
+export interface LoginResponse {
+  token?: string;
+  role?: string;
+  isApproved?: boolean;
+  message?: string;
+  [key: string]: any;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -56,7 +63,63 @@ export class AuthService {
 
   // الحصول على التوكن المخزن
   getToken(): string | null {
-    return localStorage.getItem('token');
+    return localStorage.getItem('token') || sessionStorage.getItem('token');
+  }
+
+  // التحقق من انتهاء صلاحية التوكن (exp claim)
+  isTokenExpired(token?: string | null): boolean {
+    const t = token ?? this.getToken();
+    if (!t) return true;
+    const decoded = this.decodeToken(t);
+    if (!decoded) return true;
+    if (!decoded.exp) return false;
+    return decoded.exp * 1000 <= Date.now();
+  }
+
+  // هل المستخدم مسجل دخول بتوكن صالح؟
+  isLoggedIn(): boolean {
+    const token = this.getToken();
+    return !!token && !this.isTokenExpired(token);
+  }
+
+  // الدور المخزن (من أي تخزين)
+  getStoredRole(): string {
+    return (
+      localStorage.getItem('role') ||
+      sessionStorage.getItem('role') ||
+      this.getRoleFromToken() ||
+      ''
+    );
+  }
+
+  // مسح كل بيانات الجلسة من التخزينين
+  clearAuthData(): void {
+    ['token', 'role', 'teacherId', 'studentId'].forEach((key) => {
+      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
+    });
+  }
+
+  // حفظ بيانات الجلسة بعد تسجيل دخول ناجح، وإرجاع الدور بصيغة موحدة
+  saveSession(response: LoginResponse | null | undefined): string {
+    let role = response?.role;
+    if (typeof role === 'string' && role.length) {
+      role = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
+      localStorage.setItem('role', role);
+    }
+
+    if (response?.token) {
+      localStorage.setItem('token', response.token);
+      const userId = this.getUserIdFromToken();
+      if (userId != null && role === 'Teacher') {
+        localStorage.setItem('teacherId', String(userId));
+      }
+      if (userId != null && role === 'Student') {
+        localStorage.setItem('studentId', String(userId));
+      }
+    }
+
+    return role || '';
   }
 
   // استخراج UserId من التوكن (هو نفسه TeacherId للمعلم)
@@ -90,31 +153,8 @@ export class AuthService {
   }
 
   // ------------------- LOGIN ---------------------------
-  login(data: LoginRequest): Observable<any> {
-    return this.http.post(`${this.baseUrl}/Login`, data).pipe(
-      tap((response: any) => {
-        if (response.token) {
-          localStorage.setItem('token', response.token);
-
-          // استخراج الـ nameidentifier من التوكن
-          const decoded = this.decodeToken(response.token);
-          const userId =
-            decoded?.[
-              'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
-            ];
-
-          if (userId && response.role?.toLowerCase() === 'teacher') {
-            localStorage.setItem('teacherId', userId);
-          }
-          if (userId && response.role?.toLowerCase() === 'student') {
-            localStorage.setItem('studentId', userId);
-          }
-        }
-        if (response.role) {
-          localStorage.setItem('role', response.role);
-        }
-      }),
-    );
+  login(data: LoginRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.baseUrl}/Login`, data);
   }
 
   // ------------------- REGISTER ---------------------------
@@ -128,14 +168,9 @@ export class AuthService {
 
   // ------------------- LOGOUT ---------------------------
   logout(): Observable<any> {
-    return this.http.post(`${this.baseUrl}/api/Account/Logout`, {}).pipe(
-      finalize(() => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-        localStorage.removeItem('teacherId');
-        sessionStorage.clear();
-      }),
-    );
+    return this.http
+      .post(`${this.baseUrl}/api/Account/Logout`, {})
+      .pipe(finalize(() => this.clearAuthData()));
   }
 
   // ------------------- CHANGE PASSWORD --------------------
@@ -154,8 +189,7 @@ export class AuthService {
         this.http.get(`${this.baseUrl}/api/Account/Me`).pipe(
           catchError((err) => {
             if (err.status === 401) {
-              localStorage.removeItem('token');
-              sessionStorage.removeItem('token');
+              this.clearAuthData();
             }
             return of(null);
           }),

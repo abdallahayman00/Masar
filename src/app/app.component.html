@@ -95,8 +95,20 @@
                   >
                     <i class="ti ti-user-plus nav-icon"></i>
                     <span class="nav-label">طلبات المعلمين</span>
+                    @if (teacherRequestsCount > 0) {
+                      <span class="nav-badge badge-pending">{{
+                        teacherRequestsCount > 99
+                          ? "+٩٩"
+                          : (teacherRequestsCount | arabicNumber)
+                      }}</span>
+                    }
                   </a>
-                  <div class="nav-tooltip">طلبات المعلمين</div>
+                  <div class="nav-tooltip">
+                    طلبات المعلمين
+                    @if (teacherRequestsCount > 0) {
+                      ({{ teacherRequestsCount | arabicNumber }} معلق)
+                    }
+                  </div>
                 </div>
                 <!-- Approved Teachers -->
                 <div class="nav-item-wrap">
@@ -167,8 +179,20 @@
                   >
                     <i class="ti ti-calendar-clock nav-icon"></i>
                     <span class="nav-label"> الدفعات المعلقة</span>
+                    @if (pendingBatchesCount > 0) {
+                      <span class="nav-badge badge-pending">{{
+                        pendingBatchesCount > 99
+                          ? "+٩٩"
+                          : (pendingBatchesCount | arabicNumber)
+                      }}</span>
+                    }
                   </a>
-                  <div class="nav-tooltip">الدفعات المعلقة</div>
+                  <div class="nav-tooltip">
+                    الدفعات المعلقة
+                    @if (pendingBatchesCount > 0) {
+                      ({{ pendingBatchesCount | arabicNumber }} معلق)
+                    }
+                  </div>
                 </div>
 
                 <div class="nav-item-wrap">

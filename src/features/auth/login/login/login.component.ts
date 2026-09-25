@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
+import { TeacherService } from '../../../../core/services/teacher.service';
 import { ToastService } from '../../../../core/services/toast.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -21,6 +22,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private teacherService: TeacherService,
     private router: Router,
     private toastService: ToastService,
   ) {}
@@ -46,7 +48,6 @@ export class LoginComponent implements OnInit {
     this.router.navigate(['/auth/register']);
   }
 
-  // login.component.ts (الجزء المعدل من onSubmit)
   onSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
@@ -55,42 +56,89 @@ export class LoginComponent implements OnInit {
 
     this.loading = true;
 
-    const { email, password, rememberMe } = this.loginForm.value;
+    const { email, password } = this.loginForm.value;
 
     this.authService.login({ email, password }).subscribe({
       next: (res) => {
-        this.loading = false;
+        const role = this.authService.saveSession(res);
 
-        let token = res?.token;
-        let role = res?.role;
-
-        // 🔥 توحيد صيغة الدور: أول حرف كبير والباقي صغير -> "Admin" أو "Teacher"
-        if (role && typeof role === 'string') {
-          role = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
-        } else {
-          role = ''; // fallback
+        // المعلم لازم يكون معتمد من الإدارة قبل الدخول
+        if (role === 'Teacher') {
+          this.verifyTeacherApproval(res);
+          return;
         }
 
-        const storage = rememberMe ? localStorage : sessionStorage;
-
-        if (token) {
-          localStorage.setItem('token', token);
-        }
-
-        if (role) {
-          localStorage.setItem('role', role);
-        }
-
-        this.toastService.success('تم تسجيل الدخول بنجاح');
-
-        setTimeout(() => {
-          this.router.navigate(['/dashboard']);
-        }, 0);
+        this.finishLogin();
       },
-      error: () => {
+      error: (err) => {
         this.loading = false;
-        this.toastService.error('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+        this.toastService.error(
+          this.extractErrorMessage(err) ||
+            'البريد الإلكتروني أو كلمة المرور غير صحيحة',
+        );
       },
     });
+  }
+
+  // التأكد أن المعلم معتمد (isApproved) قبل السماح له بالدخول
+  private verifyTeacherApproval(res: any): void {
+    // لو الـ API رجّع حالة الاعتماد صراحة في رد تسجيل الدخول
+    if (res?.isApproved === false) {
+      this.blockPendingTeacher();
+      return;
+    }
+    if (res?.isApproved === true) {
+      this.finishLogin();
+      return;
+    }
+
+    const teacherId =
+      this.authService.getUserIdFromToken() ?? this.authService.getTeacherId();
+
+    if (!teacherId) {
+      this.blockPendingTeacher(
+        'تعذر التحقق من حالة اعتماد حسابك. حاول مرة أخرى لاحقاً.',
+      );
+      return;
+    }
+
+    this.teacherService.getTeacherDetails(teacherId).subscribe({
+      next: (teacher) => {
+        if (teacher?.isApproved === false) {
+          this.blockPendingTeacher();
+          return;
+        }
+        this.finishLogin();
+      },
+      error: (err) => {
+        const msg =
+          typeof err?.error === 'string' ? err.error : err?.error?.message;
+        this.blockPendingTeacher(
+          msg || 'حسابك قيد المراجعة من الإدارة ولم يتم اعتماده بعد.',
+        );
+      },
+    });
+  }
+
+  private blockPendingTeacher(
+    message = 'حسابك قيد المراجعة من الإدارة ولم يتم اعتماده بعد. سيتم إخطارك عند التفعيل.',
+  ): void {
+    this.loading = false;
+    this.authService.clearAuthData();
+    this.toastService.warning(message, 'حساب غير مفعّل');
+  }
+
+  private finishLogin(): void {
+    this.loading = false;
+    this.toastService.success('تم تسجيل الدخول بنجاح');
+    this.router.navigate(['/dashboard']);
+  }
+
+  private extractErrorMessage(err: any): string | null {
+    const e = err?.error;
+    if (typeof e === 'string' && e.trim()) return e;
+    if (e?.message) return e.message;
+    if (e?.title) return e.title;
+    return null;
   }
 }

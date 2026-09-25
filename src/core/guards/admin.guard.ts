@@ -1,15 +1,20 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
+import { AuthService } from '../services/auth.service';
 
 export const adminGuard: CanActivateFn = () => {
   const router = inject(Router);
+  const authService = inject(AuthService);
 
-  const token = localStorage.getItem('token');
-  const role = localStorage.getItem('role');
+  if (!authService.isLoggedIn()) {
+    authService.clearAuthData();
+    return router.createUrlTree(['/auth/login']);
+  }
 
-  if (token && role === 'Admin') {
+  if (authService.getStoredRole().toLowerCase() === 'admin') {
     return true;
   }
 
-  return router.createUrlTree(['/auth/login']);
+  // مسجل دخول لكن بدور مختلف -> رجّعه على لوحته
+  return router.createUrlTree(['/dashboard']);
 };

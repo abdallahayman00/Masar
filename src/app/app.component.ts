@@ -9,10 +9,12 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { interval } from 'rxjs';
 import { StudentCad } from '../core/interfaces/student-cad';
 import { AuthService } from '../core/services/auth.service';
 import { StudentService } from '../core/services/student.service';
 import { TeacherService } from '../core/services/teacher.service'; // المسار حسب مشروعك
+import { PendingBatchesService } from '../core/services/pending-batches.service';
 import { ToastService } from '../core/services/toast.service';
 import { ToastComponent } from '../features/toast/toast/toast.component'; // أضف هذا
 import { SpinnerComponent } from '../shared/components/spinner/spinner.component';
@@ -42,6 +44,10 @@ export class AppComponent implements OnInit {
   studentData!: StudentCad;
   selectedImageFile: File | null = null;
 
+  // عدّادات الطلبات المعلقة (للأدمن في السايدبار)
+  teacherRequestsCount = 0;
+  pendingBatchesCount = 0;
+
   // ⚠️ لم نعد نعتمد على this.role المخزنة في ngOnInit
   // بل سنقرأ الدور ديناميكياً من التخزين عند الحاجة (في الـ getters)
 
@@ -50,6 +56,7 @@ export class AppComponent implements OnInit {
     private authService: AuthService,
     private teacherService: TeacherService, // <-- حقن الخدمة
     private studentService: StudentService,
+    private pendingBatchesService: PendingBatchesService,
     private toastService: ToastService,
   ) {}
 
@@ -62,7 +69,13 @@ export class AppComponent implements OnInit {
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.isAuthRoute = event.urlAfterRedirects.startsWith('/auth');
+        // تحديث العدّادات عند كل تنقل
+        this.refreshPendingCounts();
       });
+
+    this.refreshPendingCounts();
+    // تحديث دوري كل دقيقة عشان الأدمن يشوف الطلبات الجديدة
+    interval(60000).subscribe(() => this.refreshPendingCounts());
 
     // ✅ استدعاء جلب بيانات المعلم إذا كان المستخدم معلمًا
     if (this.isTeacher) {
@@ -72,6 +85,29 @@ export class AppComponent implements OnInit {
     if (this.isStudent) {
       this.loadStudentData();
     }
+  }
+
+  // جلب عدد طلبات المعلمين والدفعات المعلقة (للأدمن فقط)
+  refreshPendingCounts(): void {
+    if (!this.isAdmin) {
+      this.teacherRequestsCount = 0;
+      this.pendingBatchesCount = 0;
+      return;
+    }
+
+    this.teacherService.getNotApprovedTeachers(1).subscribe({
+      next: (res) => {
+        this.teacherRequestsCount = res?.totalCount ?? 0;
+      },
+      error: () => {},
+    });
+
+    this.pendingBatchesService.getWaitingCount().subscribe({
+      next: (res) => {
+        this.pendingBatchesCount = res?.totalCount ?? 0;
+      },
+      error: () => {},
+    });
   }
 
   private loadTeacherData() {
@@ -128,25 +164,20 @@ export class AppComponent implements OnInit {
     return role.toLowerCase() === 'student';
   }
 
-  // ================= LOGOUT (بدون تغيير) =================
+  // ================= LOGOUT =================
   logout() {
     this.authService.logout().subscribe({
-      next: () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-        localStorage.removeItem('studentId');
-        sessionStorage.clear();
-        this.router.navigate(['/auth/login']);
-      },
+      next: () => this.finishLogout(),
       error: (err) => {
         console.error('Logout Error:', err);
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-        localStorage.removeItem('studentId');
-        sessionStorage.clear();
-        this.router.navigate(['/auth/login']);
+        this.finishLogout();
       },
     });
+  }
+
+  private finishLogout() {
+    this.authService.clearAuthData();
+    this.router.navigate(['/auth/login']);
   }
 
   // ================= UI CONTROLS (بدون تغيير) =================
@@ -193,7 +224,8 @@ export class AppComponent implements OnInit {
       this.toastService.warning('الرجاء اختيار صورة أولاً');
       return;
     }
-    const teacherId = localStorage.getItem('teacherId');
+    const teacherId =
+      localStorage.getItem('teacherId') || sessionStorage.getItem('teacherId');
     if (!teacherId) {
       this.toastService.error('لم يتم العثور على معرف المعلم');
       return;

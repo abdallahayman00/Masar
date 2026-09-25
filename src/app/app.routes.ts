@@ -4,16 +4,18 @@ import { adminGuard } from '../core/guards/admin.guard';
 import { studentGuard } from '../core/guards/student.guard';
 import { teacherGuard } from '../core/guards/teacher.guard';
 import { adminOrTeacherGuard } from '../core/guards/adminOrTeacherGuard.guard';
+import { guestGuard } from '../core/guards/guest.guard';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'auth/login',
+    redirectTo: 'dashboard',
     pathMatch: 'full',
   },
 
   {
     path: 'auth',
+    canActivate: [guestGuard],
     children: [
       {
         path: 'login',
@@ -192,8 +194,9 @@ export const routes: Routes = [
       ),
   },
 
+  // أي مسار غير معروف -> الرئيسية (dashboard) والـ authGuard هيرجّع على login لو مش مسجل
   {
     path: '**',
-    redirectTo: 'auth/login',
+    redirectTo: 'dashboard',
   },
 ];

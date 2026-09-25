@@ -1,15 +1,19 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
-export const studentGuard: CanActivateFn = (route, state) => {
+export const studentGuard: CanActivateFn = () => {
   const router = inject(Router);
+  const authService = inject(AuthService);
 
-  const token = localStorage.getItem('token');
-  const role = localStorage.getItem('role');
+  if (!authService.isLoggedIn()) {
+    authService.clearAuthData();
+    return router.createUrlTree(['/auth/login']);
+  }
 
-  if (token && role === 'Student') {
+  if (authService.getStoredRole().toLowerCase() === 'student') {
     return true;
   }
 
-  return router.createUrlTree(['/auth/login']);
+  return router.createUrlTree(['/dashboard']);
 };

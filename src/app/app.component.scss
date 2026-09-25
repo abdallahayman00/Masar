@@ -531,6 +531,48 @@ body {
   border: 1px solid rgba(239, 68, 68, 0.15);
 }
 
+/* عدّاد الطلبات المعلقة - دائرة حمراء */
+.nav-badge.badge-pending {
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  min-width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  border-radius: 999px;
+  line-height: 1;
+  animation: badge-pulse 2s ease-in-out infinite;
+}
+
+@keyframes badge-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(220, 38, 38, 0);
+  }
+}
+
+/* في السايدبار المطوي: يبقى ظاهر كنقطة صغيرة فوق الأيقونة */
+.sidebar.collapsed .nav-item .nav-badge.badge-pending {
+  opacity: 1;
+  max-width: none;
+  overflow: visible;
+  pointer-events: auto;
+  position: absolute;
+  top: 3px;
+  inset-inline-end: 4px;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 3px;
+  font-size: 9px;
+  z-index: 5;
+}
+
 /* Ornament */
 .ornament-divider {
   display: flex;

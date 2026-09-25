@@ -2,12 +2,20 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { ApiResponse } from '../interfaces/teacher';
 
 @Injectable({ providedIn: 'root' })
 export class TeacherService {
   private baseUrl = `${environment.apiUrl}/api/Teacher`;
 
   constructor(private http: HttpClient) {}
+
+  // جلب المعلمين غير المعتمدين (طلبات المعلمين)
+  getNotApprovedTeachers(page: number = 1): Observable<ApiResponse> {
+    return this.http.get<ApiResponse>(`${this.baseUrl}/not-approved`, {
+      params: { page },
+    });
+  }
 
   // جلب تفاصيل المعلم باستخدام teacherId
   getTeacherDetails(teacherId: number): Observable<any> {
