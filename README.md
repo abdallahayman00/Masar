@@ -1,59 +1,166 @@
 # Ratl | رتَّل
+# 🕌 Masar
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.9.
+### Quran Memorization & Learning Management Platform
 
-## Development server
+**Masar** is a modern web application built with Angular to support the management of Quran memorization and learning programs.
 
-To start a local development server, run:
+The platform provides a structured environment for managing students, teachers, tracks, attendance, and memorization progress through a responsive and user-friendly interface.
+
+---
+
+## 🚀 Live Demo
+
+🔗 **[Open Masar](https://masar-self-pi.vercel.app/)**
+
+---
+
+## ✨ Features
+
+* 👨‍🎓 Student management
+* 👨‍🏫 Teacher management
+* 📚 Quran memorization tracks
+* 🎯 Student track selection
+* 📊 Memorization progress management
+* 📝 Attendance management
+* 🔗 REST API integration
+* 📱 Responsive user interface
+* ⚡ Modern Angular architecture
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+* **Angular 19**
+* **TypeScript**
+* **RxJS**
+* **SCSS**
+* **HTML5**
+* **Responsive Web Design**
+
+### Architecture & Development
+
+* Component-based architecture
+* Reactive Forms
+* Angular Routing
+* Services & Dependency Injection
+* RESTful API integration
+* Reusable UI components
+
+---
+
+## 📂 Project Structure
+
+```text
+src/
+├── app/
+│   ├── components/
+│   ├── pages/
+│   ├── services/
+│   ├── providers/
+│   └── ...
+├── assets/
+└── styles/
+```
+
+> Project structure may evolve as the application grows.
+
+---
+
+## ⚙️ Getting Started
+
+### Prerequisites
+
+Make sure you have the following installed:
+
+* Node.js
+* npm
+* Angular CLI
+
+### Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/abdallahayman00/Masar.git
+```
+
+Navigate to the project:
+
+```bash
+cd Masar
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Open your browser and visit:
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```text
+http://localhost:4200/
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
+## 🏗️ Production Build
 
-## Building
-
-To build the project run:
+To create a production build:
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+The generated files will be available inside the `dist/` directory.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## 🧪 Testing
+
+Run unit tests with:
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## 🤝 Contributors
 
-```bash
-ng e2e
-```
+* **Abdallah Ayman** — Frontend Development
+* **Mohmed Elswady** — Development & Collaboration
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+## 📌 Project Status
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+🚧 **Active Development**
+
+Masar is continuously evolving with new features and improvements.
+
+---
+
+## 👨‍💻 Developer
+
+**Abdallah Ayman**
+
+Angular Developer | ASP.NET MVC Developer
+
+* GitHub: [abdallahayman00](https://github.com/abdallahayman00)
+* LinkedIn: [Abdallah Ayman](https://linkedin.com/in/abdallah-ayman-6962a42a9)
+
+---
+
+<p align="center">
+  Built with ❤️ using Angular
+</p>
