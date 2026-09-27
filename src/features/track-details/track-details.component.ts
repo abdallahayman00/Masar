@@ -2,7 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StudentService } from '../../core/services/student.service';
-import { StudentTracks, StudentTrack } from '../../core/interfaces/student-tracks';
+import { TracksService } from '../../core/services/tracks.service';
+import { AvailableTracks } from '../../core/interfaces/available-tracks';
 import {
   DaySessions,
   Session,
@@ -47,12 +48,16 @@ const ARABIC_MONTH_NAMES = [
   styleUrl: './track-details.component.scss',
 })
 export class TrackDetailsComponent implements OnInit {
-  allStudentTracks!: StudentTrack;
-  currentTrack: StudentTracks | null = null;
-  weeklySessionData!: DaySessions[];
+  currentTrack: AvailableTracks | null = null;
+  weeklySessionData: DaySessions[] = [];
 
   trackId!: number;
   studentId!: number;
+
+  // إحصائيات التقدم — بتتحسب من MonthlySessions لأن GetAllTracksForStu مفيهاش بيانات الحجز
+  totalSessions: number = 0;
+  completedSessions: number = 0;
+  remainingSessions: number = 0;
   missedSessionsCount: number = 0;
 
   // Progress map
@@ -64,6 +69,7 @@ export class TrackDetailsComponent implements OnInit {
   timeSlots: TimeSlot[] = [];
   private sessionMap = new Map<string, Session>();
   private trackSessionIds = new Set<number>();
+  private trackSessionsLoaded = false;
 
   // Upcoming session (green card)
   upcomingSession: UpcomingSession | null | undefined = undefined;
@@ -75,6 +81,7 @@ export class TrackDetailsComponent implements OnInit {
   weeklyError = false;
 
   private readonly studentService = inject(StudentService);
+  private readonly tracksService = inject(TracksService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -83,6 +90,7 @@ export class TrackDetailsComponent implements OnInit {
     this.trackId = idParam ? +idParam : 0;
 
     this.trackSessionIds = new Set();
+    this.trackSessionsLoaded = false;
     this.upcomingSession = undefined;
     this.weekDays = [];
     this.timeSlots = [];
@@ -90,7 +98,7 @@ export class TrackDetailsComponent implements OnInit {
     this.progressMarkers = [];
     this.weekStartDate = this.getWeekStart(new Date());
 
-    this.getStudentTracks();
+    this.getAllTracksForStu();
     this.loadTrackSessionIds();
   }
 
@@ -98,20 +106,14 @@ export class TrackDetailsComponent implements OnInit {
   // API calls
   // ============================================
 
-  getStudentTracks(): void {
-    const studentId = this.getStudentId();
-    if (!studentId) return;
+  getAllTracksForStu(): void {
     this.tracksError = false;
 
-    this.studentService.getStudentTracks(+studentId).subscribe({
+    this.tracksService.getAllTracksForStu().subscribe({
       next: (res) => {
-        this.allStudentTracks = res;
         this.currentTrack =
-          res.find((track) => track.trackId === this.trackId) ?? null;
-
-        if (this.currentTrack) {
-          this.buildProgressMarkers(this.currentTrack);
-        }
+          res.find((track: AvailableTracks) => track.trackId === this.trackId) ??
+          null;
       },
       error: () => {
         this.tracksError = true;
@@ -126,7 +128,16 @@ export class TrackDetailsComponent implements OnInit {
     this.studentService.getMonthlySessions(+studentId, this.trackId).subscribe({
       next: (res: MonthlySession[]) => {
         this.trackSessionIds = new Set(res.map((s) => s.sessionId));
+        this.trackSessionsLoaded = true;
         this.missedSessionsCount = res.filter((s) => s.status === 'Missed').length;
+
+        // إحصائيات التقدم بتتجاب من جلسات التراك الفعلية بدل GetStudentTracks
+        this.totalSessions = res.length;
+        this.completedSessions = res.filter(
+          (s) => s.status === 'Completed',
+        ).length;
+        this.remainingSessions = this.totalSessions - this.completedSessions;
+        this.buildProgressMarkers(this.totalSessions, this.completedSessions);
 
         const now = new Date();
         const upcomingMonthly = res
@@ -214,7 +225,18 @@ export class TrackDetailsComponent implements OnInit {
           this.getWeeklyStuSessions();
         }
       },
-      error: () => {
+      error: (err) => {
+        if (this.isNoSessionsError(err)) {
+          // التراك ده مفيهوش جلسات خالص — الـ Set الفاضية هي الـ state الصح،
+          // مش "البيانات لسه مجتش" عشان الكاليندر ميعرضش جلسات تراكات تانية
+          this.trackSessionIds = new Set();
+          this.trackSessionsLoaded = true;
+          this.missedSessionsCount = 0;
+          this.totalSessions = 0;
+          this.completedSessions = 0;
+          this.remainingSessions = 0;
+          this.buildProgressMarkers(0, 0);
+        }
         this.upcomingSession = null;
         this.getWeeklyStuSessions();
       },
@@ -237,12 +259,8 @@ export class TrackDetailsComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        const isEmptyWeek =
-          (err?.status === 404 &&
-            err?.error?.message?.toLowerCase().includes('no sessions')) ||
-          err?.error?.message?.toLowerCase().includes('no sessions');
-
-        if (isEmptyWeek) {
+        if (this.isNoSessionsError(err)) {
+          this.weeklySessionData = [];
           this.buildWeeklyCalendar([]);
         } else {
           this.weeklyError = true;
@@ -252,6 +270,14 @@ export class TrackDetailsComponent implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+
+  // الـ API بيرجع 404 مع رسالة "No sessions found" لما مفيش جلسات — ده مش خطأ، ده حالة فاضية
+  private isNoSessionsError(err: any): boolean {
+    return (
+      err?.status === 404 ||
+      err?.error?.message?.toLowerCase().includes('no sessions')
+    );
   }
 
   private getStudentId(): string | null {
@@ -270,10 +296,8 @@ export class TrackDetailsComponent implements OnInit {
   // ============================================
 
   get completionPercentage(): number {
-    if (!this.currentTrack || !this.currentTrack.totalSessions) return 0;
-    return Math.round(
-      (this.currentTrack.completedSessions / this.currentTrack.totalSessions) * 100
-    );
+    if (!this.totalSessions) return 0;
+    return Math.round((this.completedSessions / this.totalSessions) * 100);
   }
 
   readonly ringRadius = 80;
@@ -288,10 +312,7 @@ export class TrackDetailsComponent implements OnInit {
   // Progress map
   // ============================================
 
-  private buildProgressMarkers(track: StudentTracks): void {
-    const total = track.totalSessions || 0;
-    const completed = track.completedSessions || 0;
-
+  private buildProgressMarkers(total: number, completed: number): void {
     const markers: ProgressMarker[] = [];
     for (let i = 1; i <= total; i++) {
       markers.push({ index: i, isCompleted: i <= completed });
@@ -331,7 +352,9 @@ export class TrackDetailsComponent implements OnInit {
 
   private buildWeeklyCalendar(days: DaySessions[]): void {
     // 1. فلتر الـ sessions بتاعت التراك ده بس
-    const filteredDays = this.trackSessionIds.size > 0
+    // بنستخدم trackSessionsLoaded مش size > 0 عشان لما التراك مفيهوش جلسات
+    // (MonthlySessions رجع 404) الكاليندر يفضى بدل ما يعرض جلسات تراكات تانية
+    const filteredDays = this.trackSessionsLoaded
       ? days.map((day) => ({
           ...day,
           sessions: day.sessions.filter((s) =>

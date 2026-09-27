@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { StudentService } from '../../core/services/student.service';
 import { StudentTracks } from '../../core/interfaces/student-tracks';
@@ -13,7 +13,7 @@ import { ArabicNumberPipe } from '../../core/pipes/arabic-number.pipe';
   styleUrl: './student-tracks.component.scss',
 })
 export class StudentTracksComponent implements OnInit {
-  studentTracksData!: StudentTracks[];
+  studentTracksData: StudentTracks[] = [];
   isLoading: boolean = false;
   hasError: boolean = false;
 
@@ -44,14 +44,19 @@ export class StudentTracksComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('خطأ في تحميل المسارات:', err);
+        // الـ API بيرجع 404 لما الطالب ماعندوش مسارات — ده مش خطأ، ده حالة فاضية
+        if (err?.status === 404) {
+          this.studentTracksData = [];
+        } else {
+          console.error('خطأ في تحميل المسارات:', err);
+          this.hasError = true;
+        }
         this.isLoading = false;
-        this.hasError = true;
       },
     });
   }
 
-  getProgressPercent(track: any): number {
+  getProgressPercent(track: StudentTracks): number {
     if (!track.totalSessions || track.totalSessions === 0) return 0;
     return Math.round((track.completedSessions / track.totalSessions) * 100);
   }

@@ -8,6 +8,7 @@ export interface StudentTracks {
   completedSessions: number;
   remainingSessions: number;
   trackPhoto: string;
+  isExpired: boolean;
 }
 
 export type StudentTrack = StudentTracks[];

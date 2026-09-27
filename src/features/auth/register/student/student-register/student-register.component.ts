@@ -40,9 +40,9 @@ export class StudentRegisterComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
       studentNationality: ['', Validators.required],
       whatsAppNumber: ['', Validators.required],
-      parentWhatsAppNumber: [''],
-      studentNotes: [''],
-      platformExpectations: [''],
+      parentWhatsAppNumber: ['', Validators.required],
+      studentNotes: ['', Validators.required],
+      platformExpectations: ['', Validators.required],
       age: ['', [Validators.required, Validators.min(5), Validators.max(100)]],
 
       nationalId: ['', [Validators.required, Validators.pattern(/^\d{14}$/)]],

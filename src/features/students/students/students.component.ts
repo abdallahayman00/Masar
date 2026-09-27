@@ -2,7 +2,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { StudentService } from '../../../core/services/student.service';
 import {
   AuthService,
@@ -18,7 +17,6 @@ import { FilterSectionComponent } from '../../filter-section/filter-section.comp
   imports: [
     CommonModule,
     FormsModule,
-    HttpClientModule,
     FilterSectionComponent,
   ],
   templateUrl: './students.component.html',

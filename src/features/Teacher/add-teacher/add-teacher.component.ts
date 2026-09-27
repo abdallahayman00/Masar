@@ -2,7 +2,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { environment } from '../../../environments/environment';
 
@@ -22,7 +22,7 @@ export interface NewTeacherData {
 @Component({
   selector: 'app-add-teacher',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './add-teacher.component.html',
   styleUrls: ['./add-teacher.component.scss'],
 })

@@ -12,12 +12,14 @@ import { ArabicNumberPipe } from '../../../core/pipes/arabic-number.pipe';
 })
 export class StudentSessionsComponent implements OnInit {
 
-  isLoading: boolean = false
-  errorMessage: string = ''
+  isDailyLoading: boolean = false
+  isWeeklyLoading: boolean = false
+  dailyError: string = ''
+  weeklyError: string = ''
   dailyCount: number = 0
   weeklyCount: number = 0
-  dailySessionsData!: DailySessions[]
-  weeklySessionData!:  DaySessions[]
+  dailySessionsData: DailySessions[] = []
+  weeklySessionData: DaySessions[] = []
 
   private readonly studentServices = inject (StudentService)
 
@@ -40,17 +42,23 @@ export class StudentSessionsComponent implements OnInit {
       console.warn('لا يوجد studentId مخزن');
       return;
     }
-    this.isLoading = true
+    this.isDailyLoading = true
+    this.dailyError = ''
      this.studentServices.getDailySessions(+studentId, today).subscribe({
       next: (res) =>{
         this.dailySessionsData = res
-        this.isLoading = false;
+        this.isDailyLoading = false;
         this.dailyCount = res.length
       },
       error: (err) => {
-        this.errorMessage =
-          'حدث خطأ أثناء تحميل الجلسات. يرجى المحاولة لاحقاً.';
-        this.isLoading = false;
+        if (this.isNoSessionsError(err)) {
+          this.dailySessionsData = [];
+          this.dailyCount = 0;
+        } else {
+          this.dailyError =
+            'حدث خطأ أثناء تحميل الجلسات. يرجى المحاولة لاحقاً.';
+        }
+        this.isDailyLoading = false;
       },
     })
   }
@@ -63,19 +71,33 @@ export class StudentSessionsComponent implements OnInit {
       console.warn('لا يوجد studentId مخزن');
       return;
     }
-    this.isLoading = true
+    this.isWeeklyLoading = true
+    this.weeklyError = ''
     this.studentServices.getWeeklySessions(+studentId, startDate).subscribe({
       next: (res) =>{
         this.weeklySessionData = res.days
-        this.isLoading = false;
+        this.isWeeklyLoading = false;
         this.weeklyCount = res.days.length
       },
       error: (err) => {
-        this.errorMessage =
-          'حدث خطأ أثناء تحميل الجلسات. يرجى المحاولة لاحقاً.';
-        this.isLoading = false;
+        if (this.isNoSessionsError(err)) {
+          this.weeklySessionData = [];
+          this.weeklyCount = 0;
+        } else {
+          this.weeklyError =
+            'حدث خطأ أثناء تحميل الجلسات. يرجى المحاولة لاحقاً.';
+        }
+        this.isWeeklyLoading = false;
       },
     })
+  }
+
+  // الـ API بيرجع 404 مع رسالة "No sessions found" لما مفيش جلسات — ده مش خطأ، ده حالة فاضية
+  private isNoSessionsError(err: any): boolean {
+    return (
+      err?.status === 404 ||
+      err?.error?.message?.toLowerCase().includes('no sessions')
+    );
   }
 
   getStatusClass(status: string): string {

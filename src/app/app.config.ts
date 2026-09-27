@@ -49,6 +49,11 @@ export const appConfig: ApplicationConfig = {
     providePrimeNG({
       theme: {
         preset: Aura,
+        options: {
+          // تعطيل الـ dark mode التلقائي — الأبلكيشن مفيهوش ثيم غامق،
+          // ولما الـ OS يبقى dark الـ preset كان بيحوّل الـ native inputs لغامق
+          darkModeSelector: 'none',
+        },
       },
     }),
   ],

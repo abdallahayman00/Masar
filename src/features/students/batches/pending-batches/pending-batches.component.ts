@@ -1,7 +1,6 @@
 // pending-batches.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { PendingBatchesService } from '../../../../core/services/pending-batches.service';
 import {
@@ -12,7 +11,7 @@ import {
 @Component({
   selector: 'app-pending-batches',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule],
   providers: [PendingBatchesService],
   templateUrl: './pending-batches.component.html',
   styleUrls: [],

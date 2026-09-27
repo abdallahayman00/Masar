@@ -71,17 +71,17 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngIf="isLoading">
+              <tr *ngIf="isDailyLoading">
                 <td colspan="5" class="text-center">جاري التحميل...</td>
               </tr>
-              <tr *ngIf="!isLoading && errorMessage">
+              <tr *ngIf="!isDailyLoading && dailyError">
                 <td colspan="5" class="text-center" style="color: #dc2626">
-                  {{ errorMessage }}
+                  {{ dailyError }}
                 </td>
               </tr>
               <tr
                 *ngIf="
-                  !isLoading && !errorMessage && dailySessionsData.length === 0
+                  !isDailyLoading && !dailyError && dailySessionsData.length === 0
                 "
               >
                 <td colspan="5" class="text-center">لا توجد جلسات اليوم</td>
@@ -132,30 +132,30 @@
 
       <!-- Mobile Cards — Daily -->
       <div class="session-cards-mobile">
-        <div class="empty-state" *ngIf="isLoading">
+        <div class="empty-state" *ngIf="isDailyLoading">
           <i class="fa-solid fa-spinner fa-spin"></i>
           جاري التحميل...
         </div>
 
         <div
           class="empty-state"
-          *ngIf="!isLoading && errorMessage"
+          *ngIf="!isDailyLoading && dailyError"
           style="color: #dc2626"
         >
           <i class="fa-solid fa-circle-exclamation"></i>
-          {{ errorMessage }}
+          {{ dailyError }}
         </div>
 
         <div
           class="empty-state"
-          *ngIf="!isLoading && !errorMessage && dailySessionsData.length === 0"
+          *ngIf="!isDailyLoading && !dailyError && dailySessionsData.length === 0"
         >
           <i class="fa-solid fa-calendar-xmark"></i>
           لا توجد جلسات اليوم
         </div>
 
         <ng-container
-          *ngIf="!isLoading && !errorMessage && dailySessionsData.length > 0"
+          *ngIf="!isDailyLoading && !dailyError && dailySessionsData.length > 0"
         >
           <div class="session-card" *ngFor="let session of dailySessionsData">
             <div class="session-card__top">
@@ -236,17 +236,17 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngIf="isLoading">
+              <tr *ngIf="isWeeklyLoading">
                 <td colspan="6" class="text-center">جاري التحميل...</td>
               </tr>
-              <tr *ngIf="!isLoading && errorMessage">
+              <tr *ngIf="!isWeeklyLoading && weeklyError">
                 <td colspan="6" class="text-center" style="color: #dc2626">
-                  {{ errorMessage }}
+                  {{ weeklyError }}
                 </td>
               </tr>
               <tr
                 *ngIf="
-                  !isLoading && !errorMessage && weeklySessionData.length === 0
+                  !isWeeklyLoading && !weeklyError && weeklySessionData.length === 0
                 "
               >
                 <td colspan="6" class="text-center">
@@ -305,30 +305,30 @@
 
       <!-- Mobile Cards — Weekly -->
       <div class="session-cards-mobile">
-        <div class="empty-state" *ngIf="isLoading">
+        <div class="empty-state" *ngIf="isWeeklyLoading">
           <i class="fa-solid fa-spinner fa-spin"></i>
           جاري التحميل...
         </div>
 
         <div
           class="empty-state"
-          *ngIf="!isLoading && errorMessage"
+          *ngIf="!isWeeklyLoading && weeklyError"
           style="color: #dc2626"
         >
           <i class="fa-solid fa-circle-exclamation"></i>
-          {{ errorMessage }}
+          {{ weeklyError }}
         </div>
 
         <div
           class="empty-state"
-          *ngIf="!isLoading && !errorMessage && weeklySessionData.length === 0"
+          *ngIf="!isWeeklyLoading && !weeklyError && weeklySessionData.length === 0"
         >
           <i class="fa-solid fa-calendar-xmark"></i>
           لا توجد جلسات هذا الأسبوع
         </div>
 
         <ng-container
-          *ngIf="!isLoading && !errorMessage && weeklySessionData.length > 0"
+          *ngIf="!isWeeklyLoading && !weeklyError && weeklySessionData.length > 0"
         >
           <ng-container *ngFor="let days of weeklySessionData">
             <div class="session-card" *ngFor="let session of days.sessions">

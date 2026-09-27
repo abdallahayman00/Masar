@@ -1,7 +1,7 @@
 // teacher-requests.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2'; // <-- أضف هذا السطر لاستيراد SweetAlert
 import { environment } from '../../../environments/environment';
 
@@ -30,7 +30,7 @@ export interface ApiResponse {
 @Component({
   selector: 'app-teacher-requests',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule],
   templateUrl: './teacher-requests.component.html',
   styleUrls: ['./teacher-requests.component.scss'],
 })

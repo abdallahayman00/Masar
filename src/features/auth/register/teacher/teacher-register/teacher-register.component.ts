@@ -53,10 +53,13 @@ export class TeacherRegisterComponent implements OnInit {
       gender: ['', Validators.required],
       residenceCountry: ['', Validators.required],
       summary: ['', Validators.required],
-      nationalId: ['', Validators.required],
-      profileImage: [null],
-      introductionAudio: [null],
-      cvFile: [null],
+      nationalId: [
+        '',
+        [Validators.required, Validators.pattern(/^\d{14}$/)],
+      ],
+      profileImage: [null, Validators.required],
+      introductionAudio: [null, Validators.required],
+      cvFile: [null, Validators.required],
     });
   }
 

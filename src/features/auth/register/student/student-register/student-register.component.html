@@ -203,12 +203,18 @@
           [class.is-invalid]="isFieldInvalid('whatsAppNumber')"
         />
       </div>
+      <div
+        class="field-validation-error"
+        *ngIf="isFieldInvalid('whatsAppNumber')"
+      >
+        <span>رقم الواتساب مطلوب</span>
+      </div>
     </div>
   </div>
 
   <div class="form-row">
     <div class="form-group">
-      <label class="form-label">رقم واتساب ولي الأمر</label>
+      <label class="form-label">رقم واتساب ولي الأمر *</label>
       <div class="input-wrapper">
         <span class="input-icon">
           <svg
@@ -228,7 +234,14 @@
           class="form-control"
           formControlName="parentWhatsAppNumber"
           placeholder="+20XXXXXXXXX"
+          [class.is-invalid]="isFieldInvalid('parentWhatsAppNumber')"
         />
+      </div>
+      <div
+        class="field-validation-error"
+        *ngIf="isFieldInvalid('parentWhatsAppNumber')"
+      >
+        <span>رقم واتساب ولي الأمر مطلوب</span>
       </div>
     </div>
 
@@ -256,15 +269,14 @@
           [class.is-invalid]="isFieldInvalid('nationalId')"
         />
       </div>
-    </div>
-    <div class="field-validation-error" *ngIf="isFieldInvalid('nationalId')">
-      <span *ngIf="studentForm.get('nationalId')?.errors?.['required']">
-        الرقم القومي مطلوب
-      </span>
-
-      <span *ngIf="studentForm.get('nationalId')?.errors?.['pattern']">
-        الرقم القومي يجب أن يكون 14 رقم
-      </span>
+      <div class="field-validation-error" *ngIf="isFieldInvalid('nationalId')">
+        <span *ngIf="studentForm.get('nationalId')?.errors?.['required']">
+          الرقم القومي مطلوب
+        </span>
+        <span *ngIf="studentForm.get('nationalId')?.errors?.['pattern']">
+          الرقم القومي يجب أن يكون 14 رقم
+        </span>
+      </div>
     </div>
   </div>
 
@@ -276,6 +288,9 @@
           <input type="radio" [value]="option.value" formControlName="gender" />
           <span>{{ option.label }}</span>
         </label>
+      </div>
+      <div class="field-validation-error" *ngIf="isFieldInvalid('gender')">
+        <span>الجنس مطلوب</span>
       </div>
     </div>
 
@@ -303,33 +318,50 @@
           [class.is-invalid]="isFieldInvalid('residenceCountry')"
         />
       </div>
+      <div
+        class="field-validation-error"
+        *ngIf="isFieldInvalid('residenceCountry')"
+      >
+        <span>بلد الإقامة مطلوب</span>
+      </div>
     </div>
   </div>
 
   <div class="form-group">
-    <label class="form-label">ملاحظات الطالب</label>
+    <label class="form-label">ملاحظات الطالب *</label>
     <textarea
       class="form-control textarea"
       formControlName="studentNotes"
       rows="3"
       placeholder="أي ملاحظات إضافية..."
+      [class.is-invalid]="isFieldInvalid('studentNotes')"
     ></textarea>
+    <div class="field-validation-error" *ngIf="isFieldInvalid('studentNotes')">
+      <span>ملاحظات الطالب مطلوبة</span>
+    </div>
   </div>
 
   <div class="form-group">
-    <label class="form-label">التوقعات من المنصة</label>
+    <label class="form-label">التوقعات من المنصة *</label>
     <textarea
       class="form-control textarea"
       formControlName="platformExpectations"
       rows="3"
       placeholder="ما الذي تتوقع تعلمه؟"
+      [class.is-invalid]="isFieldInvalid('platformExpectations')"
     ></textarea>
+    <div
+      class="field-validation-error"
+      *ngIf="isFieldInvalid('platformExpectations')"
+    >
+      <span>التوقعات من المنصة مطلوبة</span>
+    </div>
   </div>
 
   <button
     type="submit"
     class="submit-btn"
-    [disabled]="loading || studentForm.invalid"
+    [disabled]="loading"
   >
     <div class="submit-btn-content">
       <svg

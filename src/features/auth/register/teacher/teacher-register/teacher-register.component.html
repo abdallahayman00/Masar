@@ -123,6 +123,12 @@
           [class.is-invalid]="isFieldInvalid('whatsAppNumber')"
         />
       </div>
+      <div
+        class="field-validation-error"
+        *ngIf="isFieldInvalid('whatsAppNumber')"
+      >
+        <span>رقم الواتساب مطلوب</span>
+      </div>
     </div>
   </div>
 
@@ -231,6 +237,12 @@
           [class.is-invalid]="isFieldInvalid('residenceCountry')"
         />
       </div>
+      <div
+        class="field-validation-error"
+        *ngIf="isFieldInvalid('residenceCountry')"
+      >
+        <span>بلد الإقامة مطلوب</span>
+      </div>
     </div>
   </div>
 
@@ -257,6 +269,14 @@
         [class.is-invalid]="isFieldInvalid('nationalId')"
       />
     </div>
+    <div class="field-validation-error" *ngIf="isFieldInvalid('nationalId')">
+      <span *ngIf="teacherForm.get('nationalId')?.errors?.['required']">
+        الرقم القومي مطلوب
+      </span>
+      <span *ngIf="teacherForm.get('nationalId')?.errors?.['pattern']">
+        الرقم القومي يجب أن يكون 14 رقم
+      </span>
+    </div>
   </div>
 
   <!-- Summary -->
@@ -269,11 +289,14 @@
       placeholder="اكتب نبذة عن خبراتك ومؤهلاتك..."
       [class.is-invalid]="isFieldInvalid('summary')"
     ></textarea>
+    <div class="field-validation-error" *ngIf="isFieldInvalid('summary')">
+      <span>النبذة التعريفية مطلوبة</span>
+    </div>
   </div>
 
   <!-- Profile Image Upload -->
   <div class="form-group">
-    <label class="form-label" for="profileImageInput">الصورة الشخصية</label>
+    <label class="form-label" for="profileImageInput">الصورة الشخصية *</label>
     <div
       class="upload-zone"
       [class.dragging]="isDraggingImage"
@@ -320,12 +343,15 @@
         </button>
       </div>
     </div>
+    <div class="field-validation-error" *ngIf="isFieldInvalid('profileImage')">
+      <span>الصورة الشخصية مطلوبة</span>
+    </div>
   </div>
 
   <!-- Introduction Audio Upload -->
   <div class="form-group">
     <label class="form-label" for="introductionAudioInput"
-      >مقدمة صوتية تعريفية</label
+      >مقدمة صوتية تعريفية *</label
     >
     <div
       class="upload-zone audio-zone"
@@ -384,11 +410,17 @@
         </button>
       </div>
     </div>
+    <div
+      class="field-validation-error"
+      *ngIf="isFieldInvalid('introductionAudio')"
+    >
+      <span>المقدمة الصوتية مطلوبة</span>
+    </div>
   </div>
 
   <!-- CV Upload -->
   <div class="form-group">
-    <label class="form-label" for="cvFileInput">السيرة الذاتية (CV)</label>
+    <label class="form-label" for="cvFileInput">السيرة الذاتية (CV) *</label>
     <div
       class="upload-zone cv-zone"
       [class.dragging]="isDraggingCv"
@@ -448,12 +480,15 @@
         </button>
       </div>
     </div>
+    <div class="field-validation-error" *ngIf="isFieldInvalid('cvFile')">
+      <span>السيرة الذاتية مطلوبة</span>
+    </div>
   </div>
 
   <button
     type="submit"
     class="submit-btn"
-    [disabled]="loading || teacherForm.invalid"
+    [disabled]="loading"
   >
     <div class="submit-btn-content">
       <svg
