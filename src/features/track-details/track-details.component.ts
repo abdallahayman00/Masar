@@ -70,6 +70,7 @@ export class TrackDetailsComponent implements OnInit {
   private sessionMap = new Map<string, Session>();
   private trackSessionIds = new Set<number>();
   private trackSessionsLoaded = false;
+  private monthlySessionsData: MonthlySession[] = [];
 
   // Upcoming session (green card)
   upcomingSession: UpcomingSession | null | undefined = undefined;
@@ -114,6 +115,7 @@ export class TrackDetailsComponent implements OnInit {
         this.currentTrack =
           res.find((track: AvailableTracks) => track.trackId === this.trackId) ??
           null;
+        this.computeProgressStats();
       },
       error: () => {
         this.tracksError = true;
@@ -127,17 +129,14 @@ export class TrackDetailsComponent implements OnInit {
 
     this.studentService.getMonthlySessions(+studentId, this.trackId).subscribe({
       next: (res: MonthlySession[]) => {
+        this.monthlySessionsData = res;
         this.trackSessionIds = new Set(res.map((s) => s.sessionId));
         this.trackSessionsLoaded = true;
         this.missedSessionsCount = res.filter((s) => s.status === 'Missed').length;
 
-        // إحصائيات التقدم بتتجاب من جلسات التراك الفعلية بدل GetStudentTracks
-        this.totalSessions = res.length;
-        this.completedSessions = res.filter(
-          (s) => s.status === 'Completed',
-        ).length;
-        this.remainingSessions = this.totalSessions - this.completedSessions;
-        this.buildProgressMarkers(this.totalSessions, this.completedSessions);
+        // الإجمالي بيتاخد من numberOfSessions بتاع التراك (داينميك من الباك)،
+        // مش من عدد جلسات الحجز اللي ممكن تكون أقدم/أقل
+        this.computeProgressStats();
 
         const now = new Date();
         const upcomingMonthly = res
@@ -232,10 +231,8 @@ export class TrackDetailsComponent implements OnInit {
           this.trackSessionIds = new Set();
           this.trackSessionsLoaded = true;
           this.missedSessionsCount = 0;
-          this.totalSessions = 0;
-          this.completedSessions = 0;
-          this.remainingSessions = 0;
-          this.buildProgressMarkers(0, 0);
+          this.monthlySessionsData = [];
+          this.computeProgressStats();
         }
         this.upcomingSession = null;
         this.getWeeklyStuSessions();
@@ -298,6 +295,20 @@ export class TrackDetailsComponent implements OnInit {
   get completionPercentage(): number {
     if (!this.totalSessions) return 0;
     return Math.round((this.completedSessions / this.totalSessions) * 100);
+  }
+
+  // بيتحسب من الاتنين: MonthlySessions (المنجز) + currentTrack.numberOfSessions (الإجمالي)
+  // وبتتنده تاني لما أي request فيهم يخلص عشان مفيش race
+  private computeProgressStats(): void {
+    const total =
+      this.currentTrack?.numberOfSessions ?? this.monthlySessionsData.length;
+
+    this.totalSessions = total;
+    this.completedSessions = this.monthlySessionsData.filter(
+      (s) => s.status === 'Completed',
+    ).length;
+    this.remainingSessions = Math.max(total - this.completedSessions, 0);
+    this.buildProgressMarkers(total, this.completedSessions);
   }
 
   readonly ringRadius = 80;

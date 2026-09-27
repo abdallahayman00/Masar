@@ -118,21 +118,21 @@ $tr: 0.2s ease;
 // ════════════════════════════════════════════════════════════
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 14px;
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
 
   @media (max-width: 600px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 .stat-card {
   border-radius: $rad-xl;
-  padding: 1.4rem 1.2rem;
+  padding: 0.8rem 1rem;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   position: relative;
   overflow: hidden;
   border: 1.5px solid transparent;
@@ -225,11 +225,71 @@ $tr: 0.2s ease;
       color: $blue-600;
     }
   }
+
+  // ── Lavender ───────────────────────────────────────────────
+  &--lavender {
+    background: $lav-50;
+    border-color: $lav-100;
+
+    .stat-card__bg-circle {
+      background: $lav-400;
+    }
+    .stat-icon {
+      background: $lav-100;
+      color: $lav-600;
+    }
+    .stat-val {
+      color: $lav-800;
+    }
+    .stat-lbl {
+      color: $lav-600;
+    }
+  }
+
+  // ── Rose ───────────────────────────────────────────────────
+  &--rose {
+    background: $rose-50;
+    border-color: $rose-100;
+
+    .stat-card__bg-circle {
+      background: $rose-400;
+    }
+    .stat-icon {
+      background: $rose-100;
+      color: $rose-600;
+    }
+    .stat-val {
+      color: $rose-800;
+    }
+    .stat-lbl {
+      color: $rose-600;
+    }
+  }
+
+  // ── Stone (neutral) ────────────────────────────────────────
+  &--stone {
+    background: $cream;
+    border-color: $cream-dark;
+
+    .stat-card__bg-circle {
+      background: $stone;
+    }
+    .stat-icon {
+      background: $cream-dark;
+      color: $stone-dark;
+    }
+    .stat-val {
+      color: $ink;
+    }
+    .stat-lbl {
+      color: $stone-dark;
+    }
+  }
 }
 
 .stat-icon {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: $rad-md;
   display: flex;
   align-items: center;
@@ -239,13 +299,13 @@ $tr: 0.2s ease;
   z-index: 1;
 
   svg {
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
   }
 }
 
 .stat-val {
-  font-size: 34px;
+  font-size: 26px;
   font-weight: 800;
   line-height: 1;
   letter-spacing: -1px;
@@ -258,9 +318,52 @@ $tr: 0.2s ease;
 }
 
 .stat-lbl {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  margin-top: 5px;
+  margin-top: 3px;
+}
+
+// ── Attendance rate bar ─────────────────────────────────────
+.attendance-bar {
+  background: #fff;
+  border: 1.5px solid $border-soft;
+  border-radius: $rad-lg;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 2rem;
+  direction: rtl;
+
+  &__info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.55rem;
+  }
+
+  &__label {
+    font-size: 13px;
+    font-weight: 700;
+    color: $ink;
+  }
+
+  &__value {
+    font-size: 14px;
+    font-weight: 800;
+    color: $sage-600;
+  }
+
+  &__track {
+    height: 8px;
+    border-radius: $rad-pill;
+    background: $cream-dark;
+    overflow: hidden;
+  }
+
+  &__fill {
+    height: 100%;
+    border-radius: $rad-pill;
+    background: linear-gradient(90deg, $sage-400, $sage-600);
+    transition: width 0.5s ease;
+  }
 }
 
 // ════════════════════════════════════════════════════════════
@@ -721,7 +824,7 @@ $tr: 0.2s ease;
     grid-template-columns: 1fr;
   }
   .stat-val {
-    font-size: 28px;
+    font-size: 22px;
   }
   .legend {
     gap: 0.55rem;

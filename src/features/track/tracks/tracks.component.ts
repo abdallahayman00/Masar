@@ -24,7 +24,7 @@ export class TracksComponent implements OnInit {
   newTrack: any = {
     TrackName: '',
     description: '',
-    NumberOfSessions: 0,
+    NumberOfSessions: 8,
     SessionMinutes: 0,
     SessionPrice: 0,
     Price: 0,
@@ -66,7 +66,7 @@ export class TracksComponent implements OnInit {
     TrackId: null,
     TrackName: '',
     description: '',
-    NumberOfSessions: 0,
+    NumberOfSessions: 8,
     SessionMinutes: 0,
     SessionPrice: 0,
     Price: 0,
@@ -378,7 +378,7 @@ export class TracksComponent implements OnInit {
     this.newTrack = {
       TrackName: '',
       description: '',
-      NumberOfSessions: 0,
+      NumberOfSessions: 8,
       SessionMinutes: 0,
       SessionPrice: 0,
       Price: 0,
@@ -477,7 +477,7 @@ export class TracksComponent implements OnInit {
       TrackId: this.selectedTrack.trackId || this.selectedTrack.id,
       TrackName: this.selectedTrack.name || '',
       description: this.selectedTrack.description || '',
-      NumberOfSessions: this.selectedTrack.numberOfSessions || 0,
+      NumberOfSessions: 8,
       SessionMinutes:
         this.selectedTrack.sessionDuration ||
         this.selectedTrack.sessionMinutes ||
@@ -508,7 +508,7 @@ export class TracksComponent implements OnInit {
       TrackId: null,
       TrackName: '',
       description: '',
-      NumberOfSessions: 0,
+      NumberOfSessions: 8,
       SessionMinutes: 0,
       SessionPrice: 0,
       Price: 0,

@@ -248,12 +248,46 @@ export class WeeklyScheduleComponent implements OnInit {
     return new Date(dateStr).getDate();
   }
 
+  /** "27 سبتمبر 2026" — تنسيق عربي بسيط بدل الـ ISO string */
+  formatDate(dateStr: string): string {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return `${d.getDate()} ${this.MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+  }
+
   // ── Stats ──────────────────────────────────────────────────
 
+  /** كل الحصص في الأسبوع المعروض كقائمة مسطّحة */
+  private get allWeekSessions(): Session[] {
+    return this.scheduleData?.days.flatMap((d) => d.sessions) ?? [];
+  }
+
   getTotalSessions(): number {
-    return (
-      this.scheduleData?.days.reduce((n, d) => n + d.sessions.length, 0) ?? 0
-    );
+    return this.allWeekSessions.length;
+  }
+
+  /** حضور — الحصص اللي خلصت فعلاً */
+  getCompletedCount(): number {
+    return this.allWeekSessions.filter((s) => s.status === 'Completed').length;
+  }
+
+  /** غياب — الحصص الفائتة */
+  getMissedCount(): number {
+    return this.allWeekSessions.filter((s) => s.status === 'Missed').length;
+  }
+
+  /** متبقية — اللي لسه جاية أو جارية دلوقتي */
+  getUpcomingCount(): number {
+    return this.allWeekSessions.filter(
+      (s) => s.status === 'Upcoming' || s.status === 'Ongoing',
+    ).length;
+  }
+
+  /** نسبة الحضور من الحصص اللي انقضت (حضور + غياب) */
+  getAttendanceRate(): number {
+    const finished = this.getCompletedCount() + this.getMissedCount();
+    if (!finished) return 0;
+    return Math.round((this.getCompletedCount() / finished) * 100);
   }
 
   getActiveDays(): number {

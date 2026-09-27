@@ -211,6 +211,13 @@ $border-soft: #e2dac9;
       color: #bbb;
       font-size: 0.85rem;
     }
+
+    &:disabled {
+      background: #f0eee8;
+      color: $text-soft;
+      cursor: not-allowed;
+      border-color: $border-soft;
+    }
   }
 
   textarea.form-control {

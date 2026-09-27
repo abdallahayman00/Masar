@@ -1,7 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { StudentService } from '../../core/services/student.service';
+import { TracksService } from '../../core/services/tracks.service';
 import { StudentTracks } from '../../core/interfaces/student-tracks';
+import { AvailableTracks } from '../../core/interfaces/available-tracks';
 import { CommonModule } from '@angular/common';
 import { NgFor, NgIf } from '@angular/common';
 import { ArabicNumberPipe } from '../../core/pipes/arabic-number.pipe';
@@ -18,6 +20,7 @@ export class StudentTracksComponent implements OnInit {
   hasError: boolean = false;
 
   private readonly studentService = inject(StudentService);
+  private readonly tracksService = inject(TracksService);
   private readonly router = inject(Router);
 
   ngOnInit(): void {
@@ -42,6 +45,7 @@ export class StudentTracksComponent implements OnInit {
         console.log(res);
         this.studentTracksData = res;
         this.isLoading = false;
+        this.mergeTrackSessionCounts();
       },
       error: (err) => {
         // الـ API بيرجع 404 لما الطالب ماعندوش مسارات — ده مش خطأ، ده حالة فاضية
@@ -52,6 +56,29 @@ export class StudentTracksComponent implements OnInit {
           this.hasError = true;
         }
         this.isLoading = false;
+      },
+    });
+  }
+
+  // totalSessions اللي بيرجعها الحجز مش دايمًا بتوافق تعريف التراك —
+  // نجيب numberOfSessions من GetAllTracksForStu ونركّبها بالـ trackId
+  private mergeTrackSessionCounts(): void {
+    this.tracksService.getAllTracksForStu().subscribe({
+      next: (tracks: AvailableTracks[]) => {
+        const byId = new Map(tracks.map((t) => [t.trackId, t.numberOfSessions]));
+        for (const track of this.studentTracksData) {
+          const total = byId.get(track.trackId);
+          if (total != null) {
+            track.totalSessions = total;
+            track.remainingSessions = Math.max(
+              total - track.completedSessions,
+              0,
+            );
+          }
+        }
+      },
+      error: () => {
+        // لو فشل، نسيب أرقام الحجز زي ما هي
       },
     });
   }
