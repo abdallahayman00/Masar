@@ -2,6 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 import { StudentService } from '../../../core/services/student.service';
 import {
   AuthService,
@@ -264,7 +265,7 @@ export class StudentsComponent implements OnInit {
       return;
     }
 
-    const userId = this.passwordStudent.studentId;
+    const userId = this.passwordStudent.userId;
 
     if (!userId) {
       this.passwordError = '❌ لم يتم العثور على معرف المستخدم';
@@ -283,20 +284,43 @@ export class StudentsComponent implements OnInit {
       next: (response) => {
         console.log('✅ Password changed successfully:', response);
         this.isSaving = false;
-        alert('✅ تم تغيير كلمة المرور بنجاح');
+
+        Swal.fire({
+          icon: 'success',
+          title: 'تم بنجاح',
+          text: `تم تغيير كلمة المرور للطالب ${this.passwordStudent?.fullName} بنجاح`,
+          confirmButtonText: 'حسناً',
+          confirmButtonColor: '#10b981',
+          timer: 3000,
+          timerProgressBar: true,
+        });
+
         this.closePasswordModal();
       },
       error: (err) => {
         console.error('❌ Error changing password:', err);
         this.isSaving = false;
 
-        let errorMsg = '❌ حدث خطأ أثناء تغيير كلمة المرور';
-        if (err.error?.message) {
-          errorMsg = err.error.message;
+        let errorText = 'حدث خطأ أثناء تغيير كلمة المرور';
+
+        if (err.status === 401) {
+          errorText =
+            'غير مصرح لك بتغيير كلمة المرور. يرجى تسجيل الدخول مرة أخرى';
+        } else if (err.error?.message) {
+          errorText = err.error.message;
         } else if (err.error?.title) {
-          errorMsg = err.error.title;
+          errorText = err.error.title;
+        } else if (err.error?.errors) {
+          errorText = Object.values(err.error.errors).join(', ');
         }
-        this.passwordError = errorMsg;
+
+        Swal.fire({
+          icon: 'error',
+          title: 'خطأ',
+          text: errorText,
+          confirmButtonText: 'حسناً',
+          confirmButtonColor: '#ef4444',
+        });
       },
     });
   }
